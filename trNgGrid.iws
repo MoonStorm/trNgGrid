@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="45441da0-1fc7-4e79-a127-88ae437389fc" name="Default" comment="" />
+    <list default="true" readonly="true" id="45441da0-1fc7-4e79-a127-88ae437389fc" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/demo" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/LICENSE" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/demo/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/package.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/css/trNgGrid.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trNgGrid.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trNgGrid.ipr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/js/trNgGrid.js.map" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/js/trNgGrid.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/css/trNgGrid.less" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/js/trNgGrid.ts" />
+    </list>
     <ignored path="trNgGrid.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -64,10 +81,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="package.json" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/package.json">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/demo/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="1" selection-start="142" selection-end="142" vertical-scroll-proportion="0.14800996" vertical-offset="0" max-vertical-offset="804">
+            <state line="25" column="27" selection-start="958" selection-end="973" vertical-scroll-proportion="-16.346153" vertical-offset="0" max-vertical-offset="816">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="trNgGrid.ts" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="54" selection-start="1134" selection-end="1134" vertical-scroll-proportion="0.3261391" vertical-offset="306" max-vertical-offset="2057">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="jquery.d.ts" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/jquery/jquery.d.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="804" column="4" selection-start="40683" selection-end="40683" vertical-scroll-proportion="0.0" vertical-offset="13238" max-vertical-offset="40120">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="angular.d.ts" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/angularjs/angular.d.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="39" column="8" selection-start="1534" selection-end="1534" vertical-scroll-proportion="0.0" vertical-offset="334" max-vertical-offset="14399">
               <folding />
             </state>
           </provider>
@@ -83,11 +127,16 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/js/trNgGrid.ts" />
         <option value="$PROJECT_DIR$/src/css/trNgGrid.less" />
         <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/demo/index.html" />
+        <option value="$PROJECT_DIR$/src/js/trNgGrid.ts" />
       </list>
     </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState />
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
@@ -161,6 +210,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -168,10 +218,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="trNgGrid" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -184,9 +230,98 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid.ts" />
+              <option name="myItemType" value="com.intellij.plugins.watcher.projectView.NestingTreeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="demo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="d.ts" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DefinitelyTyped" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jquery" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trNgGrid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="d.ts" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="DefinitelyTyped" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -196,18 +331,20 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="options.lastSelected" value="vcs.Git" />
+    <property name="options.lastSelected" value="settings.nodejs" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/js/trNgGrid.js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/demo/index.html" />
     <property name="FullScreen" value="false" />
+    <property name="recentsLimit" value="5" />
+    <property name="restartRequiresConfirmation" value="true" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JavaScript Debug.Default">
     <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails" singleton="true">
       <module name="" />
       <setting name="vmparams" value="" />
@@ -423,7 +560,14 @@
       <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
       <method />
     </configuration>
-    <list size="0" />
+    <configuration default="false" name="Default" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true" uri="http://localhost:63342/trNgGrid/demo/index.html">
+      <RunnerSettings RunnerId="JavascriptDebugRunner" />
+      <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
+      <method />
+    </configuration>
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.Default" />
+    </list>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
       <Port>5050</Port>
@@ -449,6 +593,24 @@
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
     <supportedVersion>125</supportedVersion>
   </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="C:\_work\Source\MiddleTier\Externals\Source\trNgGrid" />
+          <option name="myCopyRoot" value="C:\_work\Source\MiddleTier\Externals\Source\trNgGrid" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="C:\_work\Source\MiddleTier\Externals\Source\trNgGrid" />
+          <option name="myCopyRoot" value="C:\_work\Source\MiddleTier\Externals\Source\trNgGrid" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="45441da0-1fc7-4e79-a127-88ae437389fc" name="Default" comment="" />
@@ -459,18 +621,24 @@
       <workItem from="1389621949965" duration="1539000" />
       <workItem from="1389623509202" duration="24000" />
       <workItem from="1389623565111" duration="379000" />
+      <workItem from="1389624332260" duration="31000" />
+      <workItem from="1389624372439" duration="106000" />
+      <workItem from="1389624570916" duration="354000" />
+      <workItem from="1389627781172" duration="420000" />
+      <workItem from="1389628210745" duration="669000" />
+      <workItem from="1389628911876" duration="3874000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4443000" />
+    <option name="totallyTimeSpent" value="9897000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1014" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32983682" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -482,17 +650,17 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960597" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32943925" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17625134" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22325581" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33060747" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -509,6 +677,7 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -518,6 +687,111 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/demo/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="102">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="31" selection-start="789" selection-end="789" vertical-scroll-proportion="0.0" vertical-offset="323" max-vertical-offset="1649">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="102">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="188" selection-end="188" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="1649">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="1" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="7" selection-start="26" selection-end="26" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="170" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="85" selection-end="85" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="1" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="7" selection-start="26" selection-end="26" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="170" />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="85" selection-end="85" vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="1" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="170" />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="1" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state line="7" column="1" selection-start="142" selection-end="142" vertical-scroll-proportion="0.0" vertical-offset="119" max-vertical-offset="221">
@@ -547,14 +821,59 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="102" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="1" selection-start="63" selection-end="63" vertical-scroll-proportion="0.061445784" vertical-offset="0" max-vertical-offset="830" />
+        <state line="3" column="7" selection-start="26" selection-end="26" vertical-scroll-proportion="0.061298076" vertical-offset="0" max-vertical-offset="832" />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="1" selection-start="142" selection-end="142" vertical-scroll-proportion="0.14800996" vertical-offset="0" max-vertical-offset="804">
+        <state line="13" column="1" selection-start="244" selection-end="244" vertical-scroll-proportion="0.27419356" vertical-offset="0" max-vertical-offset="806">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="832">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/angular/lib/angular.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3485">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/angularjs/angular.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="8" selection-start="1534" selection-end="1534" vertical-scroll-proportion="0.0" vertical-offset="334" max-vertical-offset="14399">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="27" selection-start="958" selection-end="973" vertical-scroll-proportion="-16.346153" vertical-offset="0" max-vertical-offset="816">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/jquery/jquery.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="804" column="4" selection-start="40683" selection-end="40683" vertical-scroll-proportion="0.0" vertical-offset="13238" max-vertical-offset="40120">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="54" selection-start="1134" selection-end="1134" vertical-scroll-proportion="0.3261391" vertical-offset="306" max-vertical-offset="2057">
           <folding />
         </state>
       </provider>
@@ -566,10 +885,10 @@
         <settings>
           <artifact-editor>
             <show-content>
-              <type id="jpa-descriptors" />
-              <type id="artifact" />
-              <type id="library" />
               <type id="javaee-facet-resources" />
+              <type id="library" />
+              <type id="artifact" />
+              <type id="jpa-descriptors" />
             </show-content>
           </artifact-editor>
           <last-edited>trNgGrid</last-edited>

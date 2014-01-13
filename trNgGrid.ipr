@@ -38,7 +38,6 @@
   <component name="IdProvider" IDEtalkID="8F04ACCB6C016534B47CD92EAF3FFE61" />
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{Node.js Dependencies for trNgGrid}" />
-    <file url="PROJECT" libraries="{angularjs-DefinitelyTyped, jquery-DefinitelyTyped}" />
   </component>
   <component name="ProjectModuleManager">
     <modules>

@@ -4,5 +4,11 @@
     "dependencies":{
         "angular": "1.2.x",
         "jquery1-browser": ">=1.10"
-    }
+    },
+	"devDependencies":{
+		"tsd": "*"
+	},
+	"scripts": {
+		"postinstall": "tsd install angular jquery"
+	}
 }

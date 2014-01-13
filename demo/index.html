@@ -1,0 +1,42 @@
+<html ng-app="demo">
+<head>
+    <link rel="stylesheet" href="../src/css/trNgGrid.css" />
+    <script src="../node_modules/jquery1-browser/jquery.js"></script>
+    <script src="../node_modules/angular/lib/angular.min.js"></script>
+    <script src="../src/js/trNgGrid.js"></script>
+    <script type="text/javascript">
+        (function(angular) {
+            angular.module('demo', ['trNgTable']);
+        })(angular);
+
+        function testController($scope) {
+            $scope.searchText = "never find it";
+            $scope.items = [{ id: 1, name: 'Bob', street: '1 street ave' }, { id: 2, name: 'Ana', street: '22 street ave' }];
+            $scope.addNew = function () {
+                $scope.items.push({ id: 10, name: 'Boby', street: '10 street ave' });
+            };
+        }
+    </script>
+</head>
+
+<body ng-controller="testController">
+<table tr-ng-grid gridModel="items" gridFilterBy="search" gridOrderBy="id">
+    <thead>
+    <tr>
+        <td gridColumnModel="Id">Id</td>
+        <td gridColumnModel="Name">Name</td>
+        <td>Street</td>
+    </tr>
+    </thead>
+    <tbody>
+    <!--<tr>-->
+        <!--<td>{{entity.id}}</td>-->
+        <!--<td>{{entity.name}}</td>-->
+        <!--<td>{{entity.street}}</td>-->
+    <!--</tr>-->
+    </tbody>
+</table>
+<input ng-model="search">
+<button ng-click="addNew()">Add New</button>
+</body>
+</html>
