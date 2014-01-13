@@ -37,6 +37,7 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="IdProvider" IDEtalkID="8F04ACCB6C016534B47CD92EAF3FFE61" />
   <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$" libraries="{Node.js Dependencies for trNgGrid}" />
     <file url="PROJECT" libraries="{angularjs-DefinitelyTyped, jquery-DefinitelyTyped}" />
   </component>
   <component name="ProjectModuleManager">
@@ -116,6 +117,18 @@
       </properties>
       <CLASSES>
         <root url="file://$PROJECT_DIR$/src/js/trNgGrid.js" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Node.js Dependencies for trNgGrid" type="javaScript">
+      <properties>
+        <sourceFilesUrls>
+          <item url="file://$PROJECT_DIR$/node_modules" />
+        </sourceFilesUrls>
+      </properties>
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/node_modules" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
