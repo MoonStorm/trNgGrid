@@ -112,10 +112,14 @@
       <properties>
         <sourceFilesUrls>
           <item url="file://$PROJECT_DIR$/src/js/trNgGrid.js" />
+          <item url="file://$PROJECT_DIR$/node_modules/tsd/tools/estractRepository.js" />
+          <item url="file://$PROJECT_DIR$/node_modules/tsd/src/Util/ANSIFormat.js" />
         </sourceFilesUrls>
       </properties>
       <CLASSES>
         <root url="file://$PROJECT_DIR$/src/js/trNgGrid.js" />
+        <root url="file://$PROJECT_DIR$/node_modules/tsd/tools/estractRepository.js" />
+        <root url="file://$PROJECT_DIR$/node_modules/tsd/src/Util/ANSIFormat.js" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

@@ -1,0 +1,76 @@
+@import (reference) url("http://netdna.bootstrapcdn.com/bootswatch/3.0.3/spacelab/bootstrap.min.css");
+/*@import (less) url("http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css");*/
+/*@import (reference) url("http://bootswatch.com/spacelab/variables.less");*/
+/*@import (reference) url("http://bootswatch.com/spacelab/bootswatch.less");*/
+
+.tr-ng-grid{
+}
+
+.tr-ng-grid thead th{
+  text-align:center;
+}
+
+.tr-ng-grid tbody{
+}
+
+.unselectable{
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.tr-ng-grid{
+  vertical-align: middle;
+}
+
+.tr-ng-grid .tr-ng-title, .tr-ng-grid .tr-ng-sort{
+  vertical-align: middle;
+  .unselectable;
+}
+
+.tr-ng-grid .tr-ng-sort
+{
+  cursor:pointer;
+  display: block;
+  float:right;
+}
+
+
+.tr-ng-grid .tr-ng-sort:after {
+  content:'';
+  display:block;
+  clear: both;
+}
+
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-active, .tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive{
+  display: block;
+  width: 0;
+  height: 0;
+  /*margin-top: 0.25em;*/
+  margin-left: 0.5em;
+}
+
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive{
+  /*down arrow - inactive default*/
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-top: 0.5em solid darkgrey;
+  border-bottom: none;
+}
+
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-active{
+  /*down arrow - active default*/
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-top: 0.5em solid black;
+  border-bottom: none;
+}
+
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-active.tr-ng-sort-reverse{
+  /*up arrow*/
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-bottom: 0.5em solid black;
+  border-top: none;
+}
+

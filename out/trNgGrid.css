@@ -1,0 +1,51 @@
+.tr-ng-grid td {
+  background-color: aqua;
+}
+.unselectable {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.tr-ng-grid {
+  vertical-align: middle;
+}
+.tr-ng-grid .tr-ng-title,
+.tr-ng-grid .tr-ng-sort {
+  display: inline-block;
+  vertical-align: middle;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.tr-ng-grid .tr-ng-sort {
+  cursor: pointer;
+}
+/*
+.tr-ng-grid .tr-ng-sort:after {
+  content:'';
+  display:block;
+  clear: both;
+}
+*/
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-active {
+  display: block;
+  width: 0;
+  height: 0;
+  /*margin-top: 0.25em;*/
+  margin-left: 0.5em;
+  /*down arrow*/
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-top: 0.5em solid black;
+  border-bottom: none;
+}
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive {
+  display: none;
+}
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-active.tr-ng-sort-reverse {
+  /*up arrow*/
+  border-left: 0.5em solid transparent;
+  border-right: 0.5em solid transparent;
+  border-bottom: 0.5em solid black;
+  border-top: none;
+}
