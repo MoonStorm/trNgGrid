@@ -1,4 +1,4 @@
-@import (reference) url("http://netdna.bootstrapcdn.com/bootswatch/3.0.3/spacelab/bootstrap.min.css");
+/*@import (reference) url("http://netdna.bootstrapcdn.com/bootswatch/3.0.3/slate/bootstrap.min.css&.less");*/
 /*@import (less) url("http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css");*/
 /*@import (reference) url("http://bootswatch.com/spacelab/variables.less");*/
 /*@import (reference) url("http://bootswatch.com/spacelab/bootswatch.less");*/
@@ -6,11 +6,20 @@
 .tr-ng-grid{
 }
 
-.tr-ng-grid thead th{
+.tr-ng-grid thead tr th{
   text-align:center;
+  vertical-align: top;
 }
 
-.tr-ng-grid tbody{
+.tr-ng-grid thead tr th .tr-ng-cell{
+
+}
+
+.tr-ng-grid tbody tr td{
+}
+
+.tr-ng-grid tbody tr td .tr-ng-cell{
+  overflow: auto;
 }
 
 .unselectable{
@@ -46,8 +55,6 @@
   display: block;
   width: 0;
   height: 0;
-  /*margin-top: 0.25em;*/
-  margin-left: 0.5em;
 }
 
 .tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive{
@@ -74,3 +81,7 @@
   border-top: none;
 }
 
+.tr-ng-grid .tr-ng-column-filter{
+  margin-top: 0.5em;
+  margin-bottom: 0.1em;
+}

@@ -1,6 +1,6 @@
 <html ng-app="demo">
 <head>
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/spacelab/bootstrap.min.css" />
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/slate/bootstrap.min.css" />
     <link rel="stylesheet" href="../src/css/trNgGrid.css" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
@@ -11,6 +11,7 @@
         })(angular);
 
         function testController($scope) {
+            $scope.externalTestProp = "Externals should be usable";
             $scope.searchText = "";
             $scope.items = [{ id: 1, name: 'Bob', street: '1 street ave' }, { id: 2, name: 'Ana', street: '22 street ave' }];
             $scope.addNew = function () {
@@ -24,19 +25,22 @@
             };*/
         }
     </script>
+    <style>
+        html, body{
+            background-color: white;
+        }
+    </style>
 </head>
 
 <body ng-controller="testController">
-<table tr-ng-grid  model="items" filterBy="searchText" orderBy="'id'" class="table table-stripped table-bordered table-hover">
-<!-- Test 1
+<table tr-ng-grid  model="items" filter-by="searchText" order-by="id" order-by-reverse="true" class="table table-stripped table-bordered table-hover">
     <thead>
         <tr>
-            <td grid-column="id">Id</td>
-            <td grid-column="name">Name</td>
-            <td>Unused</td>
+            <th tr-ng-grid-column field-name="id" cell-width="10em"></th>
+            <th tr-ng-grid-column field-name="name">Name <span tr-ng-grid-column-sort style="background-color:aquamarine"/></th>
+            <th>Hi there {{externalTestProp}}</th>
         </tr>
     </thead>
--->
      <!--Test 2: sorting-->
 <!--
     <thead>
@@ -49,7 +53,7 @@
 -->
     <tbody>
         <tr>
-            <td ng-click="toggleSorting()">Unused: {{gridOptions.filterBy}} </td>
+            <td ng-click="toggleSorting()">Unused: {{searchText}} {{externalTestProp}}</td>
         </tr>
     </tbody>
 </table>

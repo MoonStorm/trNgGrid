@@ -84,8 +84,10 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/demo/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="12" selection-start="1372" selection-end="1372" vertical-scroll-proportion="-20.923077" vertical-offset="0" max-vertical-offset="1105">
-              <folding />
+            <state line="24" column="16" selection-start="1202" selection-end="1202" vertical-scroll-proportion="-15.692307" vertical-offset="0" max-vertical-offset="1173">
+              <folding>
+                <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -93,7 +95,7 @@
       <file leaf-file-name="trNgGrid.ts" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="126" column="19" selection-start="5620" selection-end="5620" vertical-scroll-proportion="1.2439024" vertical-offset="1071" max-vertical-offset="5304">
+            <state line="64" column="45" selection-start="2028" selection-end="2028" vertical-scroll-proportion="0.37393424" vertical-offset="781" max-vertical-offset="6698">
               <folding />
             </state>
           </provider>
@@ -102,7 +104,7 @@
       <file leaf-file-name="trNgGrid.less" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.less">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="0" selection-start="372" selection-end="372" vertical-scroll-proportion="-3.8461537" vertical-offset="19" max-vertical-offset="1394">
+            <state line="59" column="45" selection-start="1159" selection-end="1159" vertical-scroll-proportion="-10.153846" vertical-offset="739" max-vertical-offset="1581">
               <folding />
             </state>
           </provider>
@@ -111,11 +113,11 @@
       <file leaf-file-name="trNgGrid.css" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="1" selection-start="773" selection-end="773" vertical-scroll-proportion="0.0" vertical-offset="483" max-vertical-offset="1139">
+            <state line="8" column="1" selection-start="437" selection-end="437" vertical-scroll-proportion="0.0" vertical-offset="407" max-vertical-offset="1241">
               <folding>
-                <marker date="1389976214993" expanded="true" signature="715:737" placeholder="{...}" />
-                <marker date="1389976214993" expanded="true" signature="1059:1383" placeholder="{...}" />
-                <marker date="1389976214993" expanded="true" signature="1468:1480" placeholder="{...}" />
+                <marker date="1390309925255" expanded="true" signature="818:840" placeholder="{...}" />
+                <marker date="1390309925255" expanded="true" signature="1114:1438" placeholder="{...}" />
+                <marker date="1390309925255" expanded="true" signature="1523:1535" placeholder="{...}" />
               </folding>
             </state>
           </provider>
@@ -124,7 +126,7 @@
       <file leaf-file-name="package.json" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="23" selection-start="70" selection-end="70" vertical-scroll-proportion="-1.9615384" vertical-offset="0" max-vertical-offset="272">
+            <state line="3" column="23" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="272">
               <folding />
             </state>
           </provider>
@@ -141,11 +143,11 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/src/js/trNgGrid.js" />
         <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/src/js/trNgGrid.js" />
         <option value="$PROJECT_DIR$/src/css/trNgGrid.css" />
-        <option value="$PROJECT_DIR$/src/css/trNgGrid.less" />
         <option value="$PROJECT_DIR$/demo/index.html" />
+        <option value="$PROJECT_DIR$/src/css/trNgGrid.less" />
         <option value="$PROJECT_DIR$/src/js/trNgGrid.ts" />
       </list>
     </option>
@@ -154,10 +156,10 @@
     <treeState />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1928" />
+    <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="height" value="1014" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -228,8 +230,8 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -290,20 +292,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="trNgGrid.less" />
               <option name="myItemType" value="com.intellij.plugins.watcher.projectView.NestingTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trNgGrid" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trNgGrid" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="node_modules" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -674,22 +662,24 @@
       <workItem from="1389628911876" duration="3874000" />
       <workItem from="1389693446009" duration="4792000" />
       <workItem from="1389706665649" duration="77058000" />
+      <workItem from="1390208776788" duration="23478000" />
+      <workItem from="1390295997299" duration="15282000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="91747000" />
+    <option name="totallyTimeSpent" value="130507000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1936" height="1014" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32983682" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32906976" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -698,16 +688,16 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32983682" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960597" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18903089" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22333333" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22325581" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32983682" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -736,8 +726,99 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/demo/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="27" selection-start="958" selection-end="973" vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="816">
+        <state line="24" column="16" selection-start="1205" selection-end="1205" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1088">
+          <folding>
+            <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="97" column="34" selection-start="3284" selection-end="3284" vertical-scroll-proportion="0.0" vertical-offset="1649" max-vertical-offset="5542">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/angularjs/angular.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="539" column="14" selection-start="21848" selection-end="21848" vertical-scroll-proportion="0.0" vertical-offset="9163" max-vertical-offset="14450">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="0" selection-start="372" selection-end="372" vertical-scroll-proportion="0.0" vertical-offset="19" max-vertical-offset="1394">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="1" selection-start="773" selection-end="773" vertical-scroll-proportion="0.0" vertical-offset="305" max-vertical-offset="1139">
+          <folding>
+            <marker date="1390309925255" expanded="true" signature="818:840" placeholder="{...}" />
+            <marker date="1390309925255" expanded="true" signature="1114:1438" placeholder="{...}" />
+            <marker date="1390309925255" expanded="true" signature="1523:1535" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="23" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="272">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="12" selection-start="1372" selection-end="1372" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1105">
+          <folding>
+            <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="19" selection-start="5620" selection-end="5620" vertical-scroll-proportion="0.0" vertical-offset="2142" max-vertical-offset="5304">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="0" selection-start="372" selection-end="372" vertical-scroll-proportion="0.0" vertical-offset="19" max-vertical-offset="1394">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="1" selection-start="773" selection-end="773" vertical-scroll-proportion="0.0" vertical-offset="483" max-vertical-offset="1139">
+          <folding>
+            <marker date="1390309925255" expanded="true" signature="818:840" placeholder="{...}" />
+            <marker date="1390309925255" expanded="true" signature="1114:1438" placeholder="{...}" />
+            <marker date="1390309925255" expanded="true" signature="1523:1535" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="23" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="272">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/demo/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="27" selection-start="958" selection-end="973" vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="816">
+          <folding>
+            <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -765,7 +846,9 @@
     <entry file="file://$PROJECT_DIR$/demo/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="27" selection-start="958" selection-end="973" vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="816">
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -793,7 +876,9 @@
     <entry file="file://$PROJECT_DIR$/demo/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="102">
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -807,7 +892,9 @@
     <entry file="file://$PROJECT_DIR$/demo/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="102">
-          <folding />
+          <folding>
+            <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -927,20 +1014,6 @@
         <state line="3" column="7" selection-start="26" selection-end="26" vertical-scroll-proportion="0.061298076" vertical-offset="0" max-vertical-offset="832" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="36" selection-start="2788" selection-end="2788" vertical-scroll-proportion="0.4832536" vertical-offset="836" max-vertical-offset="3893">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/angularjs/angular.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="66" selection-start="1534" selection-end="1592" vertical-scroll-proportion="0.33333334" vertical-offset="403" max-vertical-offset="14399">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/jquery/jquery.d.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state line="975" column="4" selection-start="48042" selection-end="48042" vertical-scroll-proportion="1.0861244" vertical-offset="15673" max-vertical-offset="42568">
@@ -950,39 +1023,55 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="23" selection-start="70" selection-end="70" vertical-scroll-proportion="-1.9615384" vertical-offset="0" max-vertical-offset="272">
+        <state line="3" column="23" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="272">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d.ts/DefinitelyTyped/angularjs/angular.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="539" column="14" selection-start="21848" selection-end="21848" vertical-scroll-proportion="-0.06211937" vertical-offset="9163" max-vertical-offset="14399">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="196" column="0" selection-start="9270" selection-end="9270" vertical-scroll-proportion="1.1498173" vertical-offset="2388" max-vertical-offset="4624">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="1" selection-start="773" selection-end="773" vertical-scroll-proportion="0.0" vertical-offset="483" max-vertical-offset="1139">
+        <state line="8" column="1" selection-start="437" selection-end="437" vertical-scroll-proportion="0.0" vertical-offset="407" max-vertical-offset="1241">
           <folding>
-            <marker date="1389976214993" expanded="true" signature="715:737" placeholder="{...}" />
-            <marker date="1389976214993" expanded="true" signature="1059:1383" placeholder="{...}" />
-            <marker date="1389976214993" expanded="true" signature="1468:1480" placeholder="{...}" />
+            <marker date="1390309925255" expanded="true" signature="818:840" placeholder="{...}" />
+            <marker date="1390309925255" expanded="true" signature="1114:1438" placeholder="{...}" />
+            <marker date="1390309925255" expanded="true" signature="1523:1535" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/css/trNgGrid.less">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="372" selection-end="372" vertical-scroll-proportion="-3.8461537" vertical-offset="19" max-vertical-offset="1394">
+        <state line="59" column="45" selection-start="1159" selection-end="1159" vertical-scroll-proportion="-10.153846" vertical-offset="739" max-vertical-offset="1581">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/demo/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="12" selection-start="1372" selection-end="1372" vertical-scroll-proportion="-20.923077" vertical-offset="0" max-vertical-offset="1105">
-          <folding />
+        <state line="24" column="16" selection-start="1202" selection-end="1202" vertical-scroll-proportion="-15.692307" vertical-offset="0" max-vertical-offset="1173">
+          <folding>
+            <element signature="n#style#0;n#span#0;n#th#1;n#tr#0;n#thead#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/trNgGrid.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="19" selection-start="5620" selection-end="5620" vertical-scroll-proportion="1.2439024" vertical-offset="1071" max-vertical-offset="5304">
+        <state line="64" column="45" selection-start="2028" selection-end="2028" vertical-scroll-proportion="0.37393424" vertical-offset="781" max-vertical-offset="6698">
           <folding />
         </state>
       </provider>
