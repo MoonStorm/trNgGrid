@@ -1,6 +1,7 @@
 <html ng-app="demo">
 <head>
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/slate/bootstrap.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/slate/bootstrap.min.css" media="screen"/>
     <link rel="stylesheet" href="../src/css/trNgGrid.css" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
@@ -9,20 +10,55 @@
         (function(angular) {
             angular.module('demo', ['trNgGrid']);
         })(angular);
+        function randomstring(count, numbersOnly){
+            var s= '';
+            var charCodeA = "A".charCodeAt(0);
+            var charCodea = "a".charCodeAt(0);
+            var randomchar=function(numbersOnly){
+                var n= Math.floor(Math.random()*(numbersOnly?10:62));
+                if(n<10) return n; //1-10
+                if(n<36) return String.fromCharCode(n+charCodeA-10); //A-Z
+                return String.fromCharCode(n+charCodea-36); //a-z
+            }
+            while(s.length< count) s+= randomchar(numbersOnly);
+            return s;
+        }
+
+        function addNewRandomItem(items){
+            items.push({
+                id:randomstring(Math.floor(Math.random()*3), true),
+                name:randomstring(Math.floor(Math.random()*10)),
+                street:randomstring(2, true) + " " +randomstring(Math.floor(Math.random()*10)) + "ave"
+            });
+        }
 
         function testController($scope) {
             $scope.externalTestProp = "Externals should be usable";
+            $scope.
             $scope.searchText = "";
-            $scope.items = [{ id: 1, name: 'Bob', street: '1 street ave' }, { id: 2, name: 'Ana', street: '22 street ave' }];
-            $scope.addNew = function () {
-                console.log("adding new item");
-                $scope.items.push({ id: 10, name: 'Boby', street: '10 street ave' });
+            $scope.totalItems = 1000;
+            $scope.items = [];
+            $scope.currentPage = 0;
+
+            var generateItems = function(){
+                // generate n random items
+                for(var index=0;index<100;index++){
+                    addNewRandomItem($scope.items);
+                }
             };
-            /*$scope.toggleSorting = function(){
-                alert("hi");
-                return false;
-                //console.log("sorting clicked");
-            };*/
+            generateItems();
+            $scope.addNew = function () {
+                addNewRandomItem($scope.items);
+            };
+
+            debugger;
+            $scope.$watch("currentPage", function(newPage, oldPage){
+                if(newPage!==oldPage){
+                    debugger;
+                    $scope.items.splice(0);
+                    generateItems();
+                }
+            });
         }
     </script>
     <style>
@@ -33,27 +69,10 @@
 </head>
 
 <body ng-controller="testController">
-<table tr-ng-grid  model="items" filter-by="searchText" order-by="id" order-by-reverse="true" class="table table-stripped table-bordered table-hover">
-    <thead>
-        <tr>
-            <th tr-ng-grid-column field-name="id" cell-width="10em"></th>
-            <th tr-ng-grid-column field-name="name">Name <span tr-ng-grid-column-sort style="background-color:aquamarine"/></th>
-            <th>Hi there {{externalTestProp}}</th>
-        </tr>
-    </thead>
-     <!--Test 2: sorting-->
-<!--
-    <thead>
-        <tr>
-            <td tr-ng-grid-column="{model: 'id'}">Id<span tr-ng-grid-column-sort/></td>
-            <td tr-ng-grid-column="{model: 'name'}">Name</td>
-            <td tr-ng-grid-column="{model: 'street'}"></td>
-        </tr>
-    </thead>
--->
+<table tr-ng-grid='{items:items, filterBy:searchText, orderBy:"id", orderByReverse:true, pageItems:30, totalItems:totalItems, currentPage:currentPage}'>
     <tbody>
         <tr>
-            <td ng-click="toggleSorting()">Unused: {{searchText}} {{externalTestProp}}</td>
+            <td>Unused:</td>
         </tr>
     </tbody>
 </table>
