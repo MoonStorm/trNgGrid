@@ -66,6 +66,10 @@ module TrNgGrid{
         gridColumnDefs:Array<IGridColumnOptions>;
     }
 
+    interface IGridScope extends IGridOptions, ng.IScope{
+
+    }
+
     interface IGridColumnScope extends ng.IScope{
         currentGridColumnDef:IGridColumnOptions;
         gridOptions:IGridOptions;
@@ -87,38 +91,32 @@ module TrNgGrid{
         pageCanGoForward:boolean;
     }
 
-    var splitByCamelCasing = (input:string) => {
-        var splitInput = input.split(/(?=[A-Z])/);
-        if(splitInput.length && splitInput[0].length){
-            splitInput[0] = splitInput[0][0].toLocaleUpperCase()+splitInput[0].substr(1);
-        }
-
-        return splitInput.join(" ");
-    };
-
     class GridController{
         public externalScope:ng.IScope;
         public gridOptions:IGridOptions;
         private gridElement:JQuery;
 
-        constructor($scope:ng.IScope, $element:JQuery, $attrs:ng.IAttributes, $transclude:ng.ITranscludeFunction){
+        constructor($scope:IGridScope, $element:JQuery, $attrs:ng.IAttributes, $transclude:ng.ITranscludeFunction, private $parse:ng.IParseService){
             this.gridElement = $element;
-            this.gridOptions = $scope[tableDirective];
-            if(!this.gridOptions.filterByFields){
-                this.gridOptions.filterByFields= {};
-            }
-            if(!this.gridOptions.selectedItems){
-                this.gridOptions.selectedItems = [];
-            }
-            if(!this.gridOptions.currentPage){
-                this.gridOptions.currentPage = 0;
-            }
-            if(!this.gridOptions.pageItems){
-                this.gridOptions.pageItems = 0;
-            }
+            var scopeOptionsIdentifier = "gridOptions";
 
-            this.gridOptions.gridColumnDefs = new Array<IGridColumnOptions>();
+            // initialise the options
+            this.gridOptions = <IGridOptions>{
+                items:[],
+                selectedItems:[],
+                filterBy:null,
+                filterByFields:{},
+                orderBy:null,
+                orderByReverse:false,
+                pageItems:null,
+                currentPage:0,
+                totalItems:null
+            };
+            this.gridOptions.gridColumnDefs = [];
+            $scope[scopeOptionsIdentifier] = this.gridOptions;
+
             this.externalScope = $scope.$parent;
+            this.linkScope($scope, scopeOptionsIdentifier, $attrs);
         }
 
         setColumnOptions(columnIndex:number, columnOptions:IGridColumnOptions){
@@ -169,20 +167,78 @@ module TrNgGrid{
                 this.gridOptions.selectedItems.push(item);
             }
         }
-    };
+
+        linkScope(scope:ng.IScope, scopeTargetIdentifier:string, attrs:ng.IAttributes){
+            // this method shouldn't even be here
+            // but it is because we want to allow people to either set attributes with either a constant or a watchable variable
+
+            // watch for a resolution to issue #5951 on angular
+            // https://github.com/angular/angular.js/issues/5951
+
+            var target = scope[scopeTargetIdentifier];
+
+            for(var propName in target){
+                var attributeExists = typeof(attrs[propName])!="undefined" && attrs[propName]!=null;
+
+                if(attributeExists){
+                    // initialise from the scope first
+                    if(typeof(scope[propName])!="undefined" && scope[propName]!=null)
+                        target[propName] = scope[propName];
+
+                    var compiledAttr = this.$parse(attrs[propName]);
+                    var dualDataBindingPossible = compiledAttr && compiledAttr.assign; // very fragile, replace it as soon as possible
+                    if(dualDataBindingPossible){
+                        ((propName:string)=>
+                        {
+                            // set up one of the bindings
+                            scope.$watch(scopeTargetIdentifier+"."+propName, (newValue:any, oldValue:any)=>{
+                                if(newValue!==oldValue){
+                                        scope[propName] = target[propName];
+                                }
+                            });
+
+                            // set up the other one
+                            scope.$watch(propName, (newValue:any, oldValue:any)=>{
+                                if(newValue!==oldValue){
+                                    target[propName] = scope[propName];
+                                }
+                            });
+                        })(propName);
+                    }
+                }
+            }
+        }
+
+        splitByCamelCasing(input:string) {
+            var splitInput = input.split(/(?=[A-Z])/);
+            if(splitInput.length && splitInput[0].length){
+                splitInput[0] = splitInput[0][0].toLocaleUpperCase()+splitInput[0].substr(1);
+            }
+
+            return splitInput.join(" ");
+        }
+    }
+
 
     angular.module("trNgGrid", [])
         .directive(tableDirective, [function () {
-                var isolatedScope = {};
-                isolatedScope[tableDirective]="=";
-
                 return {
                     restrict: 'A',
                     // create an isolated scope, and remember the original scope can be found in the parent
-                    scope: isolatedScope,
+                    scope: {
+                        items:'=',
+                        selectedItems:'=?',
+                        filterBy:'=?',
+                        filterByFields:'=?',
+                        orderBy:'=?',
+                        orderByReverse:'=?',
+                        pageItems:'=?',
+                        currentPage:'=?',
+                        totalItems:'=?'
+                    },
                     // executed prior to pre-linking phase but after compilation
                     // as we're creating an isolated scope, we need something to link them
-                    controller: ["$scope", "$element", "$attrs", "$transclude", GridController],
+                    controller: ["$scope", "$element", "$attrs", "$transclude","$parse", GridController],
                     // dom manipulation in the compile stage
                     compile: function(templateElement: JQuery, tAttrs: Object) {
                         templateElement.addClass(tableCssClass);
@@ -335,7 +391,7 @@ module TrNgGrid{
                                         var cellContentsElement = $("<div>").addClass(cellCssClass);
 
                                         // the column title was not specified, attempt to include it and recompile
-                                        $("<span>").addClass(titleCssClass).text(splitByCamelCasing(scope.currentGridColumnDef.fieldName)).appendTo(cellContentsElement);
+                                        $("<span>").addClass(titleCssClass).text(controller.splitByCamelCasing(scope.currentGridColumnDef.fieldName)).appendTo(cellContentsElement);
 
                                         if(!scope.currentGridColumnDef.disableSorting){
                                             $("<span>").attr(sortDirectiveAttribute,"").appendTo(cellContentsElement);
@@ -471,6 +527,15 @@ module TrNgGrid{
         ])
         .directive(pagerDirective,[
             function(){
+                var setupScope = (scope:IGridFooterScope, controller:GridController)=>{
+                    scope.gridOptions = controller.gridOptions;
+                    scope.isPaged = !!scope.gridOptions.pageItems && !!scope.gridOptions.totalItems;
+                    scope.startItemIndex = scope.gridOptions.pageItems*scope.gridOptions.currentPage;
+                    scope.endItemIndex = scope.startItemIndex + (scope.gridOptions.items?scope.gridOptions.items.length:0);
+                    scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage>0;
+                    scope.pageCanGoForward = scope.isPaged && scope.endItemIndex<scope.gridOptions.totalItems;
+                };
+
                 return {
                     restrict :'A',
                     scope:true,
@@ -480,19 +545,19 @@ module TrNgGrid{
                         '<p class="navbar-text navbar-left" style="white-space: nowrap;">{{startItemIndex}}  - {{endItemIndex}}' +
                             '<span ng-show="isPaged"> out of {{gridOptions.totalItems}} </span>' +
                             ' items displayed' +
-                            ' (page {{gridOptions.currentPage}})'+
+                            //' (page {{gridOptions.currentPage}})'+
                         '</p>' +
                         '<button ng-show="pageCanGoForward" ng-click="gridOptions.currentPage=gridOptions.currentPage+1" type="button" class="btn btn-default navbar-btn navbar-left">Next Page</button>' +
                         '</div>',
                     replace:true,
                     link:{
                         pre: function (scope: IGridFooterScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController) {
-                            scope.gridOptions = controller.gridOptions;
-                            scope.isPaged = !!scope.gridOptions.pageItems && !!scope.gridOptions.totalItems;
-                            scope.startItemIndex = scope.gridOptions.pageItems*scope.gridOptions.currentPage;
-                            scope.endItemIndex = scope.startItemIndex + (scope.gridOptions.items?scope.gridOptions.items.length:0);
-                            scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage>0;
-                            scope.pageCanGoForward = scope.isPaged && scope.endItemIndex<scope.gridOptions.totalItems;
+                            setupScope(scope, controller);
+                            scope.$watch("gridOptions.currentPage", (newValue:number, oldValue:number)=>{
+                               if(newValue!==oldValue){
+                                   setupScope(scope, controller);
+                               }
+                            });
                         }
                     }
                 };

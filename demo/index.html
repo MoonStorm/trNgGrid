@@ -34,15 +34,14 @@
 
         function testController($scope) {
             $scope.externalTestProp = "Externals should be usable";
-            $scope.
-            $scope.searchText = "";
             $scope.totalItems = 1000;
             $scope.items = [];
             $scope.currentPage = 0;
+            $scope.pageItems=100;
 
             var generateItems = function(){
                 // generate n random items
-                for(var index=0;index<100;index++){
+                for(var index=0;index<$scope.pageItems;index++){
                     addNewRandomItem($scope.items);
                 }
             };
@@ -51,10 +50,8 @@
                 addNewRandomItem($scope.items);
             };
 
-            debugger;
             $scope.$watch("currentPage", function(newPage, oldPage){
                 if(newPage!==oldPage){
-                    debugger;
                     $scope.items.splice(0);
                     generateItems();
                 }
@@ -69,12 +66,7 @@
 </head>
 
 <body ng-controller="testController">
-<table tr-ng-grid='{items:items, filterBy:searchText, orderBy:"id", orderByReverse:true, pageItems:30, totalItems:totalItems, currentPage:currentPage}'>
-    <tbody>
-        <tr>
-            <td>Unused:</td>
-        </tr>
-    </tbody>
+<table tr-ng-grid items="items" filter-by="searchText" order-by="'id'" order-by-reverse="true" page-items="pageItems" total-items="totalItems" current-page="currentPage">
 </table>
 <input ng-model="searchText">
 <button ng-click="addNew()">Add New</button>
