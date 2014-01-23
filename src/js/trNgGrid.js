@@ -1,6 +1,3 @@
-/**
-* Created by dcristiu on 13/01/14.
-*/
 /// <reference path="../../d.ts/DefinitelyTyped/jquery/jquery.d.ts"/>
 /// <reference path="../../d.ts/DefinitelyTyped/angularjs/angular.d.ts"/>
 var TrNgGrid;

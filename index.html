@@ -1,0 +1,32 @@
+<html ng-app="trNgGridDemo">
+    <head>
+        <title>trNgGrid</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/slate/bootstrap.min.css" media="screen"/>
+        <link rel="stylesheet" href="src/css/trNgGrid.css" />
+        <link rel="stylesheet" href="demo/css/index.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.js"></script>
+        <script src="src/js/trNgGrid.js"></script>
+        <script src="demo/js/index.js"></script>
+    </head>
+
+    <body>
+        <div class="navbar navbar-default" role="navigation">
+            <div class="navbar-header">
+                <span class="navbar-brand">trNgGrid</span>
+            </div>
+
+            <div class="navbar-collapse collapse navbar-responsive-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#/Common">Simple Usage</a></li>
+                    <li><a href="#/Detailed">Detailed Usage</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div ng-view class="col-md-12"></div>
+    </body>
+</html>
