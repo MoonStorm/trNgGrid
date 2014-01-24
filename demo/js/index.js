@@ -4,13 +4,19 @@ var TrNgGridDemo;
 (function (TrNgGridDemo) {
     var TestController = (function () {
         function TestController($scope) {
+            var _this = this;
             $scope.externalTestProp = "Externals should be visible";
             $scope.totalItems = 1000;
             $scope.items = [];
             $scope.currentPage = 0;
-            $scope.pageItems = 100;
+            $scope.pageItems = 10;
+            $scope.generateItems = function (pageItems, totalItems) {
+                $scope.pageItems = pageItems;
+                $scope.totalItems = totalItems ? totalItems : $scope.pageItems;
+                $scope.totalItems = totalItems;
+                _this.generateItems($scope.items, $scope.pageItems);
+            };
 
-            this.generateItems($scope.items, $scope.pageItems);
             $scope.addNew = function () {
                 this.addNewRandomItem($scope.items);
             };
@@ -63,6 +69,9 @@ var TrNgGridDemo;
             });
             $routeProvider.when('/Detailed', {
                 templateUrl: 'demo/html/detailed.html'
+            });
+            $routeProvider.when('/ColumnPicker', {
+                templateUrl: 'demo/html/columns.html'
             });
             // configure html5 to get links working on jsfiddle
             //$locationProvider.html5Mode(true);

@@ -10,6 +10,7 @@ module TrNgGridDemo{
         pageItems:number;
 
         addNew:()=>void;
+        generateItems:(pageItems:number, totalItems?:number)=>void;
     }
 
     export class TestController{
@@ -18,9 +19,14 @@ module TrNgGridDemo{
             $scope.totalItems = 1000;
             $scope.items = [];
             $scope.currentPage = 0;
-            $scope.pageItems=100;
+            $scope.pageItems=10;
+            $scope.generateItems = (pageItems:number, totalItems?:number) => {
+                $scope.pageItems = pageItems;
+                $scope.totalItems = totalItems?totalItems:$scope.pageItems;
+                $scope.totalItems=totalItems;
+                this.generateItems($scope.items, $scope.pageItems);
+            };
 
-            this.generateItems($scope.items, $scope.pageItems);
             $scope.addNew = function () {
                 this.addNewRandomItem($scope.items);
             };
@@ -71,6 +77,9 @@ module TrNgGridDemo{
             });
             $routeProvider.when('/Detailed', {
                 templateUrl: 'demo/html/detailed.html'
+            });
+            $routeProvider.when('/ColumnPicker', {
+                templateUrl: 'demo/html/columns.html'
             });
 
             // configure html5 to get links working on jsfiddle

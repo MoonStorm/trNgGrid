@@ -44,14 +44,14 @@
   /*down arrow - inactive default*/
   border-left: 0.5em solid transparent;
   border-right: 0.5em solid transparent;
-  border-top: 0.5em solid darkgrey;
+  border-top: 0.5em solid #a1bfc6;
   border-bottom: none;
 }
 .tr-ng-grid .tr-ng-sort .tr-ng-sort-active {
   /*down arrow - active default*/
   border-left: 0.5em solid transparent;
   border-right: 0.5em solid transparent;
-  border-top: 0.5em solid black;
+  border-top: 0.5em solid #486080;
   border-bottom: none;
 }
 .tr-ng-grid .tr-ng-sort .tr-ng-sort-active.tr-ng-sort-reverse {

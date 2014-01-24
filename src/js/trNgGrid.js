@@ -32,7 +32,7 @@ var TrNgGrid;
     var tableCssClass = "tr-ng-grid table table-bordered table-hover";
     var cellCssClass = "tr-ng-cell";
     var titleCssClass = "tr-ng-title";
-    var sortCssClass = "tr-ng-sort btn btn-primary";
+    var sortCssClass = "tr-ng-sort btn btn-default";
     var filterColumnCssClass = "tr-ng-column-filter";
     var sortActiveCssClass = "tr-ng-sort-active";
     var sortInactiveCssClass = "tr-ng-sort-inactive";

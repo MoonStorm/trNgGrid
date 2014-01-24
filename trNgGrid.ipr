@@ -232,28 +232,23 @@
     <library name="Generated files" type="javaScript">
       <properties>
         <sourceFilesUrls>
-          <item url="file://$PROJECT_DIR$/demo.js" />
           <item url="file://$PROJECT_DIR$/src/js/trNgGrid.js" />
+          <item url="file://$PROJECT_DIR$/node_modules/tsd/src/Util/ANSIFormat.js" />
+          <item url="file://$PROJECT_DIR$/node_modules/tsd/tools/estractRepository.js" />
+          <item url="file://$PROJECT_DIR$/demo/js/index.js" />
         </sourceFilesUrls>
       </properties>
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/node_modules/tsd/tools/estractRepository.js" />
-        <root url="file://$PROJECT_DIR$/node_modules/tsd/src/Util/ANSIFormat.js" />
-        <root url="file://$PROJECT_DIR$/demo/js/index.js" />
         <root url="file://$PROJECT_DIR$/src/js/trNgGrid.js" />
+        <root url="file://$PROJECT_DIR$/node_modules/tsd/src/Util/ANSIFormat.js" />
+        <root url="file://$PROJECT_DIR$/node_modules/tsd/tools/estractRepository.js" />
+        <root url="file://$PROJECT_DIR$/demo/js/index.js" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Node.js Dependencies for trNgGrid" type="javaScript">
-      <properties>
-        <sourceFilesUrls>
-          <item url="file://$PROJECT_DIR$/node_modules" />
-        </sourceFilesUrls>
-      </properties>
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/node_modules" />
-      </CLASSES>
+      <CLASSES />
       <JAVADOC />
       <SOURCES />
     </library>
