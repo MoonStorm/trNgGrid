@@ -1,0 +1,25 @@
+<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(10)">
+    <div class="col-md-3 well">
+        <p>
+            Pick the columns you wish to display.
+        </p>
+        <pre class="well well-sm text-info">
+            &lt;table tr-ng-grid items="items"&gt;<br/>
+            &nbsp;&nbsp;&lt;thead&gt;
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th tr-ng-grid-column field-name="id"/>&gt;
+            &nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;
+            &nbsp;&nbsp;&lt;/thead&gt;
+            &lt;/table&gt;
+        </pre>
+    </div>
+    <div class="col-md-9 well">
+        <table tr-ng-grid items="items">
+            <thead>
+                <tr>
+                    <th tr-ng-grid-column field-name="id"/>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
