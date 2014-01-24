@@ -1,14 +1,15 @@
 <html ng-app="trNgGridDemo">
-    <head>
+    <head ng-init="theme='slate'">
         <title>trNgGrid</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/slate/bootstrap.min.css" media="screen"/>
+        <link rel="stylesheet" ng-href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/{{theme}}{{theme?'/':''}}bootstrap.min.css"/>
         <link rel="stylesheet" href="src/css/trNgGrid.css" />
         <link rel="stylesheet" href="demo/css/index.css" />
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.js"></script>
         <script src="src/js/trNgGrid.js"></script>
         <script src="demo/js/index.js"></script>
     </head>
@@ -16,14 +17,36 @@
     <body>
         <div class="navbar navbar-default" role="navigation">
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main_navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <span class="navbar-brand">trNgGrid</span>
             </div>
 
-            <div class="navbar-collapse collapse navbar-responsive-collapse">
+            <div class="collapse navbar-collapse" id="main_navbar">
                 <ul class="nav navbar-nav">
-                    <li><a href="#/Common">Simple Usage</a></li>
-                    <li><a href="#/ColumnPicker">Customizing columns</a></li>
-                    <li><a href="#/Detailed">Detailed Usage</a></li>
+                    <li><a href="#/Common">Plug & Play</a></li>
+                    <li><a href="#/ColumnPicker">Basic Column Definitions</a></li>
+                    <li><a href="#/Paging">Paging / Selections</a></li>
+                    <li><a href="#/ServerSide">Server Side Queries</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="//github.com/MoonStorm/trNgGrid" target="_blank">Source & Download</a></li>
+                    <li class="dropdown"> <!--onclick="$(this).toggleClass('open'); return false;"-->
+                        <a class="dropdown-toggle" href="" data-toggle="dropdown">Bootswatch theme <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li ng-click="theme='slate'"><a href="">Slate</a></li>
+                            <li ng-click="theme='amelia'"><a href="">Amelia</a></li>
+                            <li ng-click="theme='cerulean'"><a href="">Cerulean</a></li>
+                            <li ng-click="theme='cosmo'"><a href="">Cosmo</a></li>
+                            <li ng-click="theme='slate'"><a href="">Slate</a></li>
+                            <li class="divider"></li>
+                            <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

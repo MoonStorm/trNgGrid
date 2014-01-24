@@ -81,6 +81,7 @@ module TrNgGrid{
     interface IGridFooterScope extends ng.IScope{
         gridOptions:IGridOptions;
         isPaged:boolean;
+        totalItemsCount:number;
         startItemIndex:number;
         endItemIndex:number;
         pageCanGoBack:boolean;
@@ -89,11 +90,16 @@ module TrNgGrid{
 
     class GridController{
         public externalScope:ng.IScope;
+        public internalScope:ng.IScope;
         public gridOptions:IGridOptions;
         private gridElement:JQuery;
+        private scheduledRecompilationDereg:Function;
 
-        constructor($scope:IGridScope, $element:JQuery, $attrs:ng.IAttributes, $transclude:ng.ITranscludeFunction, private $parse:ng.IParseService){
+        constructor(private $compile:ng.ICompileService, $scope:IGridScope, $element:JQuery, $attrs:ng.IAttributes, $transclude:ng.ITranscludeFunction, private $parse:ng.IParseService){
             this.gridElement = $element;
+            this.internalScope = $scope;
+            this.scheduledRecompilationDereg = null;
+
             var scopeOptionsIdentifier = "gridOptions";
 
             // initialise the options
@@ -111,8 +117,8 @@ module TrNgGrid{
             this.gridOptions.gridColumnDefs = [];
             $scope[scopeOptionsIdentifier] = this.gridOptions;
 
-            this.externalScope = $scope.$parent;
-            this.linkScope($scope, scopeOptionsIdentifier, $attrs);
+            this.externalScope = this.internalScope.$parent;
+            this.linkScope(this.internalScope, scopeOptionsIdentifier, $attrs);
         }
 
         setColumnOptions(columnIndex:number, columnOptions:IGridColumnOptions){
@@ -164,6 +170,19 @@ module TrNgGrid{
             }
         }
 
+        scheduleRecompilationOnAvailableItems(){
+            if(this.scheduledRecompilationDereg || (this.gridOptions.items && this.gridOptions.items.length))
+                // already have one set up
+                return;
+
+            this.scheduledRecompilationDereg = this.internalScope.$watch("items.length", (newLength:number, oldLength:number)=>{
+               if(newLength>0){
+                   this.scheduledRecompilationDereg();
+                   this.$compile(this.gridElement)(this.externalScope);
+               }
+            });
+        }
+
         linkScope(scope:ng.IScope, scopeTargetIdentifier:string, attrs:ng.IAttributes){
             // this method shouldn't even be here
             // but it is because we want to allow people to either set attributes with either a constant or a watchable variable
@@ -177,29 +196,35 @@ module TrNgGrid{
                 var attributeExists = typeof(attrs[propName])!="undefined" && attrs[propName]!=null;
 
                 if(attributeExists){
+                    var isArray = false;
+
                     // initialise from the scope first
-                    if(typeof(scope[propName])!="undefined" && scope[propName]!=null)
+                    if(typeof(scope[propName])!="undefined" && scope[propName]!=null){
                         target[propName] = scope[propName];
+                        isArray=target[propName] instanceof Array;
+                    }
 
-                    var compiledAttr = this.$parse(attrs[propName]);
-                    var dualDataBindingPossible = compiledAttr && compiledAttr.assign; // very fragile, replace it as soon as possible
-                    if(dualDataBindingPossible){
-                        ((propName:string)=>
-                        {
-                            // set up one of the bindings
-                            scope.$watch(scopeTargetIdentifier+"."+propName, (newValue:any, oldValue:any)=>{
-                                if(newValue!==oldValue){
-                                        scope[propName] = target[propName];
-                                }
-                            });
+                    if(!isArray){
+                        var compiledAttr = this.$parse(attrs[propName]);
+                        var dualDataBindingPossible = typeof(compiledAttr)!="array" && compiledAttr && compiledAttr.assign; // very fragile, replace it as soon as possible
+                        if(dualDataBindingPossible){
+                            ((propName:string)=>
+                            {
+                                // set up one of the bindings
+                                scope.$watch(scopeTargetIdentifier+"."+propName, (newValue:any, oldValue:any)=>{
+                                    if(newValue!==oldValue){
+                                            scope[propName] = target[propName];
+                                    }
+                                });
 
-                            // set up the other one
-                            scope.$watch(propName, (newValue:any, oldValue:any)=>{
-                                if(newValue!==oldValue){
-                                    target[propName] = scope[propName];
-                                }
-                            });
-                        })(propName);
+                                // set up the other one
+                                scope.$watch(propName, (newValue:any, oldValue:any)=>{
+                                    if(newValue!==oldValue){
+                                        target[propName] = scope[propName];
+                                    }
+                                });
+                            })(propName);
+                        }
                     }
                 }
             }
@@ -234,7 +259,7 @@ module TrNgGrid{
                     },
                     // executed prior to pre-linking phase but after compilation
                     // as we're creating an isolated scope, we need something to link them
-                    controller: ["$scope", "$element", "$attrs", "$transclude","$parse", GridController],
+                    controller: ["$compile", "$scope", "$element", "$attrs", "$transclude","$parse", GridController],
                     // dom manipulation in the compile stage
                     compile: function(templateElement: JQuery, tAttrs: Object) {
                         templateElement.addClass(tableCssClass);
@@ -315,14 +340,18 @@ module TrNgGrid{
                                     if(gridController.gridOptions.items && gridController.gridOptions.items.length>0){
                                         // no columns defined for the header, attempt to identify the properties and populate the columns definition
                                         for(var propName in gridController.gridOptions.items[0]){
-                                            // create the th definition and add the column directive, serialised
-                                            var headerCellElement = $("<th>").attr(columnDirectiveAttribute, "").attr("field-name", propName).appendTo(instanceElement);
-                                            $compile(headerCellElement)(scope);
+                                            // exclude the library properties
+                                            if(!propName.match(/^[_\$]/g)){
+                                                // create the th definition and add the column directive, serialised
+                                                var headerCellElement = $("<th>").attr(columnDirectiveAttribute, "").attr("field-name", propName).appendTo(instanceElement);
+                                                $compile(headerCellElement)(scope);
+                                            }
                                         }
                                     }
                                     else
                                     {
-                                        // TODO: watch for items to arrive and re-run the compilation
+                                        // watch for items to arrive and re-run the compilation then
+                                        gridController.scheduleRecompilationOnAvailableItems();
                                     }
                                 }
                             }
@@ -437,6 +466,26 @@ module TrNgGrid{
                 };
             }
         ])
+        .filter("paging", ()=>{
+            return (input:Array<any>, currentPage?:number, pageItems?:number)=>{
+                if(!pageItems || !input || input.length==0)
+                    return input;
+
+                if(!currentPage){
+                    currentPage = 0;
+                }
+
+                var startIndex = currentPage*pageItems;
+                var endIndex = currentPage*pageItems+pageItems;
+
+                if(startIndex>=input.length){
+                    // server side paging, ignore the operation
+                    return input;
+                }
+
+                return input.slice(startIndex, endIndex);
+            };
+        })
         .directive(bodyDirective,[ "$compile",
             function($compile:ng.ICompileService){
                 var originalBodyTemplateKey = "trNgOriginalBodyTemplate";
@@ -459,7 +508,7 @@ module TrNgGrid{
 
                                 // find the body row template, which was initially excluded from the compilation
                                 // apply the ng-repeat
-                                bodyTemplateRow.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse");
+                                bodyTemplateRow.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | paging:gridOptions.currentPage:gridOptions.pageItems");
                                 if(!bodyTemplateRow.attr("ng-click")){
                                     bodyTemplateRow.attr("ng-click", "toggleItemSelection(gridItem)");
                                 }
@@ -525,11 +574,24 @@ module TrNgGrid{
             function(){
                 var setupScope = (scope:IGridFooterScope, controller:GridController)=>{
                     scope.gridOptions = controller.gridOptions;
-                    scope.isPaged = !!scope.gridOptions.pageItems && !!scope.gridOptions.totalItems;
-                    scope.startItemIndex = scope.gridOptions.pageItems*scope.gridOptions.currentPage;
-                    scope.endItemIndex = scope.startItemIndex + (scope.gridOptions.items?scope.gridOptions.items.length:0);
+                    scope.isPaged = !!scope.gridOptions.pageItems;
+
+                    // do not set scope.gridOptions.totalItems, it might be set from the outside
+                    scope.totalItemsCount = (typeof(scope.gridOptions.totalItems)!="undefined" && scope.gridOptions.totalItems!=null)
+                        ?scope.gridOptions.totalItems
+                        :(scope.gridOptions.items?scope.gridOptions.items.length:0);
+
+                    scope.startItemIndex = scope.isPaged?(scope.gridOptions.pageItems*scope.gridOptions.currentPage):0;
+                    scope.endItemIndex = scope.isPaged?(scope.startItemIndex + scope.gridOptions.pageItems-1):scope.totalItemsCount-1;
+                    if(scope.endItemIndex>=scope.totalItemsCount){
+                        scope.endItemIndex=scope.totalItemsCount-1;
+                    }
+                    if(scope.endItemIndex<scope.startItemIndex){
+                        scope.endItemIndex = scope.startItemIndex;
+                    }
+
                     scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage>0;
-                    scope.pageCanGoForward = scope.isPaged && scope.endItemIndex<scope.gridOptions.totalItems;
+                    scope.pageCanGoForward = scope.isPaged && scope.endItemIndex<scope.totalItemsCount-1;
                 };
 
                 return {
@@ -538,9 +600,12 @@ module TrNgGrid{
                     require:'^'+tableDirective,
                     template: '<div class="navbar-left">' +
                         '<button ng-show="pageCanGoBack" ng-click="gridOptions.currentPage=gridOptions.currentPage-1" type="button" class="btn btn-default navbar-btn navbar-left">Prev Page</button>' +
-                        '<p class="navbar-text navbar-left" style="white-space: nowrap;">{{startItemIndex}}  - {{endItemIndex}}' +
-                            '<span ng-show="isPaged"> out of {{gridOptions.totalItems}} </span>' +
-                            ' items displayed' +
+                        '<p class="navbar-text navbar-left" style="white-space: nowrap;">' +
+                            '<span ng-hide="totalItemsCount">No items to display</span>' +
+                            '<span ng-show="totalItemsCount">' +
+                                '  {{startItemIndex+1}} - {{endItemIndex+1}} displayed' +
+                                '<span>, {{totalItemsCount}} in total</span>' +
+                            '</span>' +
                             //' (page {{gridOptions.currentPage}})'+
                         '</p>' +
                         '<button ng-show="pageCanGoForward" ng-click="gridOptions.currentPage=gridOptions.currentPage+1" type="button" class="btn btn-default navbar-btn navbar-left">Next Page</button>' +
@@ -549,7 +614,7 @@ module TrNgGrid{
                     link:{
                         pre: function (scope: IGridFooterScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController) {
                             setupScope(scope, controller);
-                            scope.$watch("gridOptions.currentPage", (newValue:number, oldValue:number)=>{
+                            scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", (newValue:number, oldValue:number)=>{
                                if(newValue!==oldValue){
                                    setupScope(scope, controller);
                                }

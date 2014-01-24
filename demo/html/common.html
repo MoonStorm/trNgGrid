@@ -1,22 +1,29 @@
 <div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(10)">
-    <div class="col-md-3 well">
-        <p>
-            The simplest form of using the grid is to assign the module 'trNgGrid' as a dependency to your module and then use the 'tr-ng-grid' directive on a table element.
-        </p>
-        <p>
-            Obviously you also need to pass in the array of items you wish to be listed in the grid,
-            and that is achieved by assigning the 'items' attribute to a property on the current scope that represents the array of items.
+    <div class="col-md-7">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Simple Usage
+            </div>
+            <div class="panel-body">
+                <p>
+                    The simplest form of using the grid is to assign the module <em>trNgGrid</em> as a dependency to your module and then use the <em>tr-ng-grid</em> directive on a table element.
+                </p>
+                <pre>angular.module("trNgGridDemo", ["trNgGrid"])</pre>
+                <p>
+                    Obviously you also need to pass in the array of items you wish to be listed in the grid,
+                    and that is achieved by assigning the <em>items</em> attribute to a property on the current scope that represents the array of items.
 
-            The array will get data bound so any change in the array will get automatically detected by the grid.
-        </p>
-        <p class="well well-sm text-info">
-            &lt;table tr-ng-grid items="items"&gt;
-            <br/>
-            &lt;/table&gt;
-        </p>
+                    The array will get data bound so any change in the array will get automatically detected by the grid.
+                </p>
+
+                <pre id="trNgGrid_Sample_Common">
+
+                </pre>
+                <p>
+                    Paging, global filtering and per-column filtering are active by default.
+                </p>
+            </div>
+        </div>
     </div>
-    <div class="col-md-9 well">
-        <table tr-ng-grid items="items">
-        </table>
-    </div>
+    <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Common"><table tr-ng-grid items="myItems"/></div>
 </div>

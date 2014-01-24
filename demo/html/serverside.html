@@ -1,0 +1,36 @@
+<div ng-controller="TrNgGridDemo.TestController" class="row">
+    <div class="col-md-7">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Server Side Data Queries
+            </div>
+            <div class="panel-body">
+                <p>
+                    The grid used two-way data binding for almost all the parameters.
+                    Hence it's very easy to detect when the grid requires you to refresh the data.
+                </p>
+                <pre id="trNgGrid_Sample_Server_Side">
+                </pre>
+                <pre>
+$scope.$watchCollection("[myGlobalFilter, myOrderBy, myOrderByReversed, myColumnFilter, myColumnFilter.id, myColumnFilter.name, myColumnFilter.address, myItemsCurrentPageIndex]",()=>{
+    //Fetch the items and store them in 'myItems'.
+    //Don't forget to set 'myItemsTotalCount'.
+    //The grid will take care of the rest.
+});
+                </pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Server_Side" ng-init="simulateServerSideQueries(10,100)">
+<table tr-ng-grid
+       items="myItems"
+       page-items="myPageItemsCount"
+       current-page="myItemsCurrentPageIndex"
+       total-items="myItemsTotalCount"
+       filter-by="myGlobalFilter"
+       filter-by-fields="myColumnFilter"
+       order-by="myOrderBy"
+       order-by-reversed="myOrderByReversed"
+/>
+    </div>
+</div>
