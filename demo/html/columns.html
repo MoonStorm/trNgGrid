@@ -1,0 +1,66 @@
+<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(4)">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Basic Column Definition
+                </div>
+                <div class="panel-body">
+                    <p>
+                        If you do not wish to display all the properties of the objects bound to the grid, you can define the databinding for each column.
+                        You also have the option of turning off sorting and filtering per column, plus setting up the width of the column, in any kind of measurement unit you wish.
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Columns_Simple_Definition">
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition">
+    <table tr-ng-grid items="myItems">
+        <thead>
+            <tr>
+                <th tr-ng-grid-column field-name="id" disable-filtering="true" disable-sorting="true" cell-width="3em"/>
+                <th tr-ng-grid-column field-name="name"/>
+            </tr>
+        </thead>
+    </table>
+        </div>
+    </div>
+    <div class="row">
+        <hr/>
+    </div>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Generic Columns
+                </div>
+                <div class="panel-body">
+                    <p>
+                        Extra columns can be added in the body, even without defining the header. Tapping into the currently bound row item can be done through the <em>gridItem</em> scope property.
+                        More examples that are covering this topic are available in the <em>templates</em> section.
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Columns_Extra">
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Extra">
+    <table tr-ng-grid items="myItems">
+        <tbody>
+            <tr>
+                <td>
+                    <button class="btn btn-default" ng-click="showMessage($event, 'Address of '+gridItem.name+' is '+gridItem.address)">
+                        Details
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+        </div>
+    </div>
+</div>
