@@ -7,7 +7,7 @@
             <div class="panel-body">
                 <p>
                     The grid used two-way data binding for almost all the parameters.
-                    Hence it's very easy to detect when the grid requires you to refresh the data.
+                    Hence it's possible to detect when the grid requires you to refresh the data.
                 </p>
                 <pre id="trNgGrid_Sample_Server_Side">
                 </pre>
@@ -18,6 +18,8 @@ $scope.$watchCollection("[myGlobalFilter, myOrderBy, myOrderByReversed, myColumn
     //The grid will take care of the rest.
 });
                 </pre>
+
+                <p class="text-danger">This is still not up to our simplicity standards. We're working on a better way to deal with it.</p>
             </div>
         </div>
     </div>

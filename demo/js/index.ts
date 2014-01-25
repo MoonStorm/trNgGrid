@@ -137,6 +137,9 @@ module TrNgGridDemo{
                 .when('/ServerSide', {
                     templateUrl: 'demo/html/serverside.html'
                 })
+                .when('/Templates', {
+                    templateUrl: 'demo/html/templates.html'
+                })
                 .otherwise({
                     templateUrl: 'demo/html/default.html'
                 });
