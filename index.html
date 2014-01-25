@@ -3,14 +3,24 @@
         <title>trNgGrid</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" ng-href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/{{theme}}{{theme?'/':''}}bootstrap.min.css"/>
-        <link rel="stylesheet" href="src/css/trNgGrid.css" />
         <link rel="stylesheet" href="demo/css/index.css" />
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+
+        <!--Debug-->
+        <!--<link rel="stylesheet" href="src/css/trNgGrid.css" />-->
+        <!--Release-->
+        <link rel="stylesheet" href="release/trNgGrid.min.css" />
+
+        <link rel="stylesheet" href="demo/css/index.css" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.js"></script>
-        <script src="src/js/trNgGrid.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
+
+        <!--Debug-->
+        <!--<script src="src/js/trNgGrid.js"></script>-->
+        <!--Release-->
+        <script src="release/trNgGrid.min.js"></script>
         <script src="demo/js/index.js"></script>
     </head>
 
@@ -42,7 +52,15 @@
                             <li ng-click="theme='amelia'"><a href="">Amelia</a></li>
                             <li ng-click="theme='cerulean'"><a href="">Cerulean</a></li>
                             <li ng-click="theme='cosmo'"><a href="">Cosmo</a></li>
+                            <li ng-click="theme='cyborg'"><a href="">Cyborg</a></li>
+                            <li ng-click="theme='flatly'"><a href="">Flatly</a></li>
+                            <li ng-click="theme='journal'"><a href="">Journal</a></li>
+                            <li ng-click="theme='readable'"><a href="">Readable</a></li>
+                            <li ng-click="theme='simplex'"><a href="">Simplex</a></li>
                             <li ng-click="theme='slate'"><a href="">Slate</a></li>
+                            <li ng-click="theme='spacelab'"><a href="">Spacelab</a></li>
+                            <li ng-click="theme='united'"><a href="">United</a></li>
+                            <li ng-click="theme='yeti'"><a href="">Yeti</a></li>
                             <li class="divider"></li>
                             <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
                         </ul>
