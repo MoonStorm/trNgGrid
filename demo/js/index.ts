@@ -13,8 +13,15 @@ module TrNgGridDemo{
         myColumnFilter:Object;
         myOrderBy:string;
         myOrderByReversed:boolean;
+        myEnableFiltering:boolean;
+        myEnableSorting:boolean;
+        myEnableSelections:boolean;
+        myEnableMultiRowSelections:boolean;
+
+        requestedItemsGridOptions:Object;
 
         addNew:()=>void;
+        onServerSideItemsRequested:(currentPage:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>void;
         generateItems:(pageItems:number, totalItems?:number)=>void;
         showMessage:(event:ng.IAngularEvent, msg:string) => void;
         simulateServerSideQueries:(pageItems:number, totalItems?:number)=>void;
@@ -27,7 +34,7 @@ module TrNgGridDemo{
     }
 
     export class TestController{
-        constructor(private $scope:ITestControllerScope, $window:ng.IWindowService){
+        constructor(private $scope:ITestControllerScope, $window:ng.IWindowService, $timeout:ng.ITimeoutService){
             $scope.externalTestProp = "Externals should be visible";
             $scope.myGlobalFilter="";
             $scope.myOrderBy="";
@@ -38,6 +45,10 @@ module TrNgGridDemo{
             $scope.myItems = [];
             $scope.myItemsCurrentPageIndex = 0;
             $scope.myPageItemsCount=10;
+            $scope.myEnableFiltering = true;
+            $scope.myEnableSorting = true;
+            $scope.myEnableSelections = true;
+            $scope.myEnableMultiRowSelections = true;
             $scope.generateItems = (pageItems:number, totalItems?:number) => {
                 $scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
@@ -46,6 +57,29 @@ module TrNgGridDemo{
                 //$scope.mySelectedItems=$scope.myItems.slice(0);
             };
 
+            var prevServerItemsRequestedCallbackPromise:ng.IPromise<any>;
+            $scope.onServerSideItemsRequested = (currentPage:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>{
+                if(prevServerItemsRequestedCallbackPromise){
+                    $timeout.cancel(prevServerItemsRequestedCallbackPromise);
+                    prevServerItemsRequestedCallbackPromise = null;
+                }
+                $scope.requestedItemsGridOptions = {
+                    currentPage:currentPage,
+                    filterBy:filterBy,
+                    filterByFields: angular.toJson(filterByFields),
+                    orderBy:orderBy,
+                    orderByReverse:orderByReverse,
+                    requestTrapped:true
+                };
+
+                $scope.generateItems(10,100);
+                prevServerItemsRequestedCallbackPromise = $timeout(()=>{
+                    $scope.requestedItemsGridOptions["requestTrapped"] = false;
+                    prevServerItemsRequestedCallbackPromise = null;
+                }, 3000, true);
+            };
+
+/*
             $scope.simulateServerSideQueries=(pageItems:number, totalItems?:number)=>{
               //$window.alert(pageItems.toString()+"/"+totalItems);
               $scope.myPageItemsCount = pageItems;
@@ -53,6 +87,7 @@ module TrNgGridDemo{
                   $scope.generateItems(pageItems, totalItems);
               });
             };
+*/
 
             $scope.addNew = () => {
                 this.addNewRandomItem($scope.myItems);
@@ -140,6 +175,9 @@ module TrNgGridDemo{
                 .when('/Templates', {
                     templateUrl: 'demo/html/templates.html'
                 })
+                .when('/Detailed', {
+                    templateUrl: 'demo/html/detailed.html'
+                })
                 .otherwise({
                     templateUrl: 'demo/html/default.html'
                 });
@@ -160,7 +198,7 @@ module TrNgGridDemo{
                             .replace(/</g, "&lt;")
                             .replace(/>/g, "&gt;")
                             .replace(/"/g, "&quot;")
-                            .replace(/ /g, "&nbsp;");
+                            .replace(/  /g, "&nbsp;&nbsp;");
                         $(projectionElementId).html(currentElementContents);
                     }
                 };

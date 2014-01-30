@@ -1,4 +1,4 @@
-<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(4)">
+<div class="row">
     <div class="row">
         <div class="col-md-7">
             <div class="panel panel-primary">
@@ -17,11 +17,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition">
+        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(4)">
 <table tr-ng-grid items="myItems">
     <thead>
         <tr>
-            <th tr-ng-grid-column field-name="id" disable-filtering="true" disable-sorting="true" cell-width="3em"/>
+            <th tr-ng-grid-column field-name="id" enable-filtering="false" enable-sorting="false" cell-width="3em"/>
             <th tr-ng-grid-column field-name="name"/>
         </tr>
     </thead>
@@ -49,13 +49,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Extra">
+        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Extra" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(4)">
 <table tr-ng-grid items="myItems">
     <tbody>
         <tr>
             <td>
-                <button class="btn btn-default" ng-click="showMessage($event, 'Address of '+gridItem.name+' is '+gridItem.address)">
-                    Details
+                <button class="btn btn-default" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
+                    Remove
                 </button>
             </td>
         </tr>

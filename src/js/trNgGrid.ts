@@ -1,4 +1,5 @@
 /// <reference path="../../d.ts/DefinitelyTyped/jquery/jquery.d.ts"/>
+/// <reference path="../../d.ts/DefinitelyTyped/jquery/jquery.d.ts"/>
 /// <reference path="../../d.ts/DefinitelyTyped/angularjs/angular.d.ts"/>
 
 module TrNgGrid{
@@ -43,8 +44,8 @@ module TrNgGrid{
 
     interface IGridColumnOptions{
         fieldName:string;
-        disableSorting:boolean;
-        disableFiltering:boolean;
+        enableSorting:boolean;
+        enableFiltering:boolean;
         cellWidth:string;
         cellHeight:string;
     }
@@ -59,6 +60,12 @@ module TrNgGrid{
         pageItems:number;
         currentPage:number;
         totalItems:number;
+        enableFiltering:boolean;
+        enableSorting:boolean;
+        enableSelections:boolean;
+        enableMultiRowSelections:boolean;
+        onDataRequired:(gridOptions:IGridOptions)=>void;
+        onDataRequiredDelay:number;
         gridColumnDefs:Array<IGridColumnOptions>;
     }
 
@@ -94,8 +101,17 @@ module TrNgGrid{
         public gridOptions:IGridOptions;
         private gridElement:JQuery;
         private scheduledRecompilationDereg:Function;
+        private dataRequestPromise:ng.IPromise<any>;
 
-        constructor(private $compile:ng.ICompileService, $scope:IGridScope, $element:JQuery, $attrs:ng.IAttributes, $transclude:ng.ITranscludeFunction, private $parse:ng.IParseService){
+        constructor(
+            private $compile:ng.ICompileService,
+            $scope:IGridScope,
+            $element:JQuery,
+            $attrs:ng.IAttributes,
+            $transclude:ng.ITranscludeFunction,
+            private $parse:ng.IParseService,
+            private $timeout: ng.ITimeoutService){
+
             this.gridElement = $element;
             this.internalScope = $scope;
             this.scheduledRecompilationDereg = null;
@@ -112,13 +128,57 @@ module TrNgGrid{
                 orderByReverse:false,
                 pageItems:null,
                 currentPage:0,
-                totalItems:null
+                totalItems:null,
+                enableFiltering:true,
+                enableSorting:true,
+                enableSelections:true,
+                enableMultiRowSelections:true,
+                onDataRequiredDelay:1000
             };
+            this.gridOptions.onDataRequired = $attrs["onDataRequired"]?$scope.onDataRequired:null;
             this.gridOptions.gridColumnDefs = [];
             $scope[scopeOptionsIdentifier] = this.gridOptions;
 
             this.externalScope = this.internalScope.$parent;
+
+            //link the outer scope with the internal one
             this.linkScope(this.internalScope, scopeOptionsIdentifier, $attrs);
+
+            //set up watchers for some of the special attributes we support
+
+            if(this.gridOptions.onDataRequired){
+                $scope.$watchCollection("[gridOptions.filterBy, " +
+                    "gridOptions.filterByFields, " +
+                    "gridOptions.orderBy, " +
+                    "gridOptions.orderByReverse, " +
+                    "gridOptions.currentPage]",()=>{
+
+                    if(this.dataRequestPromise){
+                        this.$timeout.cancel(this.dataRequestPromise);
+                        this.dataRequestPromise = null;
+                    }
+
+                    // for the time being, Angular is not able to bind only when losing focus, so we'll introduce a delay
+                    this.dataRequestPromise = this.$timeout(()=>{
+                        this.dataRequestPromise = null;
+                        this.gridOptions.onDataRequired(this.gridOptions);
+                    },this.gridOptions.onDataRequiredDelay, true);
+                });
+            }
+
+            this.internalScope.$watch("enableMultiRowSelections", (newValue:boolean, oldValue:boolean)=>{
+                if(newValue!==oldValue && !newValue){
+                    if(this.gridOptions.selectedItems.length > 1){
+                        this.gridOptions.selectedItems.splice(1);
+                    }
+                }
+            });
+            this.internalScope.$watch("enableSelections", (newValue:boolean, oldValue:boolean)=>{
+                if(newValue!==oldValue && !newValue){
+                    this.gridOptions.selectedItems.splice(0);
+                    this.gridOptions.enableMultiRowSelections = false;
+                }
+            });
         }
 
         setColumnOptions(columnIndex:number, columnOptions:IGridColumnOptions){
@@ -149,6 +209,9 @@ module TrNgGrid{
             else{
                 this.gridOptions.filterByFields[propertyName] = filter;
             }
+
+            // in order for someone to successfully listen to changes made to this object, we need to replace it
+            this.gridOptions.filterByFields = $.extend({}, this.gridOptions.filterByFields);
         }
 
         setCellStyle(element:JQuery, columnOptions:IGridColumnOptions){
@@ -161,11 +224,17 @@ module TrNgGrid{
         }
 
         toggleItemSelection(item:any){
+            if(!this.gridOptions.enableSelections)
+                return;
+
             var itemIndex = this.gridOptions.selectedItems.indexOf(item);
             if(itemIndex>=0){
                 this.gridOptions.selectedItems.splice(itemIndex, 1);
             }
             else{
+                if(!this.gridOptions.enableMultiRowSelections){
+                    this.gridOptions.selectedItems.splice(0);
+                }
                 this.gridOptions.selectedItems.push(item);
             }
         }
@@ -240,7 +309,6 @@ module TrNgGrid{
         }
     }
 
-
     angular.module("trNgGrid", [])
         .directive(tableDirective, [function () {
                 return {
@@ -255,11 +323,17 @@ module TrNgGrid{
                         orderByReverse:'=?',
                         pageItems:'=?',
                         currentPage:'=?',
-                        totalItems:'=?'
+                        totalItems:'=?',
+                        enableFiltering:'=?',
+                        enableSorting:'=?',
+                        enableSelections:'=?',
+                        enableMultiRowSelections:'=?',
+                        onDataRequired:'&',
+                        onDataRequiredDelay:'=?'
                     },
                     // executed prior to pre-linking phase but after compilation
                     // as we're creating an isolated scope, we need something to link them
-                    controller: ["$compile", "$scope", "$element", "$attrs", "$transclude","$parse", GridController],
+                    controller: ["$compile", "$scope", "$element", "$attrs", "$transclude","$parse","$timeout", GridController],
                     // dom manipulation in the compile stage
                     compile: function(templateElement: JQuery, tAttrs: Object) {
                         templateElement.addClass(tableCssClass);
@@ -383,21 +457,29 @@ module TrNgGrid{
                                 if(columnIndex<0)
                                     return;
 
-                                // prepare the child scope
-                                scope.currentGridColumnDef = {
-                                    fieldName:tAttrs["fieldName"],
-                                    disableFiltering:tAttrs["disableFiltering"]=="true",
-                                    disableSorting:tAttrs["disableSorting"]=="true",
-                                    cellWidth:tAttrs["cellWidth"],
-                                    cellHeight:tAttrs["cellHeight"]
-                                };
                                 scope.gridOptions = controller.gridOptions;
                                 scope.toggleSorting = (propertyName) => controller.toggleSorting(propertyName);
                                 scope.filter="";
                                 scope.$watch("filter", (newValue:string, oldValue:string) => {
-                                   if(newValue!==oldValue){
-                                       controller.setFilter(scope.currentGridColumnDef.fieldName, newValue);
-                                   }
+                                    if(newValue!==oldValue){
+                                        controller.setFilter(scope.currentGridColumnDef.fieldName, newValue);
+                                    }
+                                });
+
+                                // prepare the child scope
+                                var columnDefSetup = () =>{
+                                    scope.currentGridColumnDef.fieldName = tAttrs["fieldName"];
+                                    scope.currentGridColumnDef.enableFiltering = tAttrs["enableFiltering"]=="true" || (typeof(tAttrs["enableFiltering"])=="undefined" && scope.gridOptions.enableFiltering);
+                                    scope.currentGridColumnDef.enableSorting = tAttrs["enableSorting"]=="true" || (typeof(tAttrs["enableSorting"])=="undefined" && scope.gridOptions.enableSorting);
+                                    scope.currentGridColumnDef.cellWidth = tAttrs["cellWidth"];
+                                    scope.currentGridColumnDef.cellHeight = tAttrs["cellHeight"];
+                                };
+
+                                scope.currentGridColumnDef=<IGridColumnOptions>{};
+                                columnDefSetup();
+
+                                scope.$watchCollection("[gridOptions.enableFiltering,gridOptions.enableSorting]", (newValue:boolean, oldValue:boolean)=>{
+                                        columnDefSetup();
                                 });
                                 controller.setColumnOptions(columnIndex, scope.currentGridColumnDef);
                                 instanceElement.removeAttr(columnDirectiveAttribute);
@@ -418,13 +500,13 @@ module TrNgGrid{
                                         // the column title was not specified, attempt to include it and recompile
                                         $("<span>").addClass(titleCssClass).text(controller.splitByCamelCasing(scope.currentGridColumnDef.fieldName)).appendTo(cellContentsElement);
 
-                                        if(!scope.currentGridColumnDef.disableSorting){
-                                            $("<span>").attr(sortDirectiveAttribute,"").appendTo(cellContentsElement);
-                                        }
+                                        $("<span>")
+                                            .attr(sortDirectiveAttribute,"")
+                                            .appendTo(cellContentsElement);
 
-                                        if(!scope.currentGridColumnDef.disableFiltering){
-                                            $("<div>").attr(filterColumnDirectiveAttribute,"").appendTo(cellContentsElement);
-                                        }
+                                        $("<div>")
+                                            .attr(filterColumnDirectiveAttribute,"")
+                                            .appendTo(cellContentsElement);
 
                                         //instanceElement.append(cellContentsElement);
 
@@ -443,14 +525,13 @@ module TrNgGrid{
                 return {
                     restrict : 'A',
                     replace:true,
-                    template : "<div class='"+sortCssClass+"' ng-click='toggleSorting(currentGridColumnDef.fieldName)'>"
-                        +"<span "
-                        + "ng-class=\"{'"+sortActiveCssClass+"':gridOptions.orderBy==currentGridColumnDef.fieldName,'"+sortInactiveCssClass+"':gridOptions.orderBy!=currentGridColumnDef.fieldName,'"+sortReverseCssClass+"':gridOptions.orderByReverse}\" "
-                        + " >"
-                        + "</span>"
-                        + "</div>",
-                    link: function(scope: IGridColumnScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController){
-                        //debugger;
+                    template : function(templateElement: JQuery, tAttrs: ng.IAttributes) {
+                        return "<div ng-show='currentGridColumnDef.enableSorting' ng-click='toggleSorting(currentGridColumnDef.fieldName)' title='Sort' class='"+sortCssClass+"'>"
+                            +"<span "
+                            + "ng-class=\"{'"+sortActiveCssClass+"':gridOptions.orderBy==currentGridColumnDef.fieldName,'"+sortInactiveCssClass+"':gridOptions.orderBy!=currentGridColumnDef.fieldName,'"+sortReverseCssClass+"':gridOptions.orderByReverse}\" "
+                            + " >"
+                            + "</span>"
+                            + "</div>";
                     }
                 };
             }
@@ -460,9 +541,13 @@ module TrNgGrid{
                 return {
                     restrict : 'A',
                     replace:true,
-                    template : "<div class='"+filterColumnCssClass+"'>"
+                    template : function(templateElement: JQuery, tAttrs: ng.IAttributes) {
+                        return "<div ng-show='currentGridColumnDef.enableFiltering' class='"+filterColumnCssClass+"'>"
                         + "<input class='form-control input-sm' type='text' ng-model='filter'/>"
-                        + "</div>"
+                        + "</div>";
+                    },
+                    link: function(scope: IGridColumnScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController){
+                    }
                 };
             }
         ])
@@ -488,7 +573,6 @@ module TrNgGrid{
         })
         .directive(bodyDirective,[ "$compile",
             function($compile:ng.ICompileService){
-                var originalBodyTemplateKey = "trNgOriginalBodyTemplate";
                 return {
                     restrict :'A',
                     scope:true,
@@ -508,7 +592,16 @@ module TrNgGrid{
 
                                 // find the body row template, which was initially excluded from the compilation
                                 // apply the ng-repeat
-                                bodyTemplateRow.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | paging:gridOptions.currentPage:gridOptions.pageItems");
+                                var ngRepeatAttrValue = "gridItem in gridOptions.items";
+                                if(scope.gridOptions.onDataRequired){
+                                    // data is retrieved externally, watchers set up in the controller take care of calling this method
+                                }
+                                else{
+                                    // the grid's internal mechanisms are active
+                                    ngRepeatAttrValue+=" | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | paging:gridOptions.currentPage:gridOptions.pageItems";
+                                }
+
+                                bodyTemplateRow.attr("ng-repeat", ngRepeatAttrValue);
                                 if(!bodyTemplateRow.attr("ng-click")){
                                     bodyTemplateRow.attr("ng-click", "toggleItemSelection(gridItem)");
                                 }
@@ -558,13 +651,20 @@ module TrNgGrid{
             function(){
                 return {
                     restrict :'A',
+                    replace:true,
                     scope:true,
                     require:'^'+tableDirective,
-                    template: '<div class="navbar-form navbar-left"><input class="form-control" type="text" ng-model="gridOptions.filterBy" placeholder="Search"/></div>',
-                    replace:true,
-                    link:{
-                        pre: function (scope: IGridFooterScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController) {
-                            scope.gridOptions = controller.gridOptions;
+                    template: function(templateElement: JQuery, tAttrs: ng.IAttributes) {
+                        return '<div ng-show="gridOptions.enableFiltering" class="navbar-form navbar-left"><input class="form-control" type="text" ng-model="gridOptions.filterBy" placeholder="Search"/></div>';
+                    },
+                    compile: function(templateElement: JQuery, tAttrs: ng.IAttributes) {
+                        //templateElement.attr("ng-show", "gridOptions.enableFiltering");
+                        return{
+                            pre: function (scope: IGridFooterScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController) {
+                                scope.gridOptions = controller.gridOptions;
+                            },
+                            post: function(scope: IGridFooterScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController){
+                            }
                         }
                     }
                 };
@@ -598,8 +698,9 @@ module TrNgGrid{
                     restrict :'A',
                     scope:true,
                     require:'^'+tableDirective,
-                    template: '<div class="navbar-left">' +
-                        '<button ng-show="pageCanGoBack" ng-click="gridOptions.currentPage=gridOptions.currentPage-1" type="button" class="btn btn-default navbar-btn navbar-left">Prev Page</button>' +
+                    template: function(templateElement: JQuery, tAttrs: ng.IAttributes) {
+                        return '<div class="navbar-left">' +
+                        '<button ng-show="pageCanGoBack" ng-click="gridOptions.currentPage=gridOptions.currentPage-1" type="button" class="btn btn-default navbar-btn navbar-left" title="Previous Page">&lArr;</button>' +
                         '<p class="navbar-text navbar-left" style="white-space: nowrap;">' +
                             '<span ng-hide="totalItemsCount">No items to display</span>' +
                             '<span ng-show="totalItemsCount">' +
@@ -608,16 +709,17 @@ module TrNgGrid{
                             '</span>' +
                             //' (page {{gridOptions.currentPage}})'+
                         '</p>' +
-                        '<button ng-show="pageCanGoForward" ng-click="gridOptions.currentPage=gridOptions.currentPage+1" type="button" class="btn btn-default navbar-btn navbar-left">Next Page</button>' +
-                        '</div>',
+                        '<button ng-show="pageCanGoForward" ng-click="gridOptions.currentPage=gridOptions.currentPage+1" type="button" class="btn btn-default navbar-btn navbar-left" title="Next Page">&rArr;</button>' +
+                        '</div>';
+                    },
                     replace:true,
                     link:{
                         pre: function (scope: IGridFooterScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController) {
                             setupScope(scope, controller);
+                        },
+                        post: function(scope: IGridFooterScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController){
                             scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", (newValue:number, oldValue:number)=>{
-                               if(newValue!==oldValue){
-                                   setupScope(scope, controller);
-                               }
+                                setupScope(scope, controller);
                             });
                         }
                     }

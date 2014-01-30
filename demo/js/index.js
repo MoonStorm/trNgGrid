@@ -10,7 +10,7 @@ var TrNgGridDemo;
     })(RndGenOptions || (RndGenOptions = {}));
 
     var TestController = (function () {
-        function TestController($scope, $window) {
+        function TestController($scope, $window, $timeout) {
             var _this = this;
             this.$scope = $scope;
             this.charCodeA = "A".charCodeAt(0);
@@ -25,6 +25,10 @@ var TrNgGridDemo;
             $scope.myItems = [];
             $scope.myItemsCurrentPageIndex = 0;
             $scope.myPageItemsCount = 10;
+            $scope.myEnableFiltering = true;
+            $scope.myEnableSorting = true;
+            $scope.myEnableSelections = true;
+            $scope.myEnableMultiRowSelections = true;
             $scope.generateItems = function (pageItems, totalItems) {
                 $scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
@@ -33,14 +37,37 @@ var TrNgGridDemo;
                 //$scope.mySelectedItems=$scope.myItems.slice(0);
             };
 
-            $scope.simulateServerSideQueries = function (pageItems, totalItems) {
-                //$window.alert(pageItems.toString()+"/"+totalItems);
-                $scope.myPageItemsCount = pageItems;
-                $scope.$watchCollection("[myGlobalFilter, myOrderBy, myOrderByReversed, myColumnFilter, myColumnFilter.id, myColumnFilter.name, myColumnFilter.address, myItemsCurrentPageIndex]", function () {
-                    $scope.generateItems(pageItems, totalItems);
-                });
+            var prevServerItemsRequestedCallbackPromise;
+            $scope.onServerSideItemsRequested = function (currentPage, filterBy, filterByFields, orderBy, orderByReverse) {
+                if (prevServerItemsRequestedCallbackPromise) {
+                    $timeout.cancel(prevServerItemsRequestedCallbackPromise);
+                    prevServerItemsRequestedCallbackPromise = null;
+                }
+                $scope.requestedItemsGridOptions = {
+                    currentPage: currentPage,
+                    filterBy: filterBy,
+                    filterByFields: angular.toJson(filterByFields),
+                    orderBy: orderBy,
+                    orderByReverse: orderByReverse,
+                    requestTrapped: true
+                };
+
+                $scope.generateItems(10, 100);
+                prevServerItemsRequestedCallbackPromise = $timeout(function () {
+                    $scope.requestedItemsGridOptions["requestTrapped"] = false;
+                    prevServerItemsRequestedCallbackPromise = null;
+                }, 3000, true);
             };
 
+            /*
+            $scope.simulateServerSideQueries=(pageItems:number, totalItems?:number)=>{
+            //$window.alert(pageItems.toString()+"/"+totalItems);
+            $scope.myPageItemsCount = pageItems;
+            $scope.$watchCollection("[myGlobalFilter, myOrderBy, myOrderByReversed, myColumnFilter, myColumnFilter.id, myColumnFilter.name, myColumnFilter.address, myItemsCurrentPageIndex]",()=>{
+            $scope.generateItems(pageItems, totalItems);
+            });
+            };
+            */
             $scope.addNew = function () {
                 _this.addNewRandomItem($scope.myItems);
             };
@@ -120,6 +147,8 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/serverside.html'
             }).when('/Templates', {
                 templateUrl: 'demo/html/templates.html'
+            }).when('/Detailed', {
+                templateUrl: 'demo/html/detailed.html'
             }).otherwise({
                 templateUrl: 'demo/html/default.html'
             });
@@ -132,7 +161,7 @@ var TrNgGridDemo;
                 restrict: "EA",
                 template: function (element, tAttr) {
                     var projectionElementId = tAttr["projectMarkupTo"];
-                    var currentElementContents = element.html().replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/ /g, "&nbsp;");
+                    var currentElementContents = element.html().replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/  /g, "&nbsp;&nbsp;");
                     $(projectionElementId).html(currentElementContents);
                 }
             };
