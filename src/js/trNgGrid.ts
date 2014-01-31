@@ -11,6 +11,9 @@ module TrNgGrid{
     var bodyDirective="trNgGridBody";
     var bodyDirectiveAttribute="tr-ng-grid-body";
 
+    var footerDirective="trNgGridFooter";
+    var footerDirectiveAttribute="tr-ng-grid-footer";
+
     var globalFilterDirective="trNgGridGlobalFilter";
     var globalFilterDirectiveAttribute="tr-ng-grid-global-filter";
 
@@ -19,8 +22,6 @@ module TrNgGrid{
 
     var columnDirective="trNgGridColumn";
     var columnDirectiveAttribute="tr-ng-grid-column";
-    /*var columnIndexAttribute="tr-ng-grid-column-index";
-    var columnIndexScopePropName="trNgGridColumnIndex";*/
 
     var sortDirective="trNgGridColumnSort";
     var sortDirectiveAttribute="tr-ng-grid-column-sort";
@@ -380,13 +381,9 @@ module TrNgGrid{
                                 .attr("colspan", "999")//TODO: fix this hack
                                 .appendTo(tableFooterRowTemplate);
 
-                            var footerOpsContainer = $("<div>").addClass(footerOpsContainerCssClass).appendTo(fullTableLengthFooterCell);
-
-                            // insert the global search template
-                            $("<div>").attr(globalFilterDirectiveAttribute, "").appendTo(footerOpsContainer);
-
-                            // followed closely by the pager elements
-                            $("<div>").attr(pagerDirectiveAttribute, "").appendTo(footerOpsContainer);
+                            var footerOpsContainer = $("<div>")
+                                .attr(footerDirectiveAttribute,"")
+                                .appendTo(fullTableLengthFooterCell);
                         }
 
                         if(insertHeadElement){
@@ -399,6 +396,20 @@ module TrNgGrid{
                     }
                 };
             }])
+        .directive(footerDirective, [
+            function(){
+                return {
+                    restrict:'A',
+                    scope:false,
+                    require:'^'+tableDirective,
+                    replace:true,
+                    template:'<div class="'+footerOpsContainerCssClass+'">' +
+                        '<div '+globalFilterDirectiveAttribute+'=""/>'+
+                        '<div '+pagerDirectiveAttribute+'=""/>'+
+                        '</div>'
+                };
+            }
+        ])
         .directive(headerDirective,["$compile",
             function($compile:ng.ICompileService){
                 return {
@@ -610,7 +621,7 @@ module TrNgGrid{
                                 bodyTemplateRow.attr(rowPageItemIndexAttribute, "{{$index}}");
                                 angular.forEach(scope.gridOptions.gridColumnDefs, (columnOptions:IGridColumnOptions, index:number) => {
                                     var cellTemplateElement = bodyTemplateRow.children("td:nth-child("+(index+1)+")");
-                                    var isBoundColumn = !!cellTemplateElement.attr(columnDirectiveAttribute);
+                                    var isBoundColumn = cellTemplateElement.is("["+columnDirectiveAttribute+"]");
                                     if((isBoundColumn&&!columnOptions.fieldName)||(!isBoundColumn&&columnOptions.fieldName)){
                                         // inconsistencies between column definition and body cell template
                                         var newCellTemplateElement=$("<div>").addClass(cellCssClass);

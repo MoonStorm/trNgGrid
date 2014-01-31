@@ -11,6 +11,9 @@ var TrNgGrid;
     var bodyDirective = "trNgGridBody";
     var bodyDirectiveAttribute = "tr-ng-grid-body";
 
+    var footerDirective = "trNgGridFooter";
+    var footerDirectiveAttribute = "tr-ng-grid-footer";
+
     var globalFilterDirective = "trNgGridGlobalFilter";
     var globalFilterDirectiveAttribute = "tr-ng-grid-global-filter";
 
@@ -20,8 +23,6 @@ var TrNgGrid;
     var columnDirective = "trNgGridColumn";
     var columnDirectiveAttribute = "tr-ng-grid-column";
 
-    /*var columnIndexAttribute="tr-ng-grid-column-index";
-    var columnIndexScopePropName="trNgGridColumnIndex";*/
     var sortDirective = "trNgGridColumnSort";
     var sortDirectiveAttribute = "tr-ng-grid-column-sort";
 
@@ -301,13 +302,7 @@ var TrNgGrid;
                     if (tableFooterRowTemplate.children("td").length == 0) {
                         var fullTableLengthFooterCell = $("<td>").attr("colspan", "999").appendTo(tableFooterRowTemplate);
 
-                        var footerOpsContainer = $("<div>").addClass(footerOpsContainerCssClass).appendTo(fullTableLengthFooterCell);
-
-                        // insert the global search template
-                        $("<div>").attr(globalFilterDirectiveAttribute, "").appendTo(footerOpsContainer);
-
-                        // followed closely by the pager elements
-                        $("<div>").attr(pagerDirectiveAttribute, "").appendTo(footerOpsContainer);
+                        var footerOpsContainer = $("<div>").attr(footerDirectiveAttribute, "").appendTo(fullTableLengthFooterCell);
                     }
 
                     if (insertHeadElement) {
@@ -319,7 +314,17 @@ var TrNgGrid;
                     }
                 }
             };
-        }]).directive(headerDirective, [
+        }]).directive(footerDirective, [
+        function () {
+            return {
+                restrict: 'A',
+                scope: false,
+                require: '^' + tableDirective,
+                replace: true,
+                template: '<div class="' + footerOpsContainerCssClass + '">' + '<div ' + globalFilterDirectiveAttribute + '=""/>' + '<div ' + pagerDirectiveAttribute + '=""/>' + '</div>'
+            };
+        }
+    ]).directive(headerDirective, [
         "$compile",
         function ($compile) {
             return {
@@ -516,7 +521,7 @@ var TrNgGrid;
                             bodyTemplateRow.attr(rowPageItemIndexAttribute, "{{$index}}");
                             angular.forEach(scope.gridOptions.gridColumnDefs, function (columnOptions, index) {
                                 var cellTemplateElement = bodyTemplateRow.children("td:nth-child(" + (index + 1) + ")");
-                                var isBoundColumn = !!cellTemplateElement.attr(columnDirectiveAttribute);
+                                var isBoundColumn = cellTemplateElement.is("[" + columnDirectiveAttribute + "]");
                                 if ((isBoundColumn && !columnOptions.fieldName) || (!isBoundColumn && columnOptions.fieldName)) {
                                     // inconsistencies between column definition and body cell template
                                     var newCellTemplateElement = $("<div>").addClass(cellCssClass);

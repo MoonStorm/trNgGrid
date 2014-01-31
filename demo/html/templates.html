@@ -1,11 +1,60 @@
-<div ng-controller="TrNgGridDemo.TestController" class="row">
+<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(21)">
     <div class="col-md-7">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Coming Soon
+                Customizations
             </div>
             <div class="panel-body">
+                <p>
+                    Customizations can occur at the header, body and footer level.
+                </p>
+                <p>
+                    The sample below shows a fully customized grid.
+                </p>
+                <pre id="trNgGrid_Sample_Templates">
+                </pre>
             </div>
         </div>
+    </div>
+    <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Templates">
+        <table tr-ng-grid items="myItems">
+            <thead>
+                <tr>
+                    <!--Define the columns with individual TH elements-->
+                    <th tr-ng-grid-column field-name="name">
+                        <span class="tr-ng-title">Name</span>
+                        <div tr-ng-grid-column-sort/>
+                        <div tr-ng-grid-column-filter/>
+                    </th>
+                    <th tr-ng-grid-column field-name="address">
+                        <span class="tr-ng-title">Address</span>
+                        <div tr-ng-grid-column-sort/>
+                        <div tr-ng-grid-column-filter/>
+                    </th>
+                    <th>
+                        Details
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <!--Create the row template, remember the tr-ng-grid-column attribute to match the columns defined in the header-->
+                    <td tr-ng-grid-column>Prs: {{gridItem.name}}</td>
+                    <td tr-ng-grid-column>Adr: {{gridItem.address}}</td>
+                    <td>More info id:{{gridItem.id}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <div class="navbar-form">
+                            <p class="navbar-left navbar-text">Extra footer elements </p>
+                            <div tr-ng-grid-global-filter/>
+                            <div tr-ng-grid-pager/>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
 </div>
