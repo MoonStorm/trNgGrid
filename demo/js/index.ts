@@ -175,8 +175,8 @@ module TrNgGridDemo{
                 .when('/Templates', {
                     templateUrl: 'demo/html/templates.html'
                 })
-                .when('/Detailed', {
-                    templateUrl: 'demo/html/detailed.html'
+                .when('/GlobalOptions', {
+                    templateUrl: 'demo/html/globaloptions.html'
                 })
                 .otherwise({
                     templateUrl: 'demo/html/default.html'

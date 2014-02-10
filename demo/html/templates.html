@@ -9,6 +9,11 @@
                     Customizations can occur at the header, body and footer level.
                 </p>
                 <p>
+                    One very important rule to remember for the templates of the data cells (the ones inside the <em>TBODY</em> element) is to always provide the <em>field-name</em> attribute
+                    if they refer to a column which is data bound by the grid. trNgGrid will match these cells with the ones in the header, either automatically produced (if the <em>THEAD</em> element was empty or did not exist) or manually defined and marked with the same <em>field-name</em> attribute.<br/>
+                    The cells part of custom columns don't require any special attention. They will be matched by the position of the corresponding cells in the header.
+                </p>
+                <p>
                     The sample below shows a fully customized grid.
                 </p>
                 <pre id="trNgGrid_Sample_Templates">
@@ -21,12 +26,15 @@
             <thead>
                 <tr>
                     <!--Define the columns with individual TH elements-->
-                    <th tr-ng-grid-column field-name="name">
+                    <th field-name="name">
                         <span class="tr-ng-title">Name</span>
                         <div tr-ng-grid-column-sort/>
                         <div tr-ng-grid-column-filter/>
                     </th>
-                    <th tr-ng-grid-column field-name="address">
+                    <th>
+                        Position
+                    </th>
+                    <th field-name="address">
                         <span class="tr-ng-title">Address</span>
                         <div tr-ng-grid-column-sort/>
                         <div tr-ng-grid-column-filter/>
@@ -39,19 +47,25 @@
             <tbody>
                 <tr>
                     <!--Create the row template, remember the tr-ng-grid-column attribute to match the columns defined in the header-->
-                    <td tr-ng-grid-column>Prs: {{gridItem.name}}</td>
-                    <td tr-ng-grid-column>Adr: {{gridItem.address}}</td>
+                    <td field-name="name">Prs: {{gridItem.name}}</td>
+                    <td class="text-center">{{gridItem.name.charCodeAt(0)}}</td>
+                    <td field-name="address">Adr: {{gridItem.address}}</td>
                     <td>More info id:{{gridItem.id}}</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3">
-                        <div class="navbar-form">
-                            <p class="navbar-left navbar-text">Extra footer elements </p>
+                    <td colspan="4">
+                        <form class="form-inline tr-ng-grid-footer">
                             <div tr-ng-grid-global-filter/>
+                            <div class="form-group pull-left">
+                                <span class="form-control-static">
+                                    Extra footer elements
+                                </span>
+                                <button class="btn btn-default">Ignore me</button>
+                            </div>
                             <div tr-ng-grid-pager/>
-                        </div>
+                        </form>
                     </td>
                 </tr>
             </tfoot>

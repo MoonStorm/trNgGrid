@@ -33,15 +33,17 @@ var TrNgGrid;
 
     var tableCssClass = "tr-ng-grid table table-bordered table-hover";
     var cellCssClass = "tr-ng-cell";
+    var cellTitleSortCssClass = "";
     var titleCssClass = "tr-ng-title";
-    var sortCssClass = "tr-ng-sort btn btn-default";
+    var sortCssClass = "tr-ng-sort";
     var filterColumnCssClass = "tr-ng-column-filter";
+    var filterInputWrapperCssClass = "";
     var sortActiveCssClass = "tr-ng-sort-active";
     var sortInactiveCssClass = "tr-ng-sort-inactive";
     var sortReverseCssClass = "tr-ng-sort-reverse";
     var selectedRowCssClass = "active";
 
-    var footerOpsContainerCssClass = "navbar navbar-default";
+    var footerOpsContainerCssClass = "tr-ng-grid-footer form-inline";
 
     var GridController = (function () {
         function GridController($compile, $scope, $element, $attrs, $transclude, $parse, $timeout) {
@@ -139,15 +141,6 @@ var TrNgGrid;
 
             // in order for someone to successfully listen to changes made to this object, we need to replace it
             this.gridOptions.filterByFields = $.extend({}, this.gridOptions.filterByFields);
-        };
-
-        GridController.prototype.setCellStyle = function (element, columnOptions) {
-            if (columnOptions.cellWidth) {
-                element.css("width", columnOptions.cellWidth);
-            }
-            if (columnOptions.cellHeight) {
-                element.css("height", columnOptions.cellHeight);
-            }
         };
 
         GridController.prototype.toggleItemSelection = function (item) {
@@ -276,6 +269,9 @@ var TrNgGrid;
                     }
                     tableHeadRowTemplate.attr(headerDirectiveAttribute, "");
 
+                    // help a bit with the attributes
+                    tableHeadRowTemplate.children("th[field-name]").attr(columnDirectiveAttribute, "");
+
                     //discoverColumnDefinitionsFromUi(tableHeadRowTemplate);
                     // make sure the body is present
                     var tableBodyElement = templateElement.children("tbody");
@@ -314,17 +310,7 @@ var TrNgGrid;
                     }
                 }
             };
-        }]).directive(footerDirective, [
-        function () {
-            return {
-                restrict: 'A',
-                scope: false,
-                require: '^' + tableDirective,
-                replace: true,
-                template: '<div class="' + footerOpsContainerCssClass + '">' + '<div ' + globalFilterDirectiveAttribute + '=""/>' + '<div ' + pagerDirectiveAttribute + '=""/>' + '</div>'
-            };
-        }
-    ]).directive(headerDirective, [
+        }]).directive(headerDirective, [
         "$compile",
         function ($compile) {
             return {
@@ -394,8 +380,10 @@ var TrNgGrid;
                             // prepare the child scope
                             var columnDefSetup = function () {
                                 scope.currentGridColumnDef.fieldName = tAttrs["fieldName"];
-                                scope.currentGridColumnDef.enableFiltering = tAttrs["enableFiltering"] == "true" || (typeof (tAttrs["enableFiltering"]) == "undefined" && scope.gridOptions.enableFiltering);
+                                scope.currentGridColumnDef.displayName = typeof (tAttrs["displayName"]) == "undefined" ? controller.splitByCamelCasing(tAttrs["fieldName"]) : tAttrs["displayName"], scope.currentGridColumnDef.enableFiltering = tAttrs["enableFiltering"] == "true" || (typeof (tAttrs["enableFiltering"]) == "undefined" && scope.gridOptions.enableFiltering);
                                 scope.currentGridColumnDef.enableSorting = tAttrs["enableSorting"] == "true" || (typeof (tAttrs["enableSorting"]) == "undefined" && scope.gridOptions.enableSorting);
+                                scope.currentGridColumnDef.displayAlign = tAttrs["displayAlign"];
+                                scope.currentGridColumnDef.displayFormat = tAttrs["displayFormat"];
                                 scope.currentGridColumnDef.cellWidth = tAttrs["cellWidth"];
                                 scope.currentGridColumnDef.cellHeight = tAttrs["cellHeight"];
                             };
@@ -417,15 +405,23 @@ var TrNgGrid;
                                     throw "The column definition for trNgGrid must contain the field name";
                                 }
 
-                                controller.setCellStyle(instanceElement, scope.currentGridColumnDef);
+                                if (scope.currentGridColumnDef.cellWidth) {
+                                    instanceElement.css("width", scope.currentGridColumnDef.cellWidth);
+                                }
+                                if (scope.currentGridColumnDef.cellHeight) {
+                                    instanceElement.css("height", scope.currentGridColumnDef.cellHeight);
+                                }
+
                                 if (instanceElement.text() == "") {
                                     //prepopulate
                                     var cellContentsElement = $("<div>").addClass(cellCssClass);
 
-                                    // the column title was not specified, attempt to include it and recompile
-                                    $("<span>").addClass(titleCssClass).text(controller.splitByCamelCasing(scope.currentGridColumnDef.fieldName)).appendTo(cellContentsElement);
+                                    var cellContentsTitleSortElement = $("<div>").addClass(cellTitleSortCssClass).appendTo(cellContentsElement);
 
-                                    $("<span>").attr(sortDirectiveAttribute, "").appendTo(cellContentsElement);
+                                    // the column title was not specified, attempt to include it and recompile
+                                    $("<div>").addClass(titleCssClass).text(scope.currentGridColumnDef.displayName).appendTo(cellContentsTitleSortElement);
+
+                                    $("<div>").attr(sortDirectiveAttribute, "").appendTo(cellContentsTitleSortElement);
 
                                     $("<div>").attr(filterColumnDirectiveAttribute, "").appendTo(cellContentsElement);
 
@@ -445,7 +441,7 @@ var TrNgGrid;
                 restrict: 'A',
                 replace: true,
                 template: function (templateElement, tAttrs) {
-                    return "<div ng-show='currentGridColumnDef.enableSorting' ng-click='toggleSorting(currentGridColumnDef.fieldName)' title='Sort' class='" + sortCssClass + "'>" + "<span " + "ng-class=\"{'" + sortActiveCssClass + "':gridOptions.orderBy==currentGridColumnDef.fieldName,'" + sortInactiveCssClass + "':gridOptions.orderBy!=currentGridColumnDef.fieldName,'" + sortReverseCssClass + "':gridOptions.orderByReverse}\" " + " >" + "</span>" + "</div>";
+                    return "<div ng-show='currentGridColumnDef.enableSorting' ng-click='toggleSorting(currentGridColumnDef.fieldName)' title='Sort' class='" + sortCssClass + "'>" + "<div " + "ng-class=\"{'" + sortActiveCssClass + "':gridOptions.orderBy==currentGridColumnDef.fieldName,'" + sortInactiveCssClass + "':gridOptions.orderBy!=currentGridColumnDef.fieldName,'" + sortReverseCssClass + "':gridOptions.orderByReverse}\" " + " >" + "</div>" + "</div>";
                 }
             };
         }
@@ -455,29 +451,38 @@ var TrNgGrid;
                 restrict: 'A',
                 replace: true,
                 template: function (templateElement, tAttrs) {
-                    return "<div ng-show='currentGridColumnDef.enableFiltering' class='" + filterColumnCssClass + "'>" + "<input class='form-control input-sm' type='text' ng-model='filter'/>" + "</div>";
+                    return "<div ng-show='currentGridColumnDef.enableFiltering' class='" + filterColumnCssClass + "'>" + "<div class='" + filterInputWrapperCssClass + "'>" + "<input class='form-control input-sm' type='text' ng-model='filter'/>" + "</div>" + "</div>";
                 },
                 link: function (scope, instanceElement, tAttrs, controller) {
                 }
             };
         }
     ]).filter("paging", function () {
-        return function (input, currentPage, pageItems) {
-            if (!pageItems || !input || input.length == 0)
+        return function (input, gridOptions) {
+            //currentPage?:number, pageItems?:number
+            if (input)
+                gridOptions.totalItems = input.length;
+
+            if (!gridOptions.pageItems || !input || input.length == 0)
                 return input;
 
-            if (!currentPage) {
-                currentPage = 0;
+            if (!gridOptions.currentPage) {
+                gridOptions.currentPage = 0;
             }
 
-            var startIndex = currentPage * pageItems;
-            var endIndex = currentPage * pageItems + pageItems;
-
+            var startIndex = gridOptions.currentPage * gridOptions.pageItems;
             if (startIndex >= input.length) {
-                // server side paging, ignore the operation
-                return input;
+                gridOptions.currentPage = 0;
+                startIndex = 0;
             }
+            var endIndex = gridOptions.currentPage * gridOptions.pageItems + gridOptions.pageItems;
 
+            /*              Update: Not called for server-side paging
+            if(startIndex>=input.length){
+            // server side paging, ignore the operation
+            return input;
+            }
+            */
             return input.slice(startIndex, endIndex);
         };
     }).directive(bodyDirective, [
@@ -509,7 +514,7 @@ var TrNgGrid;
                                 // data is retrieved externally, watchers set up in the controller take care of calling this method
                             } else {
                                 // the grid's internal mechanisms are active
-                                ngRepeatAttrValue += " | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | paging:gridOptions.currentPage:gridOptions.pageItems";
+                                ngRepeatAttrValue += " | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | paging:gridOptions";
                             }
 
                             bodyTemplateRow.attr("ng-repeat", ngRepeatAttrValue);
@@ -521,29 +526,56 @@ var TrNgGrid;
                             bodyTemplateRow.attr(rowPageItemIndexAttribute, "{{$index}}");
                             angular.forEach(scope.gridOptions.gridColumnDefs, function (columnOptions, index) {
                                 var cellTemplateElement = bodyTemplateRow.children("td:nth-child(" + (index + 1) + ")");
-                                var isBoundColumn = cellTemplateElement.is("[" + columnDirectiveAttribute + "]");
-                                if ((isBoundColumn && !columnOptions.fieldName) || (!isBoundColumn && columnOptions.fieldName)) {
-                                    // inconsistencies between column definition and body cell template
-                                    var newCellTemplateElement = $("<div>").addClass(cellCssClass);
-                                    if (columnOptions.fieldName) {
-                                        // according to the column options, a model bound cell is needed here
-                                        newCellTemplateElement.attr(columnDirectiveAttribute);
-                                        newCellTemplateElement.text("{{gridItem." + columnOptions.fieldName + "}}");
-                                    } else {
-                                        newCellTemplateElement.text("Invalid column match inside the table body");
-                                    }
+                                var cellTemplateFieldName = cellTemplateElement.attr("field-name");
+                                var createInnerCellContents = false;
 
-                                    // wrap it
-                                    newCellTemplateElement = $("<td>").append(newCellTemplateElement);
+                                if (cellTemplateFieldName !== columnOptions.fieldName) {
+                                    // inconsistencies between column definition and body cell template
+                                    createInnerCellContents = true;
+
+                                    var newCellTemplateElement = $("<td>");
                                     if (cellTemplateElement.length == 0)
                                         bodyTemplateRow.append(newCellTemplateElement);
                                     else
                                         cellTemplateElement.before(newCellTemplateElement);
 
                                     cellTemplateElement = newCellTemplateElement;
+                                } else {
+                                    // create the content if the td had no children
+                                    createInnerCellContents = (cellTemplateElement.text() == "");
                                 }
 
-                                controller.setCellStyle(cellTemplateElement, columnOptions);
+                                if (createInnerCellContents) {
+                                    var cellContentsElement = $("<div>").addClass(cellCssClass);
+                                    if (columnOptions.fieldName) {
+                                        // according to the column options, a model bound cell is needed here
+                                        cellContentsElement.attr("field-name", columnOptions.fieldName);
+                                        var cellContentsElementText = "{{gridItem." + columnOptions.fieldName;
+                                        if (columnOptions.displayFormat) {
+                                            // add the display filter
+                                            if (columnOptions.displayFormat[0] != '|' && columnOptions.displayFormat[0] != '.') {
+                                                cellContentsElementText += " | "; // assume an angular filter by default
+                                            }
+                                            cellContentsElementText += columnOptions.displayFormat;
+                                        }
+                                        cellContentsElementText += "}}";
+                                        cellContentsElement.text(cellContentsElementText);
+                                    } else {
+                                        cellContentsElement.text("Invalid column match inside the table body");
+                                    }
+
+                                    cellTemplateElement.append(cellContentsElement);
+                                }
+
+                                if (columnOptions.displayAlign) {
+                                    cellTemplateElement.addClass("text-" + columnOptions.displayAlign);
+                                }
+                                if (columnOptions.cellWidth) {
+                                    cellTemplateElement.css("width", columnOptions.cellWidth);
+                                }
+                                if (columnOptions.cellHeight) {
+                                    cellTemplateElement.css("height", columnOptions.cellHeight);
+                                }
                             });
 
                             // now we need to compile, but in order for this to work, we need to have the dom in place
@@ -556,6 +588,16 @@ var TrNgGrid;
                 }
             };
         }
+    ]).directive(footerDirective, [
+        function () {
+            return {
+                restrict: 'A',
+                scope: false,
+                require: '^' + tableDirective,
+                replace: true,
+                template: '<div class="' + footerOpsContainerCssClass + '">' + '<span ' + globalFilterDirectiveAttribute + '=""/>' + '<span ' + pagerDirectiveAttribute + '=""/>' + '</div>'
+            };
+        }
     ]).directive(globalFilterDirective, [
         function () {
             return {
@@ -564,7 +606,7 @@ var TrNgGrid;
                 scope: true,
                 require: '^' + tableDirective,
                 template: function (templateElement, tAttrs) {
-                    return '<div ng-show="gridOptions.enableFiltering" class="navbar-form navbar-left"><input class="form-control" type="text" ng-model="gridOptions.filterBy" placeholder="Search"/></div>';
+                    return '<span ng-show="gridOptions.enableFiltering" class="pull-left form-group">' + '<input class="form-control" type="text" ng-model="gridOptions.filterBy" placeholder="Search"/>' + '</span>';
                 },
                 compile: function (templateElement, tAttrs) {
                     //templateElement.attr("ng-show", "gridOptions.enableFiltering");
@@ -598,6 +640,16 @@ var TrNgGrid;
 
                 scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage > 0;
                 scope.pageCanGoForward = scope.isPaged && scope.endItemIndex < scope.totalItemsCount - 1;
+                scope.navigateNextPage = function ($event) {
+                    scope.gridOptions.currentPage = scope.gridOptions.currentPage + 1;
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                };
+                scope.navigatePrevPage = function ($event) {
+                    scope.gridOptions.currentPage = scope.gridOptions.currentPage - 1;
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                };
             };
 
             return {
@@ -605,7 +657,7 @@ var TrNgGrid;
                 scope: true,
                 require: '^' + tableDirective,
                 template: function (templateElement, tAttrs) {
-                    return '<div class="navbar-left">' + '<button ng-show="pageCanGoBack" ng-click="gridOptions.currentPage=gridOptions.currentPage-1" type="button" class="btn btn-default navbar-btn navbar-left" title="Previous Page">&lArr;</button>' + '<p class="navbar-text navbar-left" style="white-space: nowrap;">' + '<span ng-hide="totalItemsCount">No items to display</span>' + '<span ng-show="totalItemsCount">' + '  {{startItemIndex+1}} - {{endItemIndex+1}} displayed' + '<span>, {{totalItemsCount}} in total</span>' + '</span>' + '</p>' + '<button ng-show="pageCanGoForward" ng-click="gridOptions.currentPage=gridOptions.currentPage+1" type="button" class="btn btn-default navbar-btn navbar-left" title="Next Page">&rArr;</button>' + '</div>';
+                    return '<span class="pull-right form-group">' + '<ul class="pagination">' + '<li>' + '<a href="#" ng-show="pageCanGoBack" ng-click="navigatePrevPage($event)" title="Previous Page">&lArr;</a>' + '</li>' + '<li class="disabled" style="white-space: nowrap;">' + '<span ng-hide="totalItemsCount">No items to display</span>' + '<span ng-show="totalItemsCount">' + '  {{startItemIndex+1}} - {{endItemIndex+1}} displayed' + '<span>, {{totalItemsCount}} in total</span>' + '</span>' + '</li>' + '<li>' + '<a href="#" ng-show="pageCanGoForward" ng-click="navigateNextPage($event)" title="Next Page">&rArr;</a>' + '<li>' + '</ul>' + '</span>';
                 },
                 replace: true,
                 link: {
@@ -613,7 +665,7 @@ var TrNgGrid;
                         setupScope(scope, controller);
                     },
                     post: function (scope, instanceElement, tAttrs, controller) {
-                        scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValue, oldValue) {
+                        scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
                             setupScope(scope, controller);
                         });
                     }

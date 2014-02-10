@@ -2,13 +2,6 @@
 /*@import (less) url("http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css");*/
 /*@import (reference) url("http://bootswatch.com/spacelab/variables.less");*/
 /*@import (reference) url("http://bootswatch.com/spacelab/bootswatch.less");*/
-.tr-ng-grid thead tr th {
-  text-align: center;
-  vertical-align: top;
-}
-.tr-ng-grid tbody tr td .tr-ng-cell {
-  overflow: auto;
-}
 .unselectable {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -17,28 +10,49 @@
 .tr-ng-grid {
   vertical-align: middle;
 }
-.tr-ng-grid .tr-ng-title,
-.tr-ng-grid .tr-ng-sort {
-  vertical-align: middle;
+.tr-ng-grid .tr-ng-grid-footer {
+  margin: 0px;
+}
+.tr-ng-grid .tr-ng-grid-footer .pagination {
+  /*  float:right;*/
+  margin: 0px;
+}
+/*
+.tr-ng-grid .tr-ng-grid-footer .pagination:after{
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+*/
+.tr-ng-grid .tr-ng-grid-footer.form-inline .form-control {
+  width: auto;
+}
+.tr-ng-grid thead tr th {
+  text-align: center;
+  vertical-align: top;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+.tr-ng-grid tbody tr td .tr-ng-cell {
+  overflow: auto;
 }
 .tr-ng-grid .tr-ng-sort {
   cursor: pointer;
   display: block;
   float: right;
+  width: 1em;
+  height: 1em;
+}
+.tr-ng-grid .tr-ng-title {
+  display: inline-block;
 }
 .tr-ng-grid .tr-ng-sort:after {
   content: '';
   display: block;
   clear: both;
-}
-.tr-ng-grid .tr-ng-sort .tr-ng-sort-active,
-.tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive {
-  display: block;
-  width: 0;
-  height: 0;
 }
 .tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive {
   /*down arrow - inactive default*/

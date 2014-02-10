@@ -2,10 +2,15 @@
     <div class="col-md-5">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                Detailed Example
+                Grid Options
             </div>
             <div class="panel-body">
-                <form class="form-horizontal" role="form">
+                <p>
+                    A range of options are available for altering the behaviour of the grid, regardless of the items displayed.<br/>
+                    All the parameters at this level are two-way data bound, which provides a huge degree of flexibility, as demonstrated by the sample below. <br/>
+                    You can always provide these parameters by value, and not by data bound variables.
+                </p>
+                <form class="form-horizontal well" role="form">
                     <fieldset>
                         <div class="form-group" ng-show="myEnableSelections">
                             <label class="col-md-5 control-label">Items (items)</label>
@@ -78,12 +83,16 @@
                                 <p class="form-control-static">{{mySelectedItems.length}}</p>
                             </div>
                         </div>
+                        <div class="form-group" ng-show="myEnableSelections && mySelectedItems.length">
+                            <div class="col-md-7 col-md-offset-5">
+                                <button type="button" class="btn btn-default" ng-click="mySelectedItems.splice(Math.random(mySelectedItems.length),1)">Remove a random selection through script</button>
+                            </div>
+                        </div>
                     </fieldset>
                 </form>
 
                 <pre id="trNgGrid_Sample_Full">
                 </pre>
-
             </div>
         </div>
     </div>
