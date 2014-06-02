@@ -15,7 +15,6 @@ Simply because everything else you're gonna find out there:
 - allows you to fully describe it in a view, without messing up your controllers.
 - is fully customizable via two-way data bound attributes and templates.
 - easy to maintain, as its code was written under the type safe TypeScript. The repository also has the pure JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend you do).
-- has minimal dependencies: JQuery, AngularJs and Bootstrap CSS (themes can be applied from Bootswatch)
 
 #### Convinced?
 You can download the grid from the release folder. Make sure you also include JQuery, Angular, and a Boostrap theme of your choice. Themes can be found on the Bootswatch website. Of course you can craft your own, as the grid layout is quite easy to style.
