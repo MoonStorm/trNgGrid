@@ -1,82 +1,95 @@
 <div ng-controller="TrNgGridDemo.TestController" class="row">
-    <div class="col-md-7">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                Server Side Data Queries
-            </div>
-            <div class="panel-body">
-                <p>
-                    The grid uses two-way data binding for almost all the parameters. Hence it's possible to listen for changes to certain key parameters of the grid,
-                    allowing you to provide an updated list of elements.
-                </p>
-                <p>
-                    There are a lot of properties you need to subscribe though, so we've come up with an alternative.
-                    Set the <em>on-data-required</em> attribute to a function that will be called whenever the grid detects it requires new data.
-                    The callback is called in a period of inactivity only, which by default is 1 second. You can override this parameter by setting the <em>on-data-required-delay</em> attribute (milliseconds).
-                </p>
-                <p>
-                    In order to successfully perform a data query, you will need a little bit more.
-                    The grid will automatically match the arguments used in the function call with the grid parameters, but instead of the HTML attribute notation, you'll have to use the lower camel case notation.
-                    You can requests as many as you need, and here are the basic ones:
-                    <form class="form-horizontal well" role="form">
-                        <fieldset>
-                            <div class="form-group" ng-show="requestedItemsGridOptions.requestTrapped">
-                                <label class="col-md-5 control-label text-danger">The grid has just requested an update!</label>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Current Page Index (currentPage)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.currentPage}}</p>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Server Side Data Queries
+                </div>
+                <div class="panel-body">
+                    <p>
+                        The grid uses two-way data binding for almost all the parameters. Hence it's possible to listen for changes to certain key parameters of the grid,
+                        allowing you to provide an updated list of elements.
+                    </p>
+                    <p>
+                        There are a lot of properties you need to subscribe though, so we've come up with an alternative.
+                        Set the <em>on-data-required</em> attribute to a function that will be called whenever the grid detects it requires new data.
+                        The callback is called in a period of inactivity only, which by default is 1 second. You can override this parameter by setting the <em>on-data-required-delay</em> attribute (milliseconds).
+                    </p>
+                    <p>
+                        In order to successfully perform a data query, you will need a little bit more.
+                        The grid will automatically match the arguments used in the function call with the grid parameters, but instead of the HTML attribute notation, you'll have to use the lower camel case notation.
+                        You can requests as many as you need, and here are the basic ones:
+                        <form class="form-horizontal well" role="form">
+                            <fieldset>
+                                <div class="form-group" ng-show="requestedItemsGridOptions.requestTrapped">
+                                    <label class="col-md-5 control-label text-danger">The grid has just requested an update!</label>
                                 </div>
-                            </div>
+                                <div class="form-group">
+                                    <label class="col-md-5 control-label">Current Page Index (currentPage)</label>
+                                    <div class="col-md-7">
+                                        <p class="form-control-static">{{requestedItemsGridOptions.currentPage}}</p>
+                                    </div>
+                                </div>
 
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Global Filter (filterBy)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.filterBy}}</p>
+                                <div class="form-group">
+                                    <label class="col-md-5 control-label">Global Filter (filterBy)</label>
+                                    <div class="col-md-7">
+                                        <p class="form-control-static">{{requestedItemsGridOptions.filterBy}}</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Fields Filter (filterByFields)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.filterByFields}}</p>
+                                <div class="form-group">
+                                    <label class="col-md-5 control-label">Fields Filter (filterByFields)</label>
+                                    <div class="col-md-7">
+                                        <p class="form-control-static">{{requestedItemsGridOptions.filterByFields}}</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Current Sort Column (orderBy)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.orderBy}}</p>
+                                <div class="form-group">
+                                    <label class="col-md-5 control-label">Current Sort Column (orderBy)</label>
+                                    <div class="col-md-7">
+                                        <p class="form-control-static">{{requestedItemsGridOptions.orderBy}}</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Reverse Sort Order (orderByReverse)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.orderByReverse}}</p>
+                                <div class="form-group">
+                                    <label class="col-md-5 control-label">Reverse Sort Order (orderByReverse)</label>
+                                    <div class="col-md-7">
+                                        <p class="form-control-static">{{requestedItemsGridOptions.orderByReverse}}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </fieldset>
-                    </form>
-                </p>
-                <pre id="trNgGrid_Sample_Server_Side">
+                            </fieldset>
+                        </form>
+                    </p>
+                    <pre id="trNgGrid_Sample_Server_Side">
                 </pre>
-                <p>
-                    When you received the data, set the <em>items</em> array with the new list of items, but also don't forget to set your variable linked to the <em>total-items</em> attribute in case you've got paging enabled (in our case that being the scoped <em>myItemsTotalCount</em> variable).
-                </p>
+                    <p>
+                        When you received the data, set the <em>items</em> array with the new list of items, but also don't forget to set your variable linked to the <em>total-items</em> attribute in case you've got paging enabled (in our case that being the scoped <em>myItemsTotalCount</em> variable).
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-5">
-        <div project-markup-to="#trNgGrid_Sample_Server_Side">
-<table tr-ng-grid items="myItems" page-items="myPageItemsCount" total-items="myItemsTotalCount" on-data-required="onServerSideItemsRequested(currentPage, filterBy, filterByFields, orderBy, orderByReverse)">
+        <div class="col-md-5">
+            <div project-markup-to="#trNgGrid_Sample_Server_Side">
+<table 
+    tr-ng-grid 
+    items="myItems" 
+    page-items="myPageItemsCount" 
+    total-items="myItemsTotalCount" 
+    on-data-required="onServerSideItemsRequested(currentPage, filterBy, filterByFields, orderBy, orderByReverse)">
+        <thead>
+            <tr>
+                <th field-name="id" cell-width="4em" display-align="right"/>
+                <th field-name="name" display-format="uppercase"/>
+                <th field-name="address"/>
+            </tr>
+        </thead>                      
 </table>
+            </div>
+            <p class="text-danger">
+                When the grid is switched into this mode by setting the <em>on-data-required</em> attribute, the internal filtering and sorting mechanisms are disabled.<br/>
+                (In the example above, the items are randomly generated. The customization of the columns is optional.)
+            </p>
         </div>
-        <p class="text-danger">
-            When the grid is switched into this mode by setting the <em>on-data-required</em> attribute, the internal filtering and sorting mechanisms are disabled.<br/>
-            (In the example above, the items are randomly generated client side.)
-        </p>
     </div>
-
 </div>
