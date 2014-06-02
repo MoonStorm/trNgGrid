@@ -1,5 +1,4 @@
-/// <reference path="../../d.ts/DefinitelyTyped/jquery/jquery.d.ts"/>
-/// <reference path="../../d.ts/DefinitelyTyped/angularjs/angular.d.ts"/>
+/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     var RndGenOptions;
@@ -162,10 +161,9 @@ var TrNgGridDemo;
                 template: function (element, tAttr) {
                     var projectionElementId = tAttr["projectMarkupTo"];
                     var currentElementContents = element.html().replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/  /g, "&nbsp;&nbsp;");
-                    $(projectionElementId).html(currentElementContents);
+                    angular.element(document.querySelector(projectionElementId)).html(currentElementContents);
                 }
             };
         }
     ]);
 })(TrNgGridDemo || (TrNgGridDemo = {}));
-//# sourceMappingURL=index.js.map

@@ -1,5 +1,4 @@
-/// <reference path="../../d.ts/DefinitelyTyped/jquery/jquery.d.ts"/>
-/// <reference path="../../d.ts/DefinitelyTyped/angularjs/angular.d.ts"/>
+/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 
 module TrNgGridDemo{
     export interface ITestControllerScope extends ng.IScope{
@@ -199,7 +198,7 @@ module TrNgGridDemo{
                             .replace(/>/g, "&gt;")
                             .replace(/"/g, "&quot;")
                             .replace(/  /g, "&nbsp;&nbsp;");
-                        $(projectionElementId).html(currentElementContents);
+                        angular.element(document.querySelector(projectionElementId)).html(currentElementContents);
                     }
                 };
             }

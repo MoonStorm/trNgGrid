@@ -1,5 +1,4 @@
-/// <reference path="../external/typings/jquery/jquery.d.ts"/>
-/// <reference path="../external/typings/angularjs/angular.d.ts"/>
+/// <reference path="../external/typings/angularjs/angular.d.ts" />
 
 module TrNgGrid{
     var tableDirective="trNgGrid";
@@ -218,7 +217,7 @@ module TrNgGrid{
             }
 
             // in order for someone to successfully listen to changes made to this object, we need to replace it
-            this.gridOptions.filterByFields = $.extend({}, this.gridOptions.filterByFields);
+            this.gridOptions.filterByFields = angular.extend({}, this.gridOptions.filterByFields);
         }
 
         toggleItemSelection(item:any){
@@ -333,7 +332,8 @@ module TrNgGrid{
                     // as we're creating an isolated scope, we need something to link them
                     controller: ["$compile", "$scope", "$element", "$attrs", "$transclude","$parse","$timeout", GridController],
                     // dom manipulation in the compile stage
-                    compile: function(templateElement: JQuery, tAttrs: Object) {
+                    compile: function (templateElement: JQuery, tAttrs: Object) {
+                        debugger;
                         templateElement.addClass(tableCssClass);
                         var insertFooterElement = false;
                         var insertHeadElement = false;
@@ -341,12 +341,13 @@ module TrNgGrid{
                         // make sure the header is present
                         var tableHeadElement = templateElement.children("thead");
                         if (tableHeadElement.length == 0) {
-                            tableHeadElement = $("<thead>");
+                            tableHeadElement = angular.element("<thead/>");
                             insertHeadElement = true;
                         }
                         var tableHeadRowTemplate = tableHeadElement.children("tr");
                         if(tableHeadRowTemplate.length == 0){
-                            tableHeadRowTemplate = $("<tr>").appendTo(tableHeadElement);
+                            tableHeadRowTemplate = angular.element("<tr/>");
+                            tableHeadElement.append(tableHeadElement);
                         }
                         tableHeadRowTemplate.attr(headerDirectiveAttribute, "");
                         // help a bit with the attributes
@@ -357,33 +358,36 @@ module TrNgGrid{
                         // make sure the body is present
                         var tableBodyElement = templateElement.children("tbody");
                         if (tableBodyElement.length === 0) {
-                            tableBodyElement = $("<tbody>").appendTo(templateElement);
+                            tableBodyElement = angular.element("<tbody/>");
+                            templateElement.append(tableBodyElement);
                         }
 
                         var tableBodyRowTemplate = tableBodyElement.children("tr");
                         if (tableBodyRowTemplate.length === 0) {
-                            tableBodyRowTemplate = $("<tr>").appendTo(tableBodyElement);
+                            tableBodyRowTemplate = angular.element("<tr/>");
+                            tableBodyElement.append(tableBodyRowTemplate);
                         }
                         tableBodyElement.attr(bodyDirectiveAttribute,"");
 
                         // make sure the footer is present
                         var tableFooterElement = templateElement.children("tfoot");
                         if (tableFooterElement.length == 0) {
-                            tableFooterElement = $("<tfoot>");
+                            tableFooterElement = angular.element("<tfoot/>");
                             insertFooterElement = true;
                         }
                         var tableFooterRowTemplate = tableFooterElement.children("tr");
                         if(tableFooterRowTemplate.length == 0){
-                            tableFooterRowTemplate = $("<tr>").appendTo(tableFooterElement);
+                            tableFooterRowTemplate = angular.element("<tr/>");
+                            tableFooterElement.append(tableFooterRowTemplate);
                         }
                         if(tableFooterRowTemplate.children("td").length==0){
-                            var fullTableLengthFooterCell = $("<td>")
-                                .attr("colspan", "999")//TODO: fix this hack
-                                .appendTo(tableFooterRowTemplate);
+                            var fullTableLengthFooterCell = angular.element("<td/>");
+                            fullTableLengthFooterCell.attr("colspan", "999")//TODO: fix this hack
+                            tableFooterRowTemplate.append(fullTableLengthFooterCell);
 
-                            var footerOpsContainer = $("<div>")
-                                .attr(footerDirectiveAttribute,"")
-                                .appendTo(fullTableLengthFooterCell);
+                            var footerOpsContainer = angular.element("<div/>");
+                            footerOpsContainer.attr(footerDirectiveAttribute, "");
+                            fullTableLengthFooterCell.append(footerOpsContainer);
                         }
 
                         if(insertHeadElement){
@@ -391,7 +395,7 @@ module TrNgGrid{
                         }
 
                         if(insertFooterElement){
-                            tableFooterElement.insertBefore(tableBodyElement);
+                            tableBodyElement.after(tableFooterElement);
                         }
                     }
                 };
@@ -414,7 +418,11 @@ module TrNgGrid{
                                             // exclude the library properties
                                             if(!propName.match(/^[_\$]/g)){
                                                 // create the th definition and add the column directive, serialised
-                                                var headerCellElement = $("<th>").attr(columnDirectiveAttribute, "").attr("field-name", propName).appendTo(instanceElement);
+                                                var headerCellElement = angular.element("<th>");
+                                                headerCellElement.attr(columnDirectiveAttribute, "");
+                                                headerCellElement.attr("field-name", propName);
+                                                instanceElement.append(headerCellElement);
+
                                                 $compile(headerCellElement)(scope);
                                             }
                                         }
@@ -501,20 +509,26 @@ module TrNgGrid{
 
                                     if(instanceElement.text()==""){
                                         //prepopulate
-                                        var cellContentsElement = $("<div>").addClass(cellCssClass);
+                                        var cellContentsElement = angular.element("<div>");
+                                        cellContentsElement.addClass(cellCssClass);
 
-                                        var cellContentsTitleSortElement=$("<div>").addClass(cellTitleSortCssClass).appendTo(cellContentsElement);
+                                        var cellContentsTitleSortElement = angular.element("<div>");
+                                        cellContentsTitleSortElement.addClass(cellTitleSortCssClass);
+                                        cellContentsElement.append(cellContentsTitleSortElement);
 
                                         // the column title was not specified, attempt to include it and recompile
-                                        $("<div>").addClass(titleCssClass).text(scope.currentGridColumnDef.displayName).appendTo(cellContentsTitleSortElement);
+                                        var cellContentsTitleElement = angular.element("<div>");
+                                        cellContentsTitleElement.addClass(titleCssClass);
+                                        cellContentsTitleElement.text(scope.currentGridColumnDef.displayName);
+                                        cellContentsTitleSortElement.append(cellContentsTitleElement);
 
-                                        $("<div>")
-                                            .attr(sortDirectiveAttribute,"")
-                                            .appendTo(cellContentsTitleSortElement);
+                                        var cellContentsTitleSortDirectiveElement = angular.element("<div>");
+                                        cellContentsTitleSortDirectiveElement.attr(sortDirectiveAttribute, "");
+                                        cellContentsTitleSortElement.append(cellContentsTitleSortDirectiveElement);
 
-                                        $("<div>")
-                                            .attr(filterColumnDirectiveAttribute,"")
-                                            .appendTo(cellContentsElement);
+                                        var cellContentsTitleFilterDirectiveElement = angular.element("<div>");
+                                        cellContentsTitleFilterDirectiveElement.attr(filterColumnDirectiveAttribute, "");
+                                        cellContentsElement.append(cellContentsTitleFilterDirectiveElement);
 
                                         //instanceElement.append(cellContentsElement);
 
@@ -636,7 +650,7 @@ module TrNgGrid{
                                         // inconsistencies between column definition and body cell template
                                         createInnerCellContents = true;
 
-                                        var newCellTemplateElement = $("<td>");
+                                        var newCellTemplateElement = angular.element("<td>");
                                         if (cellTemplateElement.length == 0)
                                             bodyTemplateRow.append(newCellTemplateElement);
                                         else
@@ -650,7 +664,8 @@ module TrNgGrid{
                                     }
 
                                     if (createInnerCellContents) {
-                                        var cellContentsElement = $("<div>").addClass(cellCssClass);
+                                        var cellContentsElement = angular.element("<div>");
+                                        cellContentsElement.addClass(cellCssClass);
                                         if (columnOptions.fieldName) {
                                             // according to the column options, a model bound cell is needed here
                                             cellContentsElement.attr("field-name",columnOptions.fieldName);
