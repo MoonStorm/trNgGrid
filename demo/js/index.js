@@ -29,7 +29,9 @@ var TrNgGridDemo;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
             $scope.generateItems = function (pageItems, totalItems) {
-                $scope.myItems.splice(0);
+                $scope.myItems = [];
+
+                //$scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
                 $scope.myItemsTotalCount = totalItems ? totalItems : $scope.myPageItemsCount;
                 _this.generateItems($scope.myItems, $scope.myPageItemsCount);
@@ -148,6 +150,10 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/templates.html'
             }).when('/GlobalOptions', {
                 templateUrl: 'demo/html/globaloptions.html'
+            }).when('/TestNgSwitch', {
+                templateUrl: 'demo/html/test_ng_switch.html'
+            }).when('/TestItemsUpdate', {
+                templateUrl: 'demo/html/test_items_update.html'
             }).otherwise({
                 templateUrl: 'demo/html/default.html'
             });

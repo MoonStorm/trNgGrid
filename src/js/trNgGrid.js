@@ -165,7 +165,10 @@ var TrNgGrid;
 
             this.scheduledRecompilationDereg = this.internalScope.$watch("items.length", function (newLength, oldLength) {
                 if (newLength > 0) {
+                    // unregister the watch
                     _this.scheduledRecompilationDereg();
+
+                    // recompile
                     _this.$compile(_this.gridElement)(_this.externalScope);
                 }
             });
@@ -190,26 +193,25 @@ var TrNgGrid;
                         isArray = target[propName] instanceof Array;
                     }
 
-                    if (!isArray) {
-                        var compiledAttr = this.$parse(attrs[propName]);
-                        var dualDataBindingPossible = typeof (compiledAttr) != "array" && compiledAttr && compiledAttr.assign;
-                        if (dualDataBindingPossible) {
-                            (function (propName) {
-                                // set up one of the bindings
-                                scope.$watch(scopeTargetIdentifier + "." + propName, function (newValue, oldValue) {
-                                    if (newValue !== oldValue) {
-                                        scope[propName] = target[propName];
-                                    }
-                                });
+                    //allow arrays to be changed: if(!isArray){
+                    var compiledAttr = this.$parse(attrs[propName]);
+                    var dualDataBindingPossible = /*typeof(compiledAttr)!="array" &&*/ compiledAttr && compiledAttr.assign;
+                    if (dualDataBindingPossible) {
+                        (function (propName) {
+                            // set up one of the bindings
+                            scope.$watch(scopeTargetIdentifier + "." + propName, function (newValue, oldValue) {
+                                if (newValue !== oldValue) {
+                                    scope[propName] = target[propName];
+                                }
+                            });
 
-                                // set up the other one
-                                scope.$watch(propName, function (newValue, oldValue) {
-                                    if (newValue !== oldValue) {
-                                        target[propName] = scope[propName];
-                                    }
-                                });
-                            })(propName);
-                        }
+                            // set up the other one
+                            scope.$watch(propName, function (newValue, oldValue) {
+                                if (newValue !== oldValue) {
+                                    target[propName] = scope[propName];
+                                }
+                            });
+                        })(propName);
                     }
                 }
             }
@@ -322,14 +324,19 @@ var TrNgGrid;
                         pre: function (scope, instanceElement, tAttrs, gridController) {
                             // deal with the situation where no column definition exists on the th elements in the table
                             if (instanceElement.children("th").length == 0) {
+                                // no columns defined for the header, attempt to identify the properties and populate the columns definition
                                 if (gridController.gridOptions.items && gridController.gridOptions.items.length > 0) {
+                                    var columnNames = [];
                                     for (var propName in gridController.gridOptions.items[0]) {
                                         // exclude the library properties
                                         if (!propName.match(/^[_\$]/g)) {
-                                            // create the th definition and add the column directive, serialised
-                                            var headerCellElement = $("<th>").attr(columnDirectiveAttribute, "").attr("field-name", propName).appendTo(instanceElement);
-                                            $compile(headerCellElement)(scope);
+                                            columnNames.push(propName);
                                         }
+                                    }
+                                    for (var columnIndex = 0; columnIndex < columnNames.length; columnIndex++) {
+                                        // create the th definition and add the column directive, serialised
+                                        var headerCellElement = $("<th>").attr(columnDirectiveAttribute, "").attr("field-name", columnNames[columnIndex]).appendTo(instanceElement);
+                                        $compile(headerCellElement)(scope);
                                     }
                                 } else {
                                     // watch for items to arrive and re-run the compilation then
@@ -491,10 +498,10 @@ var TrNgGrid;
                 restrict: 'A',
                 scope: true,
                 require: '^' + tableDirective,
-                replace: false,
+                replace: true,
                 compile: function (templateElement, tAttrs) {
                     // we cannot allow angular to use the body row template just yet
-                    var bodyTemplateRow = templateElement.children("tr");
+                    var bodyOriginalTemplateRow = templateElement.children("tr");
                     templateElement.contents().remove();
 
                     //post linking function - executed after all the children have been linked, safe to perform DOM manipulations
@@ -515,6 +522,9 @@ var TrNgGrid;
                                 // the grid's internal mechanisms are active
                                 ngRepeatAttrValue += " | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | paging:gridOptions";
                             }
+
+                            // ng-switch calls the post-linking function to refresh the dom, so we can't mess the original template
+                            var bodyTemplateRow = bodyOriginalTemplateRow.clone(true);
 
                             bodyTemplateRow.attr("ng-repeat", ngRepeatAttrValue);
                             if (!bodyTemplateRow.attr("ng-click")) {
@@ -579,9 +589,9 @@ var TrNgGrid;
 
                             // now we need to compile, but in order for this to work, we need to have the dom in place
                             // also we remove the column directive, it was just used to mark data bound body columns
-                            bodyTemplateRow.children("td[" + columnDirectiveAttribute + "]").removeAttr(columnDirectiveAttribute);
-                            bodyTemplateRow.removeAttr(bodyDirectiveAttribute);
                             compiledInstanceElement.append($compile(bodyTemplateRow)(scope));
+                            compiledInstanceElement.removeAttr(bodyDirectiveAttribute);
+                            compiledInstanceElement.children("td[" + columnDirectiveAttribute + "]").removeAttr(columnDirectiveAttribute);
                         }
                     };
                 }
@@ -636,27 +646,39 @@ var TrNgGrid;
                 if (scope.endItemIndex < scope.startItemIndex) {
                     scope.endItemIndex = scope.startItemIndex;
                 }
+                scope.lastPageIndex = (!scope.totalItemsCount || !scope.isPaged) ? 0 : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
+
+                scope.pageIndexes = [];
+                for (var pageIndex = 0; pageIndex <= scope.lastPageIndex; pageIndex++) {
+                    scope.pageIndexes.push(pageIndex);
+                }
+                scope.pageSelectionActive = scope.pageIndexes.length > 1;
 
                 scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage > 0;
-                scope.pageCanGoForward = scope.isPaged && scope.endItemIndex < scope.totalItemsCount - 1;
-                scope.navigateNextPage = function ($event) {
-                    scope.gridOptions.currentPage = scope.gridOptions.currentPage + 1;
+                scope.pageCanGoForward = scope.isPaged && scope.gridOptions.currentPage < scope.lastPageIndex;
+
+                scope.navigateToPage = function ($event, pageIndex) {
+                    scope.gridOptions.currentPage = pageIndex;
                     $event.preventDefault();
                     $event.stopPropagation();
                 };
-                scope.navigatePrevPage = function ($event) {
-                    scope.gridOptions.currentPage = scope.gridOptions.currentPage - 1;
-                    $event.preventDefault();
-                    $event.stopPropagation();
+
+                scope.switchPageSelection = function ($event, pageSelectionActive) {
+                    scope.pageSelectionActive = pageSelectionActive;
+                    if ($event) {
+                        $event.preventDefault();
+                        $event.stopPropagation();
+                    }
                 };
             };
 
+            //ng - model = "gridOptions.currentPage"
             return {
                 restrict: 'A',
                 scope: true,
                 require: '^' + tableDirective,
                 template: function (templateElement, tAttrs) {
-                    return '<span class="pull-right form-group">' + '<ul class="pagination">' + '<li>' + '<a href="#" ng-show="pageCanGoBack" ng-click="navigatePrevPage($event)" title="Previous Page">&lArr;</a>' + '</li>' + '<li class="disabled" style="white-space: nowrap;">' + '<span ng-hide="totalItemsCount">No items to display</span>' + '<span ng-show="totalItemsCount">' + '  {{startItemIndex+1}} - {{endItemIndex+1}} displayed' + '<span>, {{totalItemsCount}} in total</span>' + '</span>' + '</li>' + '<li>' + '<a href="#" ng-show="pageCanGoForward" ng-click="navigateNextPage($event)" title="Next Page">&rArr;</a>' + '<li>' + '</ul>' + '</span>';
+                    return '<span class="pull-right form-group">' + '<ul class="pagination">' + '<li ng-show="pageCanGoBack" >' + '<a href="#" ng-click="navigateToPage($event, 0)" title="First Page">|&lArr;</a>' + '</li>' + '<li ng-show="pageCanGoBack" >' + '<a href="#" ng-click="navigateToPage($event, gridOptions.currentPage - 1)" title="Previous Page">&lArr;</a>' + '</li>' + '<li ng-show="pageSelectionActive" style="white-space: nowrap;">' + '<span>Page: ' + '<select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes"></select></span>' + '</li>' + '<li class="disabled" style="white-space: nowrap;">' + '<span ng-hide="totalItemsCount">No items to display</span>' + '<span ng-show="totalItemsCount" title="Select Page">' + '  {{startItemIndex+1}} - {{endItemIndex+1}} displayed' + '<span>, {{totalItemsCount}} in total</span>' + '</span > ' + '</li>' + '<li ng-show="pageCanGoForward">' + '<a href="#" ng-click="navigateToPage($event, gridOptions.currentPage + 1)" title="Next Page">&rArr;</a>' + '</li>' + '<li>' + '<li ng-show="pageCanGoForward">' + '<a href="#" ng-show="pageCanGoForward" ng-click="navigateToPage($event, lastPageIndex)" title="Last Page">&rArr;|</a>' + '</li>' + '</ul>' + '</span>';
                 },
                 replace: true,
                 link: {
@@ -664,9 +686,14 @@ var TrNgGrid;
                         setupScope(scope, controller);
                     },
                     post: function (scope, instanceElement, tAttrs, controller) {
-                        scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
-                            setupScope(scope, controller);
-                        });
+                        scope.$watch("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
+                            for (var collIndex = 0; collIndex < newValues.length; collIndex++) {
+                                if (newValues[collIndex] != oldValues[collIndex]) {
+                                    setupScope(scope, controller);
+                                    return;
+                                }
+                            }
+                        }, true);
                     }
                 }
             };
