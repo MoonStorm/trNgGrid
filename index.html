@@ -1,30 +1,33 @@
 <!DOCTYPE html>
-<html ng-app="trNgGridDemo">
-    <head ng-init="theme='slate'">
+<html ng-app="trNgGridDemo" ng-controller="TrNgGridDemo.MainController">
+    <head>
         <meta http-equiv="X-UA-Compatible" content="IE=Edge">        
         <title>trNgGrid</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" ng-href="http://netdna.bootstrapcdn.com/bootswatch/3.0.3/{{theme}}{{theme?'/':''}}bootstrap.min.css"/>
+        <link rel="stylesheet" ng-href="{{themeUrl}}"/>
         <link rel="stylesheet" href="demo/css/index.css" />
 
         <!--Debug-->
-        <!--<link rel="stylesheet" href="src/css/trNgGrid.css" />-->
+        <link rel="stylesheet" href="src/css/trNgGrid.css" />
         <!--Release-->
-        <link rel="stylesheet" href="release/trNgGrid.min.css" />
+        <!--<link rel="stylesheet" href="release/trNgGrid.min.css" />-->
 
         <link rel="stylesheet" href="demo/css/index.css" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
+        <!--<script src="//code.angularjs.org/1.2.9/i18n/angular-locale_en-gb.js"></script>-->
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
 
         <!--Debug-->
-        <!--<script src="src/js/trNgGrid.js"></script>-->
+        <script src="src/js/trNgGrid.js"></script>
         <!--Release-->
-        <script src="release/trNgGrid.min.js"></script>
+        <!--<script src="release/trNgGrid.min.js"></script>-->
 
         <script src="demo/js/index.js"></script>
+        
+        <!--<script ng-src="{{localeUrl}}"></script>-->
     </head>
 
     <body>
@@ -51,7 +54,7 @@
                         <a class="dropdown-toggle" href="" data-toggle="dropdown">Cases<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="#/TestNgSwitch">Case #9 (ng-switch)</a></li>                            
-                            <li><a href="#/TestItemsUpdate">Case #6 (replacing the 'items' array) </a></li>                            
+                            <li><a href="#/TestItemsUpdate">Case #6 (replacing the 'items' array) </a></li>   
                         </ul>
                     </li>
                 </ul>

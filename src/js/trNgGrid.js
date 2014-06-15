@@ -1,4 +1,4 @@
-/// <reference path="../external/typings/jquery/jquery.d.ts"/>
+﻿/// <reference path="../external/typings/jquery/jquery.d.ts"/>
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
 var TrNgGrid;
 (function (TrNgGrid) {
@@ -700,3 +700,4 @@ var TrNgGrid;
         }
     ]);
 })(TrNgGrid || (TrNgGrid = {}));
+//# sourceMappingURL=trNgGrid.js.map

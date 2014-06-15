@@ -1,0 +1,31 @@
+﻿    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Localization
+                </div>
+                <div class="panel-body">
+                    <p>
+                        The current locale is set to 'en-us'
+                    </p>
+                    <p>
+                        <!--Locale: <select ng-model="$parent.locale" ng-options="locale for locale in ['en-us', 'en-gb']" ></select>-->
+                        This is work-in-progress
+                    </p>
+                    <pre id="trNgGrid_Localization">
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5" project-markup-to="#trNgGrid_Localization" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(10);addDateToItems();">
+<table tr-ng-grid items="myItems">
+    <thead>
+        <tr>
+            <th field-name="id"/>
+            <th field-name="name"/>
+            <th field-name="born" display-format="date:'shortDate'"/>
+        </tr>
+    </thead>
+</table>
+        </div>
+    </div>

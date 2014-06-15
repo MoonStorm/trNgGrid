@@ -1,4 +1,4 @@
-/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     var RndGenOptions;
@@ -36,6 +36,10 @@ var TrNgGridDemo;
                 $scope.myItemsTotalCount = totalItems ? totalItems : $scope.myPageItemsCount;
                 _this.generateItems($scope.myItems, $scope.myPageItemsCount);
                 //$scope.mySelectedItems=$scope.myItems.slice(0);
+            };
+
+            $scope.addDateToItems = function () {
+                _this.addDateToItems();
             };
 
             var prevServerItemsRequestedCallbackPromise;
@@ -96,6 +100,14 @@ var TrNgGridDemo;
             });
         };
 
+        TestController.prototype.addDateToItems = function () {
+            var maxTimeSpan = new Date(1980, 0).getTime();
+            for (var itemIndex = 0; itemIndex < this.$scope.myItems.length; itemIndex++) {
+                var rndTimeSpan = Math.floor(Math.random() * maxTimeSpan);
+                this.$scope.myItems[itemIndex]["born"] = new Date(new Date(1980, 2, 4).getTime() + rndTimeSpan);
+            }
+        };
+
         TestController.prototype.randomString = function (count) {
             var options = [];
             for (var _i = 0; _i < (arguments.length - 1); _i++) {
@@ -136,6 +148,41 @@ var TrNgGridDemo;
     })();
     TrNgGridDemo.TestController = TestController;
 
+    var MainController = (function () {
+        function MainController($scope, $sce) {
+            var _this = this;
+            this.$scope = $scope;
+            this.$sce = $sce;
+            $scope.theme = "slate";
+            $scope.locale = "en-gb";
+            this.setupLocaleUrl();
+            this.setupThemeUrl();
+
+            this.$scope.$watch("locale", function (newValue, oldValue) {
+                if (newValue != oldValue) {
+                    _this.setupLocaleUrl();
+                }
+            });
+
+            this.$scope.$watch("theme", function (newValue, oldValue) {
+                if (newValue != oldValue) {
+                    _this.setupThemeUrl();
+                }
+            });
+        }
+        MainController.prototype.setupLocaleUrl = function () {
+            var localeUrl = "https://code.angularjs.org/1.2.9/i18n/angular-locale_" + this.$scope.locale + ".js";
+            this.$scope.localeUrl = this.$sce.trustAsResourceUrl(localeUrl);
+        };
+
+        MainController.prototype.setupThemeUrl = function () {
+            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/" + this.$scope.theme + "/bootstrap.min.css";
+            this.$scope.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
+        };
+        return MainController;
+    })();
+    TrNgGridDemo.MainController = MainController;
+
     angular.module("trNgGridDemo", ["ngRoute", "ngAnimate", "trNgGrid"]).config([
         "$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
             $routeProvider.when('/Common', {
@@ -154,10 +201,11 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/test_ng_switch.html'
             }).when('/TestItemsUpdate', {
                 templateUrl: 'demo/html/test_items_update.html'
+            }).when('/Localization', {
+                templateUrl: 'demo/html/localization.html'
             }).otherwise({
                 templateUrl: 'demo/html/default.html'
             });
-            $routeProvider.de;
             // configure html5 to get links working on jsfiddle
             //$locationProvider.html5Mode(true);
         }]).directive("projectMarkupTo", [
@@ -173,3 +221,4 @@ var TrNgGridDemo;
         }
     ]);
 })(TrNgGridDemo || (TrNgGridDemo = {}));
+//# sourceMappingURL=index.js.map

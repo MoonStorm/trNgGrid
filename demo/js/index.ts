@@ -21,7 +21,8 @@ module TrNgGridDemo{
 
         addNew:()=>void;
         onServerSideItemsRequested:(currentPage:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>void;
-        generateItems:(pageItems:number, totalItems?:number)=>void;
+        generateItems: (pageItems: number, totalItems?: number) => void;
+        addDateToItems: () => void;
         showMessage:(event:ng.IAngularEvent, msg:string) => void;
         simulateServerSideQueries:(pageItems:number, totalItems?:number)=>void;
     }
@@ -56,6 +57,8 @@ module TrNgGridDemo{
                 this.generateItems($scope.myItems, $scope.myPageItemsCount);
                 //$scope.mySelectedItems=$scope.myItems.slice(0);
             };
+
+            $scope.addDateToItems = () => { this.addDateToItems(); };
 
             var prevServerItemsRequestedCallbackPromise:ng.IPromise<any>;
             $scope.onServerSideItemsRequested = (currentPage:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>{
@@ -113,10 +116,18 @@ module TrNgGridDemo{
             var addressColumnFilter = this.$scope.myColumnFilter["address"]?this.$scope.myColumnFilter["address"]:"";
 
             items.push({
-                id:this.randomString(Math.random()*2+1, RndGenOptions.Numbers) + idColumnFilter,
-                name:this.randomUpercase()+this.randomString(Math.random()*5+1, RndGenOptions.Lowercase) + this.$scope.myGlobalFilter + nameColumnFilter,
-                address:this.$scope.myGlobalFilter + this.randomString(2, RndGenOptions.Numbers)+" "+this.randomUpercase()+this.randomString(Math.random()*10+1, RndGenOptions.Lowercase)+addressColumnFilter+" Ave"
+                id: this.randomString(Math.random() * 2 + 1, RndGenOptions.Numbers) + idColumnFilter,
+                name: this.randomUpercase() + this.randomString(Math.random() * 5 + 1, RndGenOptions.Lowercase) + this.$scope.myGlobalFilter + nameColumnFilter,
+                address: this.$scope.myGlobalFilter + this.randomString(2, RndGenOptions.Numbers) + " " + this.randomUpercase() + this.randomString(Math.random() * 10 + 1, RndGenOptions.Lowercase) + addressColumnFilter + " Ave",
             });
+        }
+
+        addDateToItems() {
+            var maxTimeSpan = new Date(1980, 0).getTime(); // approx 10 years span
+            for (var itemIndex = 0; itemIndex < this.$scope.myItems.length; itemIndex++) {
+                var rndTimeSpan = Math.floor(Math.random() * maxTimeSpan);
+                this.$scope.myItems[itemIndex]["born"] = new Date(new Date(1980, 2, 4).getTime() + rndTimeSpan);
+            }
         }
 
         private randomString(count:number,...options:RndGenOptions[]):string{
@@ -157,6 +168,44 @@ module TrNgGridDemo{
         }
     }
 
+    export interface IMainControllerScope extends ng.IScope {
+        theme: string;
+        locale: string;
+        themeUrl: string;
+        localeUrl: string;
+    }
+
+    export class MainController {
+        constructor(private $scope: IMainControllerScope, private $sce:ng.ISCEService) {
+            $scope.theme = "slate";
+            $scope.locale = "en-gb";
+            this.setupLocaleUrl();
+            this.setupThemeUrl();
+
+            this.$scope.$watch("locale", (newValue: string, oldValue: string) => {
+                if (newValue != oldValue) {
+                    this.setupLocaleUrl();
+                }
+            });
+
+            this.$scope.$watch("theme", (newValue: string, oldValue: string) => {
+                if (newValue != oldValue) {
+                    this.setupThemeUrl();
+                }
+            });
+        }
+
+        setupLocaleUrl() {
+            var localeUrl = "https://code.angularjs.org/1.2.9/i18n/angular-locale_" + this.$scope.locale + ".js";
+            this.$scope.localeUrl = this.$sce.trustAsResourceUrl(localeUrl);
+        }
+
+        setupThemeUrl() {
+            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/"+this.$scope.theme+"/bootstrap.min.css";
+            this.$scope.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
+        }
+    }
+
     angular.module("trNgGridDemo", ["ngRoute", "ngAnimate", "trNgGrid"])
         .config(["$routeProvider", "$locationProvider", ($routeProvider:any, $locationProvider:any)=>{
             $routeProvider
@@ -173,7 +222,7 @@ module TrNgGridDemo{
                     templateUrl: 'demo/html/serverside.html'
                 })
                 .when('/Templates', {
-                    templateUrl: 'demo/html/templates.html'
+                    templateUrl: 'demo/html/templates.html' 
                 })
                 .when('/GlobalOptions', {
                     templateUrl: 'demo/html/globaloptions.html'
@@ -184,12 +233,13 @@ module TrNgGridDemo{
                 .when('/TestItemsUpdate', {
                     templateUrl: 'demo/html/test_items_update.html'
                 })
-                .otherwise({
+                .when('/Localization', {
+                    templateUrl: 'demo/html/localization.html'
+                })
+                .otherwise({  
                     templateUrl: 'demo/html/default.html'
-                });
-            $routeProvider.de
-
-
+                });     
+             
             // configure html5 to get links working on jsfiddle
             //$locationProvider.html5Mode(true);
         }])
