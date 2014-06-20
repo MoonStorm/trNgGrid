@@ -33,7 +33,7 @@ module TrNgGrid{
     var tableCssClass="tr-ng-grid table table-bordered table-hover"; // at the time of coding, table-striped is not working properly with selection
     var cellCssClass="tr-ng-cell";
     var cellTitleSortCssClass="";
-    var titleCssClass="tr-ng-title";
+    var titleCssClass="tr-ng-title"; 
     var sortCssClass="tr-ng-sort";
     var filterColumnCssClass="tr-ng-column-filter";
     var filterInputWrapperCssClass="";
@@ -834,7 +834,8 @@ module TrNgGrid{
                         pre: function (scope: IGridFooterScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
                             setupScope(scope, controller);
                         },
-                        post: function(scope: IGridFooterScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController){
+                        post: function (scope: IGridFooterScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
+                            // equality checks: http://teropa.info/blog/2014/01/26/the-three-watch-depths-of-angularjs.html
                             scope.$watch("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", (newValues: Array<any>, oldValues: Array<any>) => {
                                 for (var collIndex = 0; collIndex < newValues.length; collIndex++) {
                                     if (newValues[collIndex] != oldValues[collIndex]) {
@@ -842,6 +843,7 @@ module TrNgGrid{
                                         return;
                                     }
                                 }
+                                debugger; 
                             }, true);
                         }
                     }

@@ -7,7 +7,7 @@ module TrNgGridDemo{
         myItems: Array<any>;
         myItemsCurrentPageIndex:number;
         myPageItemsCount:number;
-        mySelectedItems:Array<any>;
+        mySelectedItems:Array<any>; 
         myGlobalFilter:string;
         myColumnFilter:Object;
         myOrderBy:string;

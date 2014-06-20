@@ -1,4 +1,4 @@
-﻿/// <reference path="../external/typings/jquery/jquery.d.ts"/>
+/// <reference path="../external/typings/jquery/jquery.d.ts"/>
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
 var TrNgGrid;
 (function (TrNgGrid) {
@@ -686,6 +686,7 @@ var TrNgGrid;
                         setupScope(scope, controller);
                     },
                     post: function (scope, instanceElement, tAttrs, controller) {
+                        // equality checks: http://teropa.info/blog/2014/01/26/the-three-watch-depths-of-angularjs.html
                         scope.$watch("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
                             for (var collIndex = 0; collIndex < newValues.length; collIndex++) {
                                 if (newValues[collIndex] != oldValues[collIndex]) {
@@ -693,6 +694,7 @@ var TrNgGrid;
                                     return;
                                 }
                             }
+                            debugger;
                         }, true);
                     }
                 }
