@@ -422,7 +422,7 @@ var TrNgGrid;
                                     //prepopulate
                                     var cellContentsElement = $("<div>").addClass(cellCssClass);
 
-                                    var cellContentsTitleSortElement = $("<div>").addClass(cellTitleSortCssClass).appendTo(cellContentsElement);
+                                    var cellContentsTitleSortElement = $("<div>").attr("ng-click", "!currentGridColumnDef.enableSorting||toggleSorting(currentGridColumnDef.fieldName)").addClass(cellTitleSortCssClass).appendTo(cellContentsElement);
 
                                     // the column title was not specified, attempt to include it and recompile
                                     $("<div>").addClass(titleCssClass).text(scope.currentGridColumnDef.displayName).appendTo(cellContentsTitleSortElement);
