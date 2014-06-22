@@ -687,15 +687,9 @@ var TrNgGrid;
                     },
                     post: function (scope, instanceElement, tAttrs, controller) {
                         // equality checks: http://teropa.info/blog/2014/01/26/the-three-watch-depths-of-angularjs.html
-                        scope.$watch("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
-                            for (var collIndex = 0; collIndex < newValues.length; collIndex++) {
-                                if (newValues[collIndex] != oldValues[collIndex]) {
-                                    setupScope(scope, controller);
-                                    return;
-                                }
-                            }
-                            debugger;
-                        }, true);
+                        scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
+                            setupScope(scope, controller);
+                        });
                     }
                 }
             };

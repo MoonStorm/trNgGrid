@@ -19,6 +19,7 @@
   <ItemGroup>
     <Content Include="demo\css\index.css" />
     <Content Include="demo\css\index.min.css" />
+    <Content Include="demo\css\tests\test_fixed_header_footer.css" />
     <Content Include="demo\html\columns.html" />
     <Content Include="demo\html\common.html" />
     <Content Include="demo\html\default.html" />
@@ -27,8 +28,9 @@
     <Content Include="demo\html\paging.html" />
     <Content Include="demo\html\serverside.html" />
     <Content Include="demo\html\templates.html" />
-    <Content Include="demo\html\test_items_update.html" />
-    <Content Include="demo\html\test_ng_switch.html" />
+    <Content Include="demo\html\tests\test_fixed_header_footer.html" />
+    <Content Include="demo\html\tests\test_items_update.html" />
+    <Content Include="demo\html\tests\test_ng_switch.html" />
     <TypeScriptCompile Include="demo\js\index.ts" />
     <Content Include="demo\js\index.js">
       <DependentUpon>index.ts</DependentUpon>
@@ -66,6 +68,8 @@
     <Content Include="src\js\trNgGrid.min.js.map">
       <DependentUpon>trNgGrid.js</DependentUpon>
     </Content>
+    <Content Include="LICENSE" />
+    <Content Include="README.md" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

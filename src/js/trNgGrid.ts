@@ -836,15 +836,9 @@ module TrNgGrid{
                         },
                         post: function (scope: IGridFooterScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
                             // equality checks: http://teropa.info/blog/2014/01/26/the-three-watch-depths-of-angularjs.html
-                            scope.$watch("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", (newValues: Array<any>, oldValues: Array<any>) => {
-                                for (var collIndex = 0; collIndex < newValues.length; collIndex++) {
-                                    if (newValues[collIndex] != oldValues[collIndex]) {
-                                        setupScope(scope, controller);
-                                        return;
-                                    }
-                                }
-                                debugger; 
-                            }, true);
+                            scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", (newValues: Array<any>, oldValues: Array<any>) => {
+                                setupScope(scope, controller);
+                            });
                         }
                     }
                 };
