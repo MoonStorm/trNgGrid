@@ -6,7 +6,7 @@
     "MoonStorm <MoonStorm@gmail.com>"
   ],
   "description": "trNgGrid is a feature rich declarative data grid based on the popular AngularJs framework and making use of plain simple table HTML elements.",
-  "main": ["./release/trNgGrid.min.js", "./release/trNgGrid.min.js"],
+  "main": ["./release/trNgGrid.min.js", "./release/trNgGrid.min.css"],
   "keywords": [
     "angular",
     "html",
