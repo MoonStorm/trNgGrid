@@ -422,7 +422,7 @@ var TrNgGrid;
                                     //prepopulate
                                     var cellContentsElement = $("<div>").addClass(cellCssClass);
 
-                                    var cellContentsTitleSortElement = $("<div>").addClass(cellTitleSortCssClass).appendTo(cellContentsElement);
+                                    var cellContentsTitleSortElement = $("<div>").attr("ng-click", "!currentGridColumnDef.enableSorting||toggleSorting(currentGridColumnDef.fieldName)").addClass(cellTitleSortCssClass).appendTo(cellContentsElement);
 
                                     // the column title was not specified, attempt to include it and recompile
                                     $("<div>").addClass(titleCssClass).text(scope.currentGridColumnDef.displayName).appendTo(cellContentsTitleSortElement);
@@ -686,17 +686,14 @@ var TrNgGrid;
                         setupScope(scope, controller);
                     },
                     post: function (scope, instanceElement, tAttrs, controller) {
-                        scope.$watch("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
-                            for (var collIndex = 0; collIndex < newValues.length; collIndex++) {
-                                if (newValues[collIndex] != oldValues[collIndex]) {
-                                    setupScope(scope, controller);
-                                    return;
-                                }
-                            }
-                        }, true);
+                        // equality checks: http://teropa.info/blog/2014/01/26/the-three-watch-depths-of-angularjs.html
+                        scope.$watchCollection("[gridOptions.currentPage, gridOptions.items.length, gridOptions.totalItems, gridOptions.pageItems]", function (newValues, oldValues) {
+                            setupScope(scope, controller);
+                        });
                     }
                 }
             };
         }
     ]);
 })(TrNgGrid || (TrNgGrid = {}));
+//# sourceMappingURL=trNgGrid.js.map
