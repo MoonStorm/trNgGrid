@@ -1,7 +1,3 @@
-/*@import (reference) url("http://netdna.bootstrapcdn.com/bootswatch/3.0.3/slate/bootstrap.min.css&.less");*/
-/*@import (less) url("http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css");*/
-/*@import (reference) url("http://bootswatch.com/spacelab/variables.less");*/
-/*@import (reference) url("http://bootswatch.com/spacelab/bootswatch.less");*/
 .unselectable {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -17,15 +13,6 @@
   /*  float:right;*/
   margin: 0px;
 }
-/*
-.tr-ng-grid .tr-ng-grid-footer .pagination:after{
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-*/
 .tr-ng-grid .tr-ng-grid-footer.form-inline .form-control {
   width: auto;
 }
@@ -39,42 +26,39 @@
 .tr-ng-grid tbody tr td .tr-ng-cell {
   overflow: auto;
 }
-.tr-ng-grid .tr-ng-sort {
+/*.tr-ng-grid .tr-ng-sort {
   cursor: pointer;
   display: block;
   float: right;
   width: 1em;
   height: 1em;
+}*/
+
+.tr-ng-grid .tr-ng-column-header {
 }
+
+.tr-ng-grid .tr-ng-sort {
+    cursor: pointer;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.tr-ng-grid .tr-ng-sort .tr-ng-sort-active, .tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 0.8em;
+    height: 0.8em;
+}
+
 .tr-ng-grid .tr-ng-title {
-  display: inline-block;
+    padding-top: 0.8em;
+    position: relative;
 }
-.tr-ng-grid .tr-ng-sort:after {
-  content: '';
-  display: block;
-  clear: both;
-}
-.tr-ng-grid .tr-ng-sort .tr-ng-sort-inactive {
-  /*down arrow - inactive default*/
-  border-left: 0.5em solid transparent;
-  border-right: 0.5em solid transparent;
-  border-top: 0.5em solid #a1bfc6;
-  border-bottom: none;
-}
-.tr-ng-grid .tr-ng-sort .tr-ng-sort-active {
-  /*down arrow - active default*/
-  border-left: 0.5em solid transparent;
-  border-right: 0.5em solid transparent;
-  border-top: 0.5em solid #87596f;
-  border-bottom: none;
-}
-.tr-ng-grid .tr-ng-sort .tr-ng-sort-active.tr-ng-sort-reverse {
-  /*up arrow*/
-  border-left: 0.5em solid transparent;
-  border-right: 0.5em solid transparent;
-  border-bottom: 0.5em solid #87596f;
-  border-top: none;
-}
+
 .tr-ng-grid .tr-ng-column-filter {
   margin-top: 0.5em;
   margin-bottom: 0.1em;
