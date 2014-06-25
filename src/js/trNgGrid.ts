@@ -13,7 +13,7 @@ module TrNgGrid{
     export declare var sortInactiveCssClass: string;
     export declare var sortReverseOrderCssClass: string;
     export declare var sortNormalOrderCssClass: string;
-    export declare var selectedRowCssClass: string;
+    export declare var selectedRowCssClass: string; 
     export declare var footerOpsContainerCssClass: string;
 
     export declare var columnHeaderTemplateId;
@@ -468,7 +468,6 @@ module TrNgGrid{
                     // column settings, dual-databinding is not necessary here
                     scope: true,
                     require: '^' + tableDirective,
-                    tem
                     compile: function(templateElement: JQuery, tAttrs: Object) {
                         var columnIndex:number;
                         return{

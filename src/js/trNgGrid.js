@@ -1,4 +1,4 @@
-﻿/// <reference path="../external/typings/jquery/jquery.d.ts"/>
+/// <reference path="../external/typings/jquery/jquery.d.ts"/>
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
 var TrNgGrid;
 (function (TrNgGrid) {
@@ -6,6 +6,7 @@ var TrNgGrid;
 
     var headerDirective = "trNgGridHeader";
     var headerDirectiveAttribute = "tr-ng-grid-header";
+    TrNgGrid.columnHeaderTemplateId = headerDirective + ".html";
 
     var bodyDirective = "trNgGridBody";
     var bodyDirectiveAttribute = "tr-ng-grid-body";
@@ -24,11 +25,11 @@ var TrNgGrid;
 
     var sortDirective = "trNgGridColumnSort";
     var sortDirectiveAttribute = "tr-ng-grid-column-sort";
+    TrNgGrid.columnSortTemplateId = sortDirective + ".html";
 
     var filterColumnDirective = "trNgGridColumnFilter";
     var filterColumnDirectiveAttribute = "tr-ng-grid-column-filter";
-    TrNgGrid.columnFilterTemplateId = "trNgGrid-column-filter.html";
-    TrNgGrid.columnSortTemplateId = "trNgGrid-column-sort.html";
+    TrNgGrid.columnFilterTemplateId = filterColumnDirective + ".html";
 
     var rowPageItemIndexAttribute = "tr-ng-grid-row-page-item-index";
 
