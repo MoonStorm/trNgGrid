@@ -2,10 +2,29 @@
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
 
 module TrNgGrid{
+    export declare var tableCssClass: string;
+    export declare var cellCssClass: string;
+    export declare var columnHeaderContentsCssClass: string;
+    export declare var titleCssClass: string;
+    export declare var sortCssClass: string;
+    export declare var filterColumnCssClass: string;
+    export declare var filterInputWrapperCssClass: string;
+    export declare var sortActiveCssClass: string;
+    export declare var sortInactiveCssClass: string;
+    export declare var sortReverseOrderCssClass: string;
+    export declare var sortNormalOrderCssClass: string;
+    export declare var selectedRowCssClass: string;
+    export declare var footerOpsContainerCssClass: string;
+
+    export declare var columnHeaderTemplateId;
+    export declare var columnFilterTemplateId;
+    export declare var columnSortTemplateId;
+
     var tableDirective="trNgGrid";
 
     var headerDirective="trNgGridHeader";
-    var headerDirectiveAttribute="tr-ng-grid-header";
+    var headerDirectiveAttribute = "tr-ng-grid-header";
+    columnHeaderTemplateId = headerDirective + ".html";
 
     var bodyDirective="trNgGridBody";
     var bodyDirectiveAttribute="tr-ng-grid-body";
@@ -24,25 +43,27 @@ module TrNgGrid{
 
     var sortDirective="trNgGridColumnSort";
     var sortDirectiveAttribute="tr-ng-grid-column-sort";
+    columnSortTemplateId = sortDirective + ".html";
 
     var filterColumnDirective="trNgGridColumnFilter";
-    var filterColumnDirectiveAttribute="tr-ng-grid-column-filter";
+    var filterColumnDirectiveAttribute = "tr-ng-grid-column-filter";
+    columnFilterTemplateId = filterColumnDirective+".html";
 
     var rowPageItemIndexAttribute="tr-ng-grid-row-page-item-index";
 
-    var tableCssClass="tr-ng-grid table table-bordered table-hover"; // at the time of coding, table-striped is not working properly with selection
-    var cellCssClass="tr-ng-cell";
-    var cellTitleSortCssClass="";
-    var titleCssClass="tr-ng-title"; 
-    var sortCssClass="tr-ng-sort";
-    var filterColumnCssClass="tr-ng-column-filter";
-    var filterInputWrapperCssClass="";
-    var sortActiveCssClass="tr-ng-sort-active";
-    var sortInactiveCssClass="tr-ng-sort-inactive";
-    var sortReverseCssClass="tr-ng-sort-reverse";
-    var selectedRowCssClass="active";
-
-    var footerOpsContainerCssClass="tr-ng-grid-footer form-inline";
+    tableCssClass="tr-ng-grid table table-bordered table-hover"; // at the time of coding, table-striped is not working properly with selection
+    cellCssClass = "tr-ng-cell";
+    columnHeaderContentsCssClass = "tr-ng-column-header";
+    titleCssClass="tr-ng-title"; 
+    sortCssClass="tr-ng-sort";
+    filterColumnCssClass="tr-ng-column-filter";
+    filterInputWrapperCssClass="";
+    sortActiveCssClass ="tr-ng-sort-active text-info";
+    sortInactiveCssClass ="tr-ng-sort-inactive text-muted";
+    sortReverseOrderCssClass ="tr-ng-sort-order-reverse glyphicon glyphicon-chevron-up";
+    sortNormalOrderCssClass = "tr-ng-sort-order-normal glyphicon glyphicon-chevron-down";
+    selectedRowCssClass="active";
+    footerOpsContainerCssClass="tr-ng-grid-footer form-inline";
 
     interface IGridColumnOptions{
         fieldName: string;
@@ -118,9 +139,9 @@ module TrNgGrid{
             $scope:IGridScope,
             $element:JQuery,
             $attrs:ng.IAttributes,
-            $transclude:ng.ITranscludeFunction,
+            $transclude: ng.ITranscludeFunction,
             private $parse:ng.IParseService,
-            private $timeout: ng.ITimeoutService){
+            private $timeout: ng.ITimeoutService) {
 
             this.gridElement = $element;
             this.internalScope = $scope;
@@ -201,7 +222,7 @@ module TrNgGrid{
             }
         }
 
-        toggleSorting(propertyName:string){
+        toggleSorting(propertyName: string) {
             if(this.gridOptions.orderBy!=propertyName){
                 // the column has changed
                 this.gridOptions.orderBy = propertyName;
@@ -446,7 +467,8 @@ module TrNgGrid{
                     restrict :'A',
                     // column settings, dual-databinding is not necessary here
                     scope: true,
-                    require:'^'+tableDirective,
+                    require: '^' + tableDirective,
+                    tem
                     compile: function(templateElement: JQuery, tAttrs: Object) {
                         var columnIndex:number;
                         return{
@@ -511,22 +533,18 @@ module TrNgGrid{
                                     if(instanceElement.text()==""){
                                         //prepopulate
                                         var cellContentsElement = $("<div>")
-                                            .addClass(cellCssClass);                                            
-
-                                        var cellContentsTitleSortElement = $("<div>")
-                                            .attr("ng-click", "!currentGridColumnDef.enableSorting||toggleSorting(currentGridColumnDef.fieldName)")
-                                            .addClass(cellTitleSortCssClass)
-                                            .appendTo(cellContentsElement);
+                                            .addClass(cellCssClass)
+                                            .addClass(columnHeaderContentsCssClass);
 
                                         // the column title was not specified, attempt to include it and recompile
-                                        $("<div>")
+                                        var tileElement = $("<div>")
                                             .addClass(titleCssClass)
                                             .text(scope.currentGridColumnDef.displayName)
-                                            .appendTo(cellContentsTitleSortElement);
+                                            .appendTo(cellContentsElement);
 
                                         $("<div>")
-                                            .attr(sortDirectiveAttribute,"")
-                                            .appendTo(cellContentsTitleSortElement);
+                                            .attr(sortDirectiveAttribute, "")
+                                            .appendTo(tileElement);
 
                                         $("<div>")
                                             .attr(filterColumnDirectiveAttribute,"")
@@ -549,14 +567,7 @@ module TrNgGrid{
                 return {
                     restrict : 'A',
                     replace:true,
-                    template : function(templateElement: JQuery, tAttrs: ng.IAttributes) {
-                        return "<div ng-show='currentGridColumnDef.enableSorting' ng-click='toggleSorting(currentGridColumnDef.fieldName)' title='Sort' class='"+sortCssClass+"'>"
-                            +"<div "
-                            + "ng-class=\"{'"+sortActiveCssClass+"':gridOptions.orderBy==currentGridColumnDef.fieldName,'"+sortInactiveCssClass+"':gridOptions.orderBy!=currentGridColumnDef.fieldName,'"+sortReverseCssClass+"':gridOptions.orderByReverse}\" "
-                            + " >"
-                            + "</div>"
-                            + "</div>";
-                    }
+                    templateUrl : columnSortTemplateId
                 };
             }
         ])
@@ -565,15 +576,7 @@ module TrNgGrid{
                 return {
                     restrict : 'A',
                     replace:true,
-                    template : function(templateElement: JQuery, tAttrs: ng.IAttributes) {
-                        return "<div ng-show='currentGridColumnDef.enableFiltering' class='"+filterColumnCssClass+"'>"
-                            + "<div class='"+filterInputWrapperCssClass+"'>"
-                                + "<input class='form-control input-sm' type='text' ng-model='filter'/>"
-                            + "</div>"
-                        + "</div>";
-                    },
-                    link: function(scope: IGridColumnScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller:GridController){
-                    }
+                    templateUrl: columnFilterTemplateId
                 };
             }
         ])
@@ -849,6 +852,25 @@ module TrNgGrid{
                         }
                     }
                 };
+            }
+        ])
+        .run(["$templateCache",
+            function ($templateCache: ng.ITemplateCacheService) {
+                // set up default templates
+                $templateCache.put(TrNgGrid.columnFilterTemplateId,
+                    "<div ng-show='currentGridColumnDef.enableFiltering' class='" + TrNgGrid.filterColumnCssClass + "'>"
+                    + "<div class='" + TrNgGrid.filterInputWrapperCssClass + "'>"
+                    + "<input class='form-control input-sm' type='text' ng-model='filter'/>"
+                    + "</div>"
+                    + "</div>");
+                $templateCache.put(TrNgGrid.columnSortTemplateId,
+                    "<div ng-show='currentGridColumnDef.enableSorting' ng-click='toggleSorting(currentGridColumnDef.fieldName)' title='Sort' class='" + TrNgGrid.sortCssClass + "'>"
+                    + "<div "
+                    + "ng-class=\"{'" + TrNgGrid.sortActiveCssClass + "':gridOptions.orderBy==currentGridColumnDef.fieldName,'" + TrNgGrid.sortInactiveCssClass + "':gridOptions.orderBy!=currentGridColumnDef.fieldName,'" + sortNormalOrderCssClass + "':gridOptions.orderBy!=currentGridColumnDef.fieldName||!gridOptions.orderByReverse,'" + sortReverseOrderCssClass + "':gridOptions.orderBy==currentGridColumnDef.fieldName&&gridOptions.orderByReverse}\" "
+                    + " >"
+                    + "</div>"
+                    + "</div>"
+                    );
             }
         ]);
 }

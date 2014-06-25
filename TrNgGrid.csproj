@@ -18,7 +18,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="demo\css\index.css" />
-    <Content Include="demo\css\index.min.css" />
+    <Content Include="demo\css\index.min.css">
+      <DependentUpon>index.css</DependentUpon>
+    </Content>
     <Content Include="demo\css\tests\test_fixed_header_footer.css" />
     <Content Include="demo\html\columns.html" />
     <Content Include="demo\html\common.html" />
@@ -42,7 +44,9 @@
     <Content Include="release\trNgGrid.min.css" />
     <Content Include="release\trNgGrid.min.js" />
     <Content Include="src\css\trNgGrid.css" />
-    <Content Include="src\css\trNgGrid.min.css" />
+    <Content Include="src\css\trNgGrid.min.css">
+      <DependentUpon>trNgGrid.css</DependentUpon>
+    </Content>
     <Content Include="src\external\typings\angularjs\angular-animate.d.ts" />
     <Content Include="src\external\typings\angularjs\angular-cookies.d.ts" />
     <Content Include="src\external\typings\angularjs\angular-mocks.d.ts" />
@@ -61,7 +65,6 @@
       <DependentUpon>trNgGrid.js</DependentUpon>
     </Content>
     <Content Include="web.config" />
-    <Content Include="src\css\trNgGrid.less" />
     <Content Include="demo\js\index.min.js.map">
       <DependentUpon>index.js</DependentUpon>
     </Content>
