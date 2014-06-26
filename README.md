@@ -21,5 +21,5 @@ You can download the grid from the release folder in the master branch. Make sur
 
 ##### Branch Legend
 - master : stable
-- ng-pages : development branch & demo site
+- gh-pages : development branch & demo site
 
