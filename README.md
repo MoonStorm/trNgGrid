@@ -17,5 +17,9 @@ Simply because everything else you're gonna find out there:
 - easy to maintain, as its code was written under the type safe TypeScript. The repository also has the pure JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend you do).
 
 #### Convinced?
-You can download the grid from the release folder. Make sure you also include JQuery, Angular, and a Boostrap theme of your choice. Themes can be found on the Bootswatch website. Of course you can craft your own, as the grid layout is quite easy to style.
+You can download the grid from the release folder in the master branch. Make sure you also include JQuery, Angular, and a Boostrap theme of your choice. Themes can be found on the Bootswatch website. Of course you can craft your own, as the grid layout is quite easy to style.
+
+##### Branch Legend
+- master : stable
+- ng-pages : development branch & demo site
 
