@@ -15,8 +15,10 @@ module TrNgGridDemo{
         myOrderByReversed:boolean;
         myEnableFiltering:boolean;
         myEnableSorting:boolean;
-        myEnableSelections:boolean;
-        myEnableMultiRowSelections:boolean;
+        myEnableSelections: boolean;
+        mySelectionMode: TrNgGrid.SelectionMode;
+        myEnableMultiRowSelections: boolean;
+        SelectionMode: any;
 
         requestedItemsGridOptions:Object;
 
@@ -83,15 +85,16 @@ module TrNgGridDemo{
                 }, 3000, true);
             };
 
-/*
-            $scope.simulateServerSideQueries=(pageItems:number, totalItems?:number)=>{
-              //$window.alert(pageItems.toString()+"/"+totalItems);
-              $scope.myPageItemsCount = pageItems;
-              $scope.$watchCollection("[myGlobalFilter, myOrderBy, myOrderByReversed, myColumnFilter, myColumnFilter.id, myColumnFilter.name, myColumnFilter.address, myItemsCurrentPageIndex]",()=>{
-                  $scope.generateItems(pageItems, totalItems);
-              });
-            };
-*/
+            /*
+                        $scope.simulateServerSideQueries=(pageItems:number, totalItems?:number)=>{
+                          //$window.alert(pageItems.toString()+"/"+totalItems);
+                          $scope.myPageItemsCount = pageItems;
+                          $scope.$watchCollection("[myGlobalFilter, myOrderBy, myOrderByReversed, myColumnFilter, myColumnFilter.id, myColumnFilter.name, myColumnFilter.address, myItemsCurrentPageIndex]",()=>{
+                              $scope.generateItems(pageItems, totalItems);
+                          });
+                        };
+            */
+            $scope.SelectionMode = TrNgGrid.SelectionMode;
 
             $scope.addNew = () => {
                 this.addNewRandomItem($scope.myItems);
@@ -218,6 +221,9 @@ module TrNgGridDemo{
                 })
                 .when('/Paging', {
                     templateUrl: 'demo/html/paging.html'
+                })
+                .when('/Selections', {
+                    templateUrl: 'demo/html/selections.html'
                 })
                 .when('/ServerSide', {
                     templateUrl: 'demo/html/serverside.html'

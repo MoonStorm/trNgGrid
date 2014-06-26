@@ -1,0 +1,97 @@
+<div class="row">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Selections
+                </div>
+                <div class="panel-body">
+                    <p>
+                        Selections are enabled by default. They are controlled by the <em>selection-mode</em> attribute,
+                        which can be set verbatim to one of the following values, or alternatively via a one-way variable (e.g. <em ng-non-bindable>selection-mode="{{mySelectionMode}}"</em>)<br />
+                        <ul>
+                            <li>
+                                <span class="text-info">None</span><br/>
+                                Turns off item selections.
+                            </li>
+                            <li>
+                                <span class="text-info">SingleRow</span><br />
+                                Only one item can be selected.
+                            </li>
+                            <li>
+                                <span class="text-info">MultiRow (default)</span><br />
+                                Multiple items can be selected or de-selected, with either a mouse click or a tap on the item row.
+                                These selections are "sticky", meaning that de-selecting each item must be done either through user action or via script on the data-bound collection (e.g. <em>mySelectedItems.splice(0)</em>).
+                            </li>
+                            <li>
+                                <span class="text-info">MultiRowWithKeyModifiers</span><br />
+                                Multiple items can be selected or de-selected. The selection is "non-sticky", and takes the modifier keys <b>CTRL</b> and <b>SHIFT</b> into account:
+                                <ul>
+                                    <li>
+                                        When <b>CTRL</b> is pressed whilst clicking on a row, the item will get selected or de-selected, without intefering with the rest of the selection set.
+                                    </li>
+                                    <li>
+                                        When <b>SHIFT</b> is pressed whilst clicking on a row, the range of items starting from the last selected item to the one clicked will get selected, without intefering with the rest of the selection set.
+                                        De-selections are not possible with this key modifier.
+                                    </li>
+                                    <li>Having none of these key modifiers pressed, the selection set will be cleared.</li>
+                                </ul>
+                            </li>
+                       </ul>
+                        Something else worth mentioning here is that the selection set persists across page changes.
+                    </p>
+                    <pre id="trNgGrid_Documentation">
+                    </pre>
+                    <p class="text-danger">The <em>enable-selections</em> and the <em>enable-multi-row-selections</em> attributes are deprecated and will be removed in a future version.</p>
+                </div>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-md-12" ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(20);mySelectionMode='None'">
+            <div class="well">
+                Selection mode: <select ng-model="mySelectionMode" ng-options="modeName for modeName in ['None', 'SingleRow', 'MultiRow', 'MultiRowWithKeyModifiers']" />
+                &nbsp;&nbsp;
+                Selected items: {{mySelectedItems.length}}
+            </div>
+            <table tr-ng-grid page-items="5" items="myItems" selected-items="mySelectedItems" selection-mode="{{mySelectionMode}}" />
+            <div ng-show="false" project-markup-to="#trNgGrid_Documentation">
+<table tr-ng-grid items="myItems" selected-items="mySelectedItems" selection-mode="None|SingleRow|MultiRow|MultiRowWithKeyModifiers" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <hr />
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Data bound selections
+                </div>
+                <div class="panel-body">
+                    <p>
+                        If you wish to watch or manipulate the grid selections, you can assign a scope variable to the <em>selected-items</em> attribute.
+                        That will trigger the two-way data binding.
+                    </p>
+                    <p>
+                        The following example shows the powerful data binding mechanism to directly bind two grids, the second one displaying the current selection in the first one.
+                        <span class="text-info">Without writing a single line of script!</span>
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Selection_1">
+                    </pre>
+                    <pre id="trNgGrid_Sample_Selection_2">
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(10)">
+        <div class="col-md-6" project-markup-to="#trNgGrid_Sample_Selection_1">
+<table tr-ng-grid items="myItems" selected-items="mySelectedItems" selection-mode="MultiRow"></table>
+        </div>
+        <div class="col-md-6" project-markup-to="#trNgGrid_Sample_Selection_2">
+<table tr-ng-grid items="mySelectedItems" enable-selections="false"></table>
+        </div>
+    </div>
+</div>

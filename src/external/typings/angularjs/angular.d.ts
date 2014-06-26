@@ -255,6 +255,11 @@ declare module ng {
         preventDefault: Function;
         defaultPrevented: boolean;
 
+        // added by Dan C.
+        ctrlKey:boolean;
+        altKey: boolean;
+        shiftKey: boolean;
+
         // Available only events that were $emit-ted
         stopPropagation?: Function;
     }
@@ -394,6 +399,10 @@ declare module ng {
 
     interface ICompiledExpression {
         (context: any, locals?: any): any;
+
+        // added by Dan C.
+        literal: boolean;
+        constant: boolean;
 
         // If value is not provided, undefined is gonna be used since the implementation
         // does not check the parameter. Let's force a value for consistency. If consumer

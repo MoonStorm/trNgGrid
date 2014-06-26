@@ -2,6 +2,13 @@
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
 
 module TrNgGrid{
+    export enum SelectionMode {
+        None,
+        SingleRow,
+        MultiRow,
+        MultiRowWithKeyModifiers
+    }
+
     export declare var tableCssClass: string;
     export declare var cellCssClass: string;
     export declare var columnHeaderContentsCssClass: string;
@@ -89,7 +96,8 @@ module TrNgGrid{
         enableFiltering:boolean;
         enableSorting:boolean;
         enableSelections:boolean;
-        enableMultiRowSelections:boolean;
+        enableMultiRowSelections: boolean;
+        selectionMode: string;
         onDataRequired:(gridOptions:IGridOptions)=>void;
         onDataRequiredDelay:number;
         gridColumnDefs:Array<IGridColumnOptions>;
@@ -108,7 +116,7 @@ module TrNgGrid{
 
     interface IGridBodyScope extends ng.IScope{
         gridOptions:IGridOptions;
-        toggleItemSelection:(item:any)=>void;
+        toggleItemSelection:(item:any, $event:ng.IAngularEvent)=>void;
     }
 
     interface IGridFooterScope extends ng.IScope{
@@ -162,13 +170,14 @@ module TrNgGrid{
                 totalItems:null,
                 enableFiltering:true,
                 enableSorting:true,
-                enableSelections:true,
-                enableMultiRowSelections:true,
+                enableSelections:true, //deprecated
+                enableMultiRowSelections: true, // deprecated
+                selectionMode:SelectionMode[SelectionMode.MultiRow],
                 onDataRequiredDelay:1000
             };
             this.gridOptions.onDataRequired = $attrs["onDataRequired"]?$scope.onDataRequired:null;
             this.gridOptions.gridColumnDefs = [];
-            $scope[scopeOptionsIdentifier] = this.gridOptions;
+            this.internalScope[scopeOptionsIdentifier] = this.gridOptions;
 
             this.externalScope = this.internalScope.$parent;
 
@@ -197,17 +206,59 @@ module TrNgGrid{
                 });
             }
 
-            this.internalScope.$watch("enableMultiRowSelections", (newValue:boolean, oldValue:boolean)=>{
-                if(newValue!==oldValue && !newValue){
-                    if(this.gridOptions.selectedItems.length > 1){
-                        this.gridOptions.selectedItems.splice(1);
+            // TODO: remove in the future as these settings are deprecated
+            this.internalScope.$watch(scopeOptionsIdentifier + ".enableMultiRowSelections", (newValue: boolean, oldValue: boolean) => {
+                if (newValue !== oldValue) {
+                    // in case the user is not using the selectionMode, we assume he's not aware of it
+                    if (newValue) {
+                        this.gridOptions.selectionMode = SelectionMode[SelectionMode.MultiRow];
+                        this.gridOptions.enableSelections = true;
+                    }
+                    else if (this.gridOptions.enableSelections){
+                        this.gridOptions.selectionMode = SelectionMode[SelectionMode.SingleRow];
                     }
                 }
             });
-            this.internalScope.$watch("enableSelections", (newValue:boolean, oldValue:boolean)=>{
-                if(newValue!==oldValue && !newValue){
-                    this.gridOptions.selectedItems.splice(0);
-                    this.gridOptions.enableMultiRowSelections = false;
+
+            // TODO: remove in the future as these settings are deprecated
+            this.internalScope.$watch(scopeOptionsIdentifier + ".enableSelections", (newValue: boolean, oldValue: boolean) => {
+                if(newValue!==oldValue){
+                    // in case the user is not using the selectionMode, we assume he's not aware of it
+                    if (newValue) {
+                        if (this.gridOptions.selectionMode === SelectionMode[SelectionMode.None]) {
+                            this.gridOptions.selectionMode = SelectionMode[SelectionMode.SingleRow];
+                        }
+                    }
+                    else {
+                        this.gridOptions.enableMultiRowSelections = false;
+                        this.gridOptions.selectionMode = SelectionMode[SelectionMode.None];
+                    }
+                }
+            });
+
+            // the new settings
+            this.internalScope.$watch(scopeOptionsIdentifier+".selectionMode", (newValue: any, oldValue: SelectionMode) => {
+                /*if (typeof (newValue) === 'string' || newValue instanceof String) {
+                    var originalNewValue = newValue;
+                    newValue = SelectionMode[newValue];
+                    //if (typeof (newValue) == "undefined") {
+                    //    newValue = this.internalScope.$eval(originalNewValue);
+                    //    newValue = SelectionMode[newValue];
+                    //}
+                    // this.internalScope["selectionMode"] = newValue;
+                }*/
+                if (newValue !== oldValue) {
+                    // when this value is changing we need to handle the selectedItems
+                    switch (newValue) {
+                        case SelectionMode[SelectionMode.None]:
+                            this.gridOptions.selectedItems.splice(0);
+                            break;
+                        case SelectionMode[SelectionMode.SingleRow]:
+                            if (this.gridOptions.selectedItems.length > 1) {
+                                this.gridOptions.selectedItems.splice(1);
+                            }
+                            break;
+                    }
                 }
             });
         }
@@ -245,19 +296,85 @@ module TrNgGrid{
             this.gridOptions.filterByFields = $.extend({}, this.gridOptions.filterByFields);
         }
 
-        toggleItemSelection(item:any){
-            if(!this.gridOptions.enableSelections)
+        toggleItemSelection(item: any, $event: ng.IAngularEvent) {
+            if (this.gridOptions.selectionMode === SelectionMode[SelectionMode.None])
                 return;
 
-            var itemIndex = this.gridOptions.selectedItems.indexOf(item);
-            if(itemIndex>=0){
-                this.gridOptions.selectedItems.splice(itemIndex, 1);
-            }
-            else{
-                if(!this.gridOptions.enableMultiRowSelections){
+            switch (this.gridOptions.selectionMode) {
+                case SelectionMode[SelectionMode.MultiRowWithKeyModifiers]:
+                    if (!$event.ctrlKey && !$event.shiftKey) {
+                        // if neither key modifiers are pressed, clear the selection and start fresh
+                        var itemIndex = this.gridOptions.selectedItems.indexOf(item);
+                        this.gridOptions.selectedItems.splice(0);
+                        if (itemIndex < 0) {
+                            this.gridOptions.selectedItems.push(item);
+                        }
+                    }
+                    else {
+                        if ($event.ctrlKey) {
+                            // the ctrl key deselects or selects the item
+                            var itemIndex = this.gridOptions.selectedItems.indexOf(item);
+                            if (itemIndex >= 0) {
+                                this.gridOptions.selectedItems.splice(itemIndex, 1);
+                            }
+                            else {
+                                this.gridOptions.selectedItems.push(item);
+                            }
+                        }
+                        else if ($event.shiftKey) {
+                            // clear undesired selections, if the styles are not applied
+                            if (document.selection && document.selection.empty) {
+                                document.selection.empty();
+                            } else if (window.getSelection) {
+                                var sel = window.getSelection();
+                                sel.removeAllRanges();
+                            }
+
+                            // the shift key will always select items from the last selected item
+                            var firstItemIndex = -1;
+                            if (this.gridOptions.selectedItems.length > 0) {
+                                firstItemIndex = this.gridOptions.items.indexOf(this.gridOptions.selectedItems[this.gridOptions.selectedItems.length - 1]);
+                            }
+                            if (firstItemIndex < 0) {
+                                firstItemIndex = 0;
+                            }
+                            var lastItemIndex = this.gridOptions.items.indexOf(item);
+                            if (lastItemIndex < 0) {
+                                // this is an error
+                                throw "Invalid selection on a key modifier selection mode";
+                            }
+                            if (lastItemIndex < firstItemIndex) {
+                                var tempIndex = firstItemIndex;
+                                firstItemIndex = lastItemIndex;
+                                lastItemIndex = tempIndex;
+                            }
+
+                            // now select everything in between. remember that a shift modifier can never be used for de-selecting items
+                            for (var currentItemIndex = firstItemIndex; currentItemIndex <= lastItemIndex; currentItemIndex++) {
+                                var currentItem = this.gridOptions.items[currentItemIndex];
+                                if(this.gridOptions.selectedItems.indexOf(currentItem) < 0){
+                                    this.gridOptions.selectedItems.push(currentItem);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case SelectionMode[SelectionMode.SingleRow]:
+                    var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                     this.gridOptions.selectedItems.splice(0);
-                }
-                this.gridOptions.selectedItems.push(item);
+                    if (itemIndex < 0) {
+                        this.gridOptions.selectedItems.push(item);
+                    }
+                    break;
+                case SelectionMode[SelectionMode.MultiRow]:
+                    var itemIndex = this.gridOptions.selectedItems.indexOf(item);
+                    if (itemIndex >= 0) {
+                        this.gridOptions.selectedItems.splice(itemIndex, 1);
+                    }
+                    else {
+                        this.gridOptions.selectedItems.push(item);
+                    }
+                    break;
             }
         }
 
@@ -287,7 +404,7 @@ module TrNgGrid{
             var target = scope[scopeTargetIdentifier];
 
             for(var propName in target){
-                var attributeExists = typeof(attrs[propName])!="undefined" && attrs[propName]!=null;
+                var attributeExists = typeof (attrs[propName]) != "undefined" && attrs[propName] != null;
 
                 if(attributeExists){
                     var isArray = false;
@@ -299,26 +416,34 @@ module TrNgGrid{
                     }
 
                     //allow arrays to be changed: if(!isArray){
-                    var compiledAttr = this.$parse(attrs[propName]);
-                    var dualDataBindingPossible = /*typeof(compiledAttr)!="array" &&*/ compiledAttr && compiledAttr.assign; // very fragile, replace it as soon as possible
-                    if(dualDataBindingPossible){
-                        ((propName:string)=>
-                        {
-                            // set up one of the bindings
-                            scope.$watch(scopeTargetIdentifier+"."+propName, (newValue:any, oldValue:any)=>{
-                                if(newValue!==oldValue){
-                                        scope[propName] = target[propName];
-                                }
-                            });
-
-                            // set up the other one
-                            scope.$watch(propName, (newValue:any, oldValue:any)=>{
-                                if(newValue!==oldValue){
-                                    target[propName] = scope[propName];
-                                }
-                            });
-                        })(propName);
+                    var compiledAttrGetter: ng.ICompiledExpression = null;
+                    try {
+                        compiledAttrGetter = this.$parse(attrs[propName]);
                     }
+                    catch(ex)
+                    {
+                        // angular fails to parse literal bindings '@', thanks angular team
+                    }
+                    ((propName: string) => {
+                        if (!compiledAttrGetter || !compiledAttrGetter.constant) {
+                            // watch for a change in value and set it on our internal scope
+                            scope.$watch(propName, (newValue: any, oldValue: any) => {
+                                if (newValue !== oldValue) {
+                                    target[propName] = newValue;
+                                }
+                            });
+                        }
+
+                        var compiledAttrSetter:(context: any, value: any)=> any = (compiledAttrGetter && compiledAttrGetter.assign) ? compiledAttrGetter.assign : null;
+                        if (compiledAttrSetter) {
+                            // a setter exists on the scope, make sure we watch our internals and copy them over
+                            scope.$watch(scopeTargetIdentifier + "." + propName, (newValue: any, oldValue: any) => {
+                                if (newValue !== oldValue) {
+                                    compiledAttrSetter(scope, newValue);
+                                }
+                            });
+                        }
+                    })(propName);
                 }
             }
         }
@@ -350,8 +475,9 @@ module TrNgGrid{
                         totalItems:'=?',
                         enableFiltering:'=?',
                         enableSorting:'=?',
-                        enableSelections:'=?',
-                        enableMultiRowSelections:'=?',
+                        enableSelections:'=?', // deprecated
+                        enableMultiRowSelections: '=?', // deprecated
+                        selectionMode:'@',
                         onDataRequired:'&',
                         onDataRequiredDelay:'=?'
                     },
@@ -625,7 +751,7 @@ module TrNgGrid{
                             post: function (scope: IGridBodyScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
                                 // set up the scope
                                 scope.gridOptions = controller.gridOptions;
-                                scope.toggleItemSelection = (item) => controller.toggleItemSelection(item);
+                                scope.toggleItemSelection = (item,$event) => controller.toggleItemSelection(item,$event);
 
                                 // find the body row template, which was initially excluded from the compilation
                                 // apply the ng-repeat
@@ -643,7 +769,7 @@ module TrNgGrid{
 
                                 bodyTemplateRow.attr("ng-repeat", ngRepeatAttrValue);
                                 if(!bodyTemplateRow.attr("ng-click")){
-                                    bodyTemplateRow.attr("ng-click", "toggleItemSelection(gridItem)");
+                                    bodyTemplateRow.attr("ng-click", "toggleItemSelection(gridItem, $event)");
                                 }
                                 bodyTemplateRow.attr("ng-class","{'"+selectedRowCssClass+"':gridOptions.selectedItems.indexOf(gridItem)>=0}");
 

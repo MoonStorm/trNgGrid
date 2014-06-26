@@ -74,6 +74,8 @@ var TrNgGridDemo;
             });
             };
             */
+            $scope.SelectionMode = TrNgGrid.SelectionMode;
+
             $scope.addNew = function () {
                 _this.addNewRandomItem($scope.myItems);
             };
@@ -192,6 +194,8 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/columns.html'
             }).when('/Paging', {
                 templateUrl: 'demo/html/paging.html'
+            }).when('/Selections', {
+                templateUrl: 'demo/html/selections.html'
             }).when('/ServerSide', {
                 templateUrl: 'demo/html/serverside.html'
             }).when('/Templates', {
