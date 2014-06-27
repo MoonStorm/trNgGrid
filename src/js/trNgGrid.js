@@ -1,5 +1,6 @@
 /// <reference path="../external/typings/jquery/jquery.d.ts"/>
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
+"use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
     (function (SelectionMode) {
@@ -92,7 +93,7 @@ var TrNgGrid;
             this.externalScope = this.internalScope.$parent;
 
             //link the outer scope with the internal one
-            this.linkScope(this.internalScope, scopeOptionsIdentifier, $attrs);
+            this.linkScope(this.internalScope, this.externalScope, scopeOptionsIdentifier, $attrs);
 
             //set up watchers for some of the special attributes we support
             if (this.gridOptions.onDataRequired) {
@@ -286,12 +287,12 @@ var TrNgGrid;
             });
         };
 
-        GridController.prototype.linkScope = function (scope, scopeTargetIdentifier, attrs) {
+        GridController.prototype.linkScope = function (internalScope, externalScope, scopeTargetIdentifier, attrs) {
             // this method shouldn't even be here
             // but it is because we want to allow people to either set attributes with either a constant or a watchable variable
             // watch for a resolution to issue #5951 on angular
             // https://github.com/angular/angular.js/issues/5951
-            var target = scope[scopeTargetIdentifier];
+            var target = internalScope[scopeTargetIdentifier];
 
             for (var propName in target) {
                 var attributeExists = typeof (attrs[propName]) != "undefined" && attrs[propName] != null;
@@ -300,8 +301,8 @@ var TrNgGrid;
                     var isArray = false;
 
                     // initialise from the scope first
-                    if (typeof (scope[propName]) != "undefined" && scope[propName] != null) {
-                        target[propName] = scope[propName];
+                    if (typeof (internalScope[propName]) != "undefined" && internalScope[propName] != null) {
+                        target[propName] = internalScope[propName];
                         isArray = target[propName] instanceof Array;
                     }
 
@@ -312,10 +313,10 @@ var TrNgGrid;
                     } catch (ex) {
                         // angular fails to parse literal bindings '@', thanks angular team
                     }
-                    (function (propName) {
+                    (function (propName, compiledAttrGetter) {
                         if (!compiledAttrGetter || !compiledAttrGetter.constant) {
                             // watch for a change in value and set it on our internal scope
-                            scope.$watch(propName, function (newValue, oldValue) {
+                            internalScope.$watch(propName, function (newValue, oldValue) {
                                 if (newValue !== oldValue) {
                                     target[propName] = newValue;
                                 }
@@ -325,13 +326,13 @@ var TrNgGrid;
                         var compiledAttrSetter = (compiledAttrGetter && compiledAttrGetter.assign) ? compiledAttrGetter.assign : null;
                         if (compiledAttrSetter) {
                             // a setter exists on the scope, make sure we watch our internals and copy them over
-                            scope.$watch(scopeTargetIdentifier + "." + propName, function (newValue, oldValue) {
+                            internalScope.$watch(scopeTargetIdentifier + "." + propName, function (newValue, oldValue) {
                                 if (newValue !== oldValue) {
-                                    compiledAttrSetter(scope, newValue);
+                                    compiledAttrSetter(externalScope, newValue);
                                 }
                             });
                         }
-                    })(propName);
+                    })(propName, compiledAttrGetter);
                 }
             }
         };
@@ -815,4 +816,3 @@ var TrNgGrid;
         }
     ]);
 })(TrNgGrid || (TrNgGrid = {}));
-//# sourceMappingURL=trNgGrid.js.map

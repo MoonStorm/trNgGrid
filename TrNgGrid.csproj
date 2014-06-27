@@ -69,9 +69,6 @@
     <Content Include="demo\js\index.min.js.map">
       <DependentUpon>index.js</DependentUpon>
     </Content>
-    <Content Include="src\js\trNgGrid.min.js.map">
-      <DependentUpon>trNgGrid.js</DependentUpon>
-    </Content>
     <Content Include="LICENSE" />
     <Content Include="README.md" />
     <None Include="web.Debug.config">

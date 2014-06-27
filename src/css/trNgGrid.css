@@ -7,7 +7,7 @@
 
 .tr-ng-grid .tr-ng-grid-footer .pagination {
   /*  float:right;*/
-  margin: 0px;
+  margin: 0px; 
 }
 
 .tr-ng-grid .tr-ng-grid-footer.form-inline .form-control {
