@@ -302,7 +302,7 @@ module TrNgGrid{
 
             switch (this.gridOptions.selectionMode) {
                 case SelectionMode[SelectionMode.MultiRowWithKeyModifiers]:
-                    if (!$event.ctrlKey && !$event.shiftKey) {
+                    if (!$event.ctrlKey && !$event.shiftKey && !$event.metaKey) {
                         // if neither key modifiers are pressed, clear the selection and start fresh
                         var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                         this.gridOptions.selectedItems.splice(0);
@@ -311,7 +311,7 @@ module TrNgGrid{
                         }
                     }
                     else {
-                        if ($event.ctrlKey) {
+                        if ($event.ctrlKey || $event.metaKey) {
                             // the ctrl key deselects or selects the item
                             var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                             if (itemIndex >= 0) {

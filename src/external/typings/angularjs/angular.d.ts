@@ -259,6 +259,7 @@ declare module ng {
         ctrlKey:boolean;
         altKey: boolean;
         shiftKey: boolean;
+        metaKey: boolean;
 
         // Available only events that were $emit-ted
         stopPropagation?: Function;

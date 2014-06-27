@@ -200,7 +200,7 @@ var TrNgGrid;
 
             switch (this.gridOptions.selectionMode) {
                 case SelectionMode[3 /* MultiRowWithKeyModifiers */]:
-                    if (!$event.ctrlKey && !$event.shiftKey) {
+                    if (!$event.ctrlKey && !$event.shiftKey && !$event.metaKey) {
                         // if neither key modifiers are pressed, clear the selection and start fresh
                         var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                         this.gridOptions.selectedItems.splice(0);
@@ -208,7 +208,7 @@ var TrNgGrid;
                             this.gridOptions.selectedItems.push(item);
                         }
                     } else {
-                        if ($event.ctrlKey) {
+                        if ($event.ctrlKey || $event.metaKey) {
                             // the ctrl key deselects or selects the item
                             var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                             if (itemIndex >= 0) {
@@ -816,3 +816,4 @@ var TrNgGrid;
         }
     ]);
 })(TrNgGrid || (TrNgGrid = {}));
+//# sourceMappingURL=trNgGrid.js.map
