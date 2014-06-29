@@ -56,7 +56,6 @@
     <Content Include="src\external\typings\angularjs\angular-sanitize.d.ts" />
     <Content Include="src\external\typings\angularjs\angular-scenario.d.ts" />
     <Content Include="src\external\typings\angularjs\angular.d.ts" />
-    <Content Include="src\external\typings\jquery\jquery.d.ts" />
     <Content Include="src\js\trNgGrid-no-jquery-angular-is-bugged.ts" />
     <TypeScriptCompile Include="src\js\trNgGrid.ts" />
     <Content Include="src\js\trNgGrid.js">

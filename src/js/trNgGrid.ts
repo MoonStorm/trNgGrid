@@ -1,4 +1,3 @@
-/// <reference path="../external/typings/jquery/jquery.d.ts"/>
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
 "use strict";
 module TrNgGrid{
@@ -64,7 +63,8 @@ module TrNgGrid{
     footerPagerTemplateId = pagerDirective + ".html";
 
     var columnHeaderDirective="trNgGridColumn";
-    var columnHeaderDirectiveAttribute="tr-ng-grid-column";
+    var columnHeaderDirectiveAttribute = "tr-ng-grid-column";
+    var autoColumnHeadertDirectiveAttribute = columnHeaderDirectiveAttribute + "-auto";
 
     var columnSortDirective="trNgGridColumnSort";
     columnSortDirectiveAttribute="tr-ng-grid-column-sort";
@@ -103,6 +103,7 @@ module TrNgGrid{
 
     interface IGridOptions{
         items: Array<any>;
+        fields: Array<string>;
         selectedItems:Array<any>;
         filterBy:string;
         filterByFields:Object;
@@ -165,14 +166,14 @@ module TrNgGrid{
         public externalScope:ng.IScope;
         public internalScope:ng.IScope;
         public gridOptions:IGridOptions;
-        private gridElement:JQuery;
+        private gridElement:ng.IAugmentedJQuery;
         private scheduledRecompilationDereg:Function;
         private dataRequestPromise:ng.IPromise<any>;
 
         constructor(
             private $compile:ng.ICompileService,
             $scope:IGridScope,
-            $element:JQuery,
+            $element:ng.IAugmentedJQuery,
             $attrs:ng.IAttributes,
             private $parse:ng.IParseService,
             private $timeout: ng.ITimeoutService) {
@@ -498,7 +499,8 @@ module TrNgGrid{
                     enableMultiRowSelections: '=?', // deprecated
                     selectionMode: '@',
                     onDataRequired: '&',
-                    onDataRequiredDelay: '=?'
+                    onDataRequiredDelay: '=?',
+                    fields:'=?'
                 },
                 // executed prior to pre-linking phase but after compilation
                 // as we're creating an isolated scope, we need something to link them
@@ -509,10 +511,11 @@ module TrNgGrid{
                     var insertFooterElement = false;
                     var insertHeadElement = false;
 
+                    debugger;
                     // make sure the header is present
-                    var tableHeadElement = templateElement.children("thead");
+                    var tableHeadElement = templateElement.find("thead").first();
                     if (tableHeadElement.length == 0) {
-                        tableHeadElement = $("<thead>");
+                        tableHeadElement = angular.element("<table><thead></thead></table>").find("thead");
                         insertHeadElement = true;
                     }
                     var tableHeadRowTemplate = tableHeadElement.children("tr");
@@ -563,6 +566,12 @@ module TrNgGrid{
 
                     if (insertFooterElement) {
                         tableFooterElement.insertBefore(tableBodyElement);
+                    }
+
+                    return {
+                        // we receive a reference to a real element that will appear in the DOM, after the controller was created, but before binding setup
+                        pre: function (scope: IGridBodyScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
+                        }
                     }
                 }
             };

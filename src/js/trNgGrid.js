@@ -1,4 +1,3 @@
-/// <reference path="../external/typings/jquery/jquery.d.ts"/>
 /// <reference path="../external/typings/angularjs/angular.d.ts"/>
 "use strict";
 var TrNgGrid;
@@ -36,6 +35,7 @@ var TrNgGrid;
 
     var columnHeaderDirective = "trNgGridColumn";
     var columnHeaderDirectiveAttribute = "tr-ng-grid-column";
+    var autoColumnHeadertDirectiveAttribute = columnHeaderDirectiveAttribute + "-auto";
 
     var columnSortDirective = "trNgGridColumnSort";
     TrNgGrid.columnSortDirectiveAttribute = "tr-ng-grid-column-sort";
@@ -375,7 +375,8 @@ var TrNgGrid;
                     enableMultiRowSelections: '=?',
                     selectionMode: '@',
                     onDataRequired: '&',
-                    onDataRequiredDelay: '=?'
+                    onDataRequiredDelay: '=?',
+                    fields: '=?'
                 },
                 // executed prior to pre-linking phase but after compilation
                 // as we're creating an isolated scope, we need something to link them
@@ -386,10 +387,12 @@ var TrNgGrid;
                     var insertFooterElement = false;
                     var insertHeadElement = false;
 
+                    debugger;
+
                     // make sure the header is present
-                    var tableHeadElement = templateElement.children("thead");
+                    var tableHeadElement = templateElement.find("thead").first();
                     if (tableHeadElement.length == 0) {
-                        tableHeadElement = $("<thead>");
+                        tableHeadElement = angular.element("<table><thead></thead></table>").find("thead");
                         insertHeadElement = true;
                     }
                     var tableHeadRowTemplate = tableHeadElement.children("tr");
@@ -437,6 +440,12 @@ var TrNgGrid;
                     if (insertFooterElement) {
                         tableFooterElement.insertBefore(tableBodyElement);
                     }
+
+                    return {
+                        // we receive a reference to a real element that will appear in the DOM, after the controller was created, but before binding setup
+                        pre: function (scope, instanceElement, tAttrs, controller) {
+                        }
+                    };
                 }
             };
         }]).directive(headerDirective, [
