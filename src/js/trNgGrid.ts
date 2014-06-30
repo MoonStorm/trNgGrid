@@ -930,6 +930,7 @@ module TrNgGrid{
                     require: '^' + tableDirective,
                     scope: {
                         isCustomized: '=?',
+                        fieldName: '=?',
                         columnDefinitionIndex: '=?' + cellBodyDirective // the value of the directive contains the field index
                     },
                     templateUrl: cellBodyTemplateId,

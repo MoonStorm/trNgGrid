@@ -743,6 +743,7 @@ var TrNgGrid;
                 require: '^' + tableDirective,
                 scope: {
                     isCustomized: '=?',
+                    fieldName: '=?',
                     columnDefinitionIndex: '=?' + cellBodyDirective
                 },
                 templateUrl: TrNgGrid.cellBodyTemplateId,
