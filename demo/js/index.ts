@@ -36,7 +36,7 @@ module TrNgGridDemo{
         Uppercase
     }
 
-    export class TestController{
+    export class TestController{ 
         constructor(private $scope:ITestControllerScope, $window:ng.IWindowService, $timeout:ng.ITimeoutService){
             $scope.externalTestProp = "Externals should be visible";
             $scope.myGlobalFilter="";
@@ -120,7 +120,7 @@ module TrNgGridDemo{
             var addressColumnFilter = this.$scope.myColumnFilter["address"]?this.$scope.myColumnFilter["address"]:"";
 
             items.push({
-                id: this.randomString(Math.random() * 2 + 1, RndGenOptions.Numbers) + idColumnFilter,
+                id: parseInt(this.randomString(Math.random() * 2 + 1, RndGenOptions.Numbers) + idColumnFilter),
                 name: this.randomUpercase() + this.randomString(Math.random() * 5 + 1, RndGenOptions.Lowercase) + this.$scope.myGlobalFilter + nameColumnFilter,
                 address: this.$scope.myGlobalFilter + this.randomString(2, RndGenOptions.Numbers) + " " + this.randomUpercase() + this.randomString(Math.random() * 10 + 1, RndGenOptions.Lowercase) + addressColumnFilter + " Ave",
             });
@@ -211,7 +211,7 @@ module TrNgGridDemo{
     }
 
     angular.module("trNgGridDemo", ["ngRoute", "ngAnimate", "trNgGrid"])
-        .config(["$routeProvider", "$locationProvider", ($routeProvider:any, $locationProvider:any)=>{
+        .config(["$routeProvider", "$locationProvider", ($routeProvider: any, $locationProvider: any) => {
             $routeProvider
                 .when('/Common', {
                     templateUrl: 'demo/html/common.html'
@@ -229,7 +229,7 @@ module TrNgGridDemo{
                     templateUrl: 'demo/html/serverside.html'
                 })
                 .when('/Templates', {
-                    templateUrl: 'demo/html/templates.html' 
+                    templateUrl: 'demo/html/templates.html'
                 })
                 .when('/GlobalOptions', {
                     templateUrl: 'demo/html/globaloptions.html'
@@ -246,18 +246,18 @@ module TrNgGridDemo{
                 .when('/TestFixedHeaderFooter', {
                     templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
                 })
-                .otherwise({  
+                .otherwise({
                     templateUrl: 'demo/html/default.html'
-                });     
-             
+                });
+
             // configure html5 to get links working on jsfiddle
             //$locationProvider.html5Mode(true);
         }])
-        .directive("projectMarkupTo",[
-            ()=>{
-                return{
-                    restrict:"EA",
-                    template: (element:JQuery, tAttr:ng.IAttributes) => {
+        .directive("projectMarkupTo", [
+            () => {
+                return {
+                    restrict: "EA",
+                    template: (element: JQuery, tAttr: ng.IAttributes) => {
                         var projectionElementId = tAttr["projectMarkupTo"];
                         var currentElementContents = element
                             .html()
@@ -269,65 +269,64 @@ module TrNgGridDemo{
                     }
                 };
             }
-        ])
-        .directive("fixedHeaderFooter", [
-            () => {
-                var applyFixedHeaderFooter = (grid: JQuery) => {
-                    // too buggy, doesn't work
-                    // $(element).fixedHeaderTable({ height: attrs['fixedHeaderFooter'] }).show();
-
-                    // http://larrysteinle.com/2011/12/04/jqueryscrolltable/
-                    var scrollBarWidth = 16; //IE, Chrome, Mozilla & Opera use Size 16 by default
-                    var $scroll = $(grid);
-                    var $table = $scroll.find("table");
-                    var $header = $table.find("thead:first-child");
-                    var $footer = $table.find("tfoot:first-child");
-                    var $body = $table.find("tbody:first-child");
-
-                    //Remove Cell Width Formatting
-                    $body.find("tr:first-child").find("th, td").each(function (i, c) { $(c).css("width", "auto"); });
-                    $header.find("th, td").each(function (i, c) { $(c).css("width", "auto"); });
-                    $footer.find("th, td").each(function (i, c) { $(c).css("width", "auto"); });
-
-                    //Set Width of Table, Header, Footer and Body Elements
-                    $table.css("width", $scroll.width() -scrollBarWidth + 2);
-
-                    //Disable positioning so browser can do all the hard work.
-                    //This allows us to support min-width, max-width, nowrap, etc.
-                    $header.css("position", "relative");
-                    $footer.css("position", "relative");
-
-                    //Navigate thru each cell hard coding the width so when the association
-                    //is broken all of the columns will continue to align based on normal
-                    //table rules. Only traverse the first row cells in the body for efficiency.
-                    $body.find("tr:first-child").find("th, td").each(function (i, c) { $(c).css("width", $(c).width()); });
-                    $header.find("th, td").each(function (i, c) { $(c).css("width", $(c).width()); });
-                    $footer.find("th, td").each(function (i, c) { $(c).css("width", $(c).width()); });
-
-                    //Enable positioning for fixed header positioning.
-                    $header.css("position", "absolute");
-                    $footer.css("position", "absolute");
-
-                    $table.css("width", $scroll.width() - scrollBarWidth - 3);
-
-                    //Position Heading Based on Height of Heading
-                    $scroll.css("margin-top", ($header.height() + 1) + "px");
-                    $header.css("margin-top", (($header.height() - 1) * -1) + "px");
-
-                    //Position Footer Based on Height of Scroll Host
-                    $scroll.css("margin-bottom", $footer.css("height"));
-                    $footer.css("margin-top", $scroll.height() - 1 + "px");
-                };
-
-                return {
-                    // Restrict it to be an attribute in this case
-                    restrict: 'A',
-                    // responsible for registering DOM listeners as well as updating the DOM
-                    link: function (scope: ng.IScope, element: JQuery, attrs: ng.IAttributes) {
-                    }
-                };
-            }
         ]);
+        //.directive("fixedHeaderFooter", [
+        //    () => {
+        //        var applyFixedHeaderFooter = (grid: JQuery) => {
+        //            // too buggy, doesn't work
+        //            // $(element).fixedHeaderTable({ height: attrs['fixedHeaderFooter'] }).show();
 
+        //            // http://larrysteinle.com/2011/12/04/jqueryscrolltable/
+        //            var scrollBarWidth = 16; //IE, Chrome, Mozilla & Opera use Size 16 by default
+        //            var $scroll = $(grid);
+        //            var $table = $scroll.find("table");
+        //            var $header = $table.find("thead:first-child");
+        //            var $footer = $table.find("tfoot:first-child");
+        //            var $body = $table.find("tbody:first-child");
+
+        //            //Remove Cell Width Formatting
+        //            $body.find("tr:first-child").find("th, td").each(function (i, c) { $(c).css("width", "auto"); });
+        //            $header.find("th, td").each(function (i, c) { $(c).css("width", "auto"); });
+        //            $footer.find("th, td").each(function (i, c) { $(c).css("width", "auto"); });
+
+        //            //Set Width of Table, Header, Footer and Body Elements
+        //            $table.css("width", $scroll.width() -scrollBarWidth + 2);
+
+        //            //Disable positioning so browser can do all the hard work.
+        //            //This allows us to support min-width, max-width, nowrap, etc.
+        //            $header.css("position", "relative");
+        //            $footer.css("position", "relative");
+
+        //            //Navigate thru each cell hard coding the width so when the association
+        //            //is broken all of the columns will continue to align based on normal
+        //            //table rules. Only traverse the first row cells in the body for efficiency.
+        //            $body.find("tr:first-child").find("th, td").each(function (i, c) { $(c).css("width", $(c).width()); });
+        //            $header.find("th, td").each(function (i, c) { $(c).css("width", $(c).width()); });
+        //            $footer.find("th, td").each(function (i, c) { $(c).css("width", $(c).width()); });
+
+        //            //Enable positioning for fixed header positioning.
+        //            $header.css("position", "absolute");
+        //            $footer.css("position", "absolute");
+
+        //            $table.css("width", $scroll.width() - scrollBarWidth - 3);
+
+        //            //Position Heading Based on Height of Heading
+        //            $scroll.css("margin-top", ($header.height() + 1) + "px");
+        //            $header.css("margin-top", (($header.height() - 1) * -1) + "px");
+
+        //            //Position Footer Based on Height of Scroll Host
+        //            $scroll.css("margin-bottom", $footer.css("height"));
+        //            $footer.css("margin-top", $scroll.height() - 1 + "px");
+        //        };
+
+        //        return {
+        //            // Restrict it to be an attribute in this case
+        //            restrict: 'A',
+        //            // responsible for registering DOM listeners as well as updating the DOM
+        //            link: function (scope: ng.IScope, element: JQuery, attrs: ng.IAttributes) {
+        //            }
+        //        };
+        //    }
+        //]);
 }
 
