@@ -1,4 +1,4 @@
-/// <reference path="../external/typings/angularjs/angular.d.ts"/>
+﻿/// <reference path="../external/typings/angularjs/angular.d.ts"/>
 "use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
@@ -14,12 +14,12 @@ var TrNgGrid;
     TrNgGrid.defaultColumnOptions = {
         cellWidth: null,
         cellHeight: null,
-        displayAlign: "center",
+        displayAlign: "left",
         displayFormat: null,
         displayName: null,
         filter: null,
-        enableFiltering: true,
-        enableSorting: true
+        enableFiltering: null,
+        enableSorting: null
     };
 
     var tableDirective = "trNgGrid";
@@ -48,23 +48,16 @@ var TrNgGrid;
 
     var cellHeaderDirective = "trNgGridHeaderCell";
     var cellHeaderDirectiveAttribute = "tr-ng-grid-header-cell";
-    var cellHeaderStandardTemplateDirective = "trNgGridHeaderCellStandard";
-    var cellHeaderCustomTemplateDirective = "trNgGridHeaderCellCustom";
-    var cellHeaderStandardTemplateDirectiveAttribute = "tr-ng-grid-header-cell-standard";
-    var cellHeaderCustomTemplateDirectiveAttribute = "tr-ng-grid-header-cell-custom";
-    TrNgGrid.cellHeaderStandardTemplateId = cellHeaderStandardTemplateDirective + ".html";
-    TrNgGrid.cellHeaderCustomTemplateId = cellHeaderCustomTemplateDirective + ".html";
+    var cellHeaderTemplateDirective = "trNgGridHeaderCellTemplate";
+    var cellHeaderTemplateDirectiveAttribute = "tr-ng-grid-header-cell-template";
+    TrNgGrid.cellHeaderTemplateId = cellHeaderTemplateDirective + ".html";
 
     var cellBodyDirective = "trNgGridBodyCell";
     var cellBodyDirectiveAttribute = "tr-ng-grid-body-cell";
-    var cellBodyStandardTemplateDirective = "trNgGridBodyCellStandard";
-    var cellBodyStandardTemplateDirectiveAttribute = "tr-ng-grid-body-cell-standard";
-    var cellBodyCustomTemplateDirective = "trNgGridBodyCellCustom";
-    var cellBodyCustomTemplateDirectiveAttribute = "tr-ng-grid-body-cell-custom";
-    TrNgGrid.cellBodyStandardTemplateId = cellBodyStandardTemplateDirective + ".html";
-    TrNgGrid.cellBodyCustomTemplateId = cellBodyCustomTemplateDirective + ".html";
+    var cellBodyTemplateDirective = "trNgGridBodyCellTemplate";
+    var cellBodyTemplateDirectiveAttribute = "tr-ng-grid-body-cell-template";
+    TrNgGrid.cellBodyTemplateId = cellBodyTemplateDirective + ".html";
 
-    // var autoColumnHeaderDirectiveAttribute = columnHeaderDirectiveAttribute + "-auto";
     var columnSortDirective = "trNgGridColumnSort";
     TrNgGrid.columnSortDirectiveAttribute = "tr-ng-grid-column-sort";
     TrNgGrid.columnSortTemplateId = columnSortDirective + ".html";
@@ -76,7 +69,8 @@ var TrNgGrid;
     //var rowPageItemIndexAttribute="tr-ng-grid-row-page-item-index";
     TrNgGrid.tableCssClass = "tr-ng-grid table table-bordered table-hover"; // at the time of coding, table-striped is not working properly with selection
     TrNgGrid.cellCssClass = "tr-ng-cell";
-    TrNgGrid.columnContentsCssClass = "tr-ng-column-header " + TrNgGrid.cellCssClass;
+    TrNgGrid.headerCellCssClass = "tr-ng-column-header " + TrNgGrid.cellCssClass;
+    TrNgGrid.bodyCellCssClass = TrNgGrid.cellCssClass;
     TrNgGrid.columnTitleCssClass = "tr-ng-title";
     TrNgGrid.columnSortCssClass = "tr-ng-sort";
     TrNgGrid.columnFilterCssClass = "tr-ng-column-filter";
@@ -125,11 +119,9 @@ var TrNgGrid;
     };
 
     /**
-    * Combines two sets of cell infos. The first set will always take precedence.
-    * If equalityInsertSecondSetItem is set to true, when two items match, the item in the second set will be returned in the output.
-    * If ignoreMissingFieldsSecondSet is set to true, missing cells bound to fields will not be combined.
+    * Combines two sets of cell infos. The first set will take precedence in the checks but the combined items will contain items from the second set if they match.
     */
-    var combineGridCellInfos = function (firstSet, secondSet, ignoreMissingFieldsSecondSet) {
+    var combineGridCellInfos = function (firstSet, secondSet, addExtraItemsFirstSet, addExtraItemsSecondSet) {
         var combinedSet = [];
         var secondTempSet = secondSet.slice(0);
         angular.forEach(firstSet, function (firstSetColumn) {
@@ -145,18 +137,18 @@ var TrNgGrid;
             }
 
             if (foundSecondSetColumn) {
-                combinedSet.push(angular.extend({}, firstSetColumn, foundSecondSetColumn));
-            } else {
-                combinedSet.push(angular.extend({}, firstSetColumn));
+                combinedSet.push(foundSecondSetColumn);
+            } else if (addExtraItemsFirstSet) {
+                combinedSet.push(firstSetColumn);
             }
         });
 
         // add the remaining items from the second set in the combined set
-        angular.forEach(secondTempSet, function (secondSetColumn) {
-            if (!secondSetColumn.isFieldColumn || !ignoreMissingFieldsSecondSet) {
+        if (addExtraItemsSecondSet) {
+            angular.forEach(secondTempSet, function (secondSetColumn) {
                 combinedSet.push(secondSetColumn);
-            }
-        });
+            });
+        }
 
         return combinedSet;
     };
@@ -172,25 +164,29 @@ var TrNgGrid;
     })();
 
     var TemplatedRow = (function () {
-        function TemplatedRow(rowElement, cellTagName, cellDirectiveAttribute) {
-            this.rowElement = rowElement;
+        function TemplatedRow(cellTagName, cellDirectiveAttribute) {
             this.cellTagName = cellTagName;
             this.cellDirectiveAttribute = cellDirectiveAttribute;
             this.cellTagName = this.cellTagName.toUpperCase();
-            this.discoverCells();
+            this.cells = null;
         }
-        TemplatedRow.prototype.syncTemplateToColumnDefinitions = function (columnDefs) {
+        TemplatedRow.prototype.syncTemplateToColumnDefinitions = function (rowElement, columnDefs) {
             var _this = this;
             // clear down the contents of the row template
-            angular.forEach(this.rowElement.children(), function (childItem) {
-                angular.element(childItem).remove();
-            });
+            rowElement.empty();
 
+            //angular.forEach(this.rowElement.children(), (childItem: JQuery) => {
+            //    angular.element(childItem).remove();
+            //});
             // add the elements in order
-            angular.forEach(combineGridCellInfos(columnDefs, this.extractPartialColumnDefinitions(), true), function (gridCell, index) {
+            var rowElementDefinitions = combineGridCellInfos(columnDefs, this.extractPartialColumnDefinitions(rowElement), true, false);
+            angular.forEach(rowElementDefinitions, function (gridCell, index) {
                 var gridCellElement;
-                if (gridCell instanceof TemplatedCell && gridCell.parent === _this) {
-                    var templatedCell = gridCell;
+
+                var templatedCell = gridCell;
+
+                // it might not be a templated cell, beware
+                if (templatedCell.parent === _this && templatedCell.cellElement) {
                     gridCellElement = templatedCell.cellElement;
                 } else {
                     gridCellElement = angular.element("<table><" + _this.cellTagName + "/></table>").find(_this.cellTagName);
@@ -200,7 +196,7 @@ var TrNgGrid;
                 angular.forEach(_this.cellDirectiveAttribute, function (cellDirectiveAttr) {
                     gridCellElement.attr(cellDirectiveAttr, index);
                 });
-                if (gridCellElement.children().length > 0) {
+                if (gridCellElement.children().length > 0 || !gridCell.isFieldColumn) {
                     gridCellElement.attr(isCustomizedAttribute, "true");
                 }
 
@@ -208,34 +204,25 @@ var TrNgGrid;
                     gridCellElement.attr(fieldNameAttribute, gridCell.fieldName);
                 }
 
+                gridCellElement.attr("ng-style", "{\'width\':columnOptions.cellWidth,\'height\':columnOptions.cellHeight}");
+
                 // finally add it to the parent
-                _this.rowElement.append(gridCellElement);
+                rowElement.append(gridCellElement);
             });
         };
 
-        TemplatedRow.prototype.extractPartialColumnDefinitions = function () {
-            var columnDefs = [];
-            var currentColumnDefIndex = 0;
-
-            angular.forEach(this.cells, function (cell) {
-                var columnDef = {
-                    isFieldColumn: cell.isFieldColumn
-                };
-                if (cell.isFieldColumn) {
-                    columnDef.fieldName = cell.fieldName;
-                }
-
-                columnDefs.push(columnDef);
-            });
-
-            return columnDefs;
+        TemplatedRow.prototype.extractPartialColumnDefinitions = function (rowElement) {
+            if (!this.cells) {
+                this.discoverCells(rowElement);
+            }
+            return this.cells;
         };
 
-        TemplatedRow.prototype.discoverCells = function () {
+        TemplatedRow.prototype.discoverCells = function (rowElement) {
             var _this = this;
             this.cells = [];
 
-            angular.forEach(this.rowElement.children(), function (childElement, childIndex) {
+            angular.forEach(rowElement.children(), function (childElement, childIndex) {
                 childElement = angular.element(childElement);
                 if (_this.isValidCell(childElement)) {
                     _this.cells.push(new TemplatedCell(_this, childElement));
@@ -250,21 +237,16 @@ var TrNgGrid;
     })();
 
     var GridController = (function () {
-        function GridController($compile, $scope, $element, $attrs, $parse, $timeout) {
+        function GridController($compile, $isolatedScope, $attrs, $parse, $timeout) {
             var _this = this;
             this.$compile = $compile;
+            this.$isolatedScope = $isolatedScope;
             this.$parse = $parse;
             this.$timeout = $timeout;
-            this.gridElement = $element;
-            var internalScope = $scope;
-
-            $scope.TrNgGrid = TrNgGrid;
-
-            var scopeOptionsIdentifier = "gridOptions";
-
             // initialise the options
             this.gridOptions = {
                 items: [],
+                fields: null,
                 selectedItems: [],
                 filterBy: null,
                 filterByFields: {},
@@ -280,18 +262,18 @@ var TrNgGrid;
                 selectionMode: SelectionMode[2 /* MultiRow */],
                 onDataRequiredDelay: 1000
             };
-            this.gridOptions.onDataRequired = $attrs["onDataRequired"] ? $scope["onDataRequired"] : null;
+            this.gridOptions.onDataRequired = $attrs["onDataRequired"] ? $isolatedScope["onDataRequired"] : null;
             this.gridOptions.gridColumnDefs = [];
-            internalScope[scopeOptionsIdentifier] = this.gridOptions;
 
-            var externalScope = internalScope.$parent;
-
+            //internalScope[scopeOptionsIdentifier] = this.gridOptions;
             //link the outer scope with the internal one
-            this.linkScope(internalScope, externalScope, scopeOptionsIdentifier, $attrs);
+            var externalScope = $isolatedScope.$parent;
+            this.$isolatedScope.gridOptions = this.gridOptions;
+            this.linkScope(this.$isolatedScope, externalScope, "gridOptions", $attrs);
 
             //set up watchers for some of the special attributes we support
             if (this.gridOptions.onDataRequired) {
-                $scope.$watchCollection("[gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.currentPage]", function () {
+                this.$isolatedScope.$watchCollection("[gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.currentPage]", function () {
                     if (_this.dataRequestPromise) {
                         _this.$timeout.cancel(_this.dataRequestPromise);
                         _this.dataRequestPromise = null;
@@ -306,7 +288,7 @@ var TrNgGrid;
             }
 
             // TODO: remove in the future as these settings are deprecated
-            internalScope.$watch(scopeOptionsIdentifier + ".enableMultiRowSelections", function (newValue, oldValue) {
+            this.$isolatedScope.$watch("gridOptions.enableMultiRowSelections", function (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     // in case the user is not using the selectionMode, we assume he's not aware of it
                     if (newValue) {
@@ -319,7 +301,7 @@ var TrNgGrid;
             });
 
             // TODO: remove in the future as these settings are deprecated
-            internalScope.$watch(scopeOptionsIdentifier + ".enableSelections", function (newValue, oldValue) {
+            this.$isolatedScope.$watch("gridOptions.enableSelections", function (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     // in case the user is not using the selectionMode, we assume he's not aware of it
                     if (newValue) {
@@ -334,7 +316,7 @@ var TrNgGrid;
             });
 
             // the new settings
-            internalScope.$watch(scopeOptionsIdentifier + ".selectionMode", function (newValue, oldValue) {
+            this.$isolatedScope.$watch("gridOptions.selectionMode", function (newValue, oldValue) {
                 /*if (typeof (newValue) === 'string' || newValue instanceof String) {
                 var originalNewValue = newValue;
                 newValue = SelectionMode[newValue];
@@ -468,10 +450,8 @@ var TrNgGrid;
             }
         };
 
-        GridController.prototype.alignTableStructureToFields = function ($scope) {
+        GridController.prototype.alignTableStructureToFields = function (gridElement, performCompilation, bypassFieldWatcherRegistration) {
             var _this = this;
-            var instanceElement = this.gridElement;
-
             // make sure we're no longer watching items for column defs
             if (this.columnDefsItemsWatcherDeregistration) {
                 this.columnDefsItemsWatcherDeregistration();
@@ -479,14 +459,18 @@ var TrNgGrid;
             }
 
             // prepare a partial list of column definitions
-            var bodyElement = findChildByTagName(instanceElement, "tbody");
-            var templatedHeader = new TemplatedRow(findChildByTagName(findChildByTagName(instanceElement, "thead"), "tr"), "th", [cellHeaderDirectiveAttribute]);
+            var bodyElement = findChildByTagName(gridElement, "tbody");
+            var headerElement = findChildByTagName(gridElement, "theader");
+
+            if (!this.templatedHeader) {
+                this.templatedHeader = new TemplatedRow(findChildByTagName(findChildByTagName(gridElement, "thead"), "tr"), "th", [cellHeaderDirectiveAttribute]);
+            }
             var templatedHeaderPartialGridColumnDefs = templatedHeader.extractPartialColumnDefinitions();
             var templatedBody = new TemplatedRow(findChildByTagName(bodyElement, "tr"), "td", [cellBodyDirectiveAttribute]);
             var templatedBodyPartialGridColumnDefs = templatedBody.extractPartialColumnDefinitions();
 
             var finalPartialGridColumnDefs = [];
-            var fieldsEnforced = typeof (this.gridOptions.fields) !== "undefined";
+            var fieldsEnforced = this.gridOptions.fields;
             if (fieldsEnforced) {
                 // the fields bound to the options will take precedence
                 angular.forEach(this.gridOptions.fields, function (fieldName) {
@@ -496,19 +480,26 @@ var TrNgGrid;
                     });
                 });
 
-                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedHeaderPartialGridColumnDefs, true);
-                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true);
+                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedHeaderPartialGridColumnDefs, true, false);
+                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, false);
+
+                // watch for a change in values
+                if (!bypassFieldWatcherRegistration) {
+                    this.$isolatedScope.$watchCollection("gridOptions.fields", function (newValue, oldValue) {
+                        _this.alignTableStructureToFields(gridElement, true, true);
+                    });
+                }
             } else {
                 // check for the header markup
                 if (templatedHeaderPartialGridColumnDefs.length > 0) {
                     // header and body will be used for fishing out the field names
-                    finalPartialGridColumnDefs = combineGridCellInfos(templatedHeaderPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, false);
+                    finalPartialGridColumnDefs = combineGridCellInfos(templatedHeaderPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, true);
                 } else {
                     // the object itself will provide the field names
                     if (!this.gridOptions.items || this.gridOptions.items.length == 0) {
                         // register our interest for when we do have something to look at
-                        this.columnDefsItemsWatcherDeregistration = $scope.$watchCollection("gridOptions.items", function (newValue, oldValue) {
-                            _this.alignTableStructureToFields($scope);
+                        this.columnDefsItemsWatcherDeregistration = this.$isolatedScope.$watchCollection("gridOptions.items", function (newValue, oldValue) {
+                            _this.alignTableStructureToFields(gridElement, true);
                         });
                         return;
                     }
@@ -524,7 +515,7 @@ var TrNgGrid;
                     }
 
                     // combine with the body template
-                    finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true);
+                    finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, true);
                 }
             }
 
@@ -541,8 +532,10 @@ var TrNgGrid;
             templatedBodyRow.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | " + TrNgGrid.dataPagingFilter + ":gridOptions");
             templatedBodyRow.attr("ng-class", "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem)>=0}");
 
-            this.$compile(templatedHeader.rowElement)($scope);
-            this.$compile(bodyElement)($scope);
+            if (performCompilation) {
+                this.$compile(templatedHeader.rowElement)(angular.element(templatedHeader.rowElement).scope());
+                this.$compile(bodyElement)(angular.element(bodyElement).scope());
+            }
         };
 
         GridController.prototype.linkAttrs = function (tAttrs, localStorage) {
@@ -625,10 +618,74 @@ var TrNgGrid;
         return GridController;
     })();
 
-    angular.module("trNgGrid", []).directive(tableDirective, [function () {
+    angular.module("trNgGrid", []).directive(tableDirective, [
+        "$compile",
+        function ($compile) {
+            var fixTableElements = function (templateElement) {
+                templateElement.addClass(TrNgGrid.tableCssClass);
+                var insertFooterElement = false;
+                var insertHeadElement = false;
+
+                // make sure the header is present
+                var tableHeadElement = findChildByTagName(templateElement, "thead");
+                if (!tableHeadElement) {
+                    // angular strikes again: https://groups.google.com/forum/#!topic/angular/7poFynsguNw
+                    tableHeadElement = angular.element("<table><thead></thead></table>").find("thead");
+                    insertHeadElement = true;
+                }
+
+                var tableHeadRowTemplate = findChildByTagName(tableHeadElement, "tr");
+                if (!tableHeadRowTemplate) {
+                    tableHeadRowTemplate = angular.element("<table><tr></tr></table>").find("tr");
+                    tableHeadElement.append(tableHeadRowTemplate);
+                }
+
+                // make sure the body is present
+                var tableBodyElement = findChildByTagName(templateElement, "tbody");
+                if (!tableBodyElement) {
+                    tableBodyElement = angular.element("<table><tbody></tbody></table>").find("tbody");
+                    templateElement.append(tableBodyElement);
+                }
+                tableBodyElement.attr(bodyDirectiveAttribute, "");
+
+                var tableBodyRowTemplate = findChildByTagName(tableBodyElement, "tr");
+                if (!tableBodyRowTemplate) {
+                    tableBodyRowTemplate = angular.element("<table><tr></tr></table>").find("tr");
+                    tableBodyElement.append(tableBodyRowTemplate);
+                }
+
+                // make sure the footer is present
+                var tableFooterElement = findChildByTagName(templateElement, "tfoot");
+                if (!tableFooterElement) {
+                    tableFooterElement = angular.element("<table><tfoot></tfoot></table>").find("tfoot");
+                    insertFooterElement = true;
+                }
+                var tableFooterRowTemplate = findChildByTagName(tableFooterElement, "tr");
+                if (!tableFooterRowTemplate) {
+                    tableFooterRowTemplate = angular.element("<table><tr></tr></table>").find("tr");
+                    tableFooterElement.append(tableFooterRowTemplate);
+                }
+                if (!findChildByTagName(tableFooterRowTemplate, "td")) {
+                    var fullTableLengthFooterCell = angular.element("<table><td></td></table>").find("td");
+                    fullTableLengthFooterCell.attr("colspan", "999"); //TODO: fix this hack
+                    tableFooterRowTemplate.append(fullTableLengthFooterCell);
+
+                    var footerOpsContainer = angular.element("<div>");
+                    footerOpsContainer.attr(footerDirectiveAttribute, "");
+                    fullTableLengthFooterCell.append(footerOpsContainer);
+                }
+
+                if (insertFooterElement) {
+                    templateElement.prepend(tableFooterElement);
+                }
+
+                if (insertHeadElement) {
+                    templateElement.prepend(tableHeadElement);
+                }
+            };
+
             return {
                 restrict: 'A',
-                // create an isolated scope, and remember the original scope can be found in the parent
                 scope: {
                     items: '=',
                     selectedItems: '=?',
@@ -648,82 +705,12 @@ var TrNgGrid;
                     onDataRequiredDelay: '=?',
                     fields: '=?'
                 },
-                // executed prior to pre-linking phase but after compilation
-                // as we're creating an isolated scope, we need something to link them
-                controller: ["$compile", "$scope", "$element", "$attrs", "$parse", "$timeout", GridController],
-                // dom manipulation in the compile stage
+                controller: ["$compile", "$scope", "$attrs", "$parse", "$timeout", GridController],
                 compile: function (templateElement, tAttrs) {
-                    templateElement.addClass(TrNgGrid.tableCssClass);
-                    var insertFooterElement = false;
-                    var insertHeadElement = false;
-
-                    // make sure the header is present
-                    var tableHeadElement = findChildByTagName(templateElement, "thead");
-                    if (!tableHeadElement) {
-                        // angular strikes again: https://groups.google.com/forum/#!topic/angular/7poFynsguNw
-                        tableHeadElement = angular.element("<table><thead></thead></table>").find("thead");
-                        insertHeadElement = true;
-                    }
-
-                    var tableHeadRowTemplate = findChildByTagName(tableHeadElement, "tr");
-                    if (!tableHeadRowTemplate) {
-                        tableHeadRowTemplate = angular.element("<table><tr></tr></table>").find("tr");
-                        tableHeadElement.append(tableHeadRowTemplate);
-                    }
-
-                    // make sure the body is present
-                    var tableBodyElement = findChildByTagName(templateElement, "tbody");
-                    if (!tableBodyElement) {
-                        tableBodyElement = angular.element("<table><tbody></tbody></table>").find("tbody");
-                        templateElement.append(tableBodyElement);
-                    }
-                    tableBodyElement.attr(bodyDirectiveAttribute, "");
-
-                    var tableBodyRowTemplate = findChildByTagName(tableBodyElement, "tr");
-                    if (!tableBodyRowTemplate) {
-                        tableBodyRowTemplate = angular.element("<table><tr></tr></table>").find("tr");
-                        tableBodyElement.append(tableBodyRowTemplate);
-                    }
-
-                    // make sure the footer is present
-                    var tableFooterElement = findChildByTagName(templateElement, "tfoot");
-                    if (!tableFooterElement) {
-                        tableFooterElement = angular.element("<table><tfoot></tfoot></table>").find("tfoot");
-                        insertFooterElement = true;
-                    }
-                    var tableFooterRowTemplate = findChildByTagName(tableFooterElement, "tr");
-                    if (!tableFooterRowTemplate) {
-                        tableFooterRowTemplate = angular.element("<table><tr></tr></table>").find("tr");
-                        tableFooterElement.append(tableFooterRowTemplate);
-                    }
-                    if (!findChildByTagName(tableFooterRowTemplate, "td")) {
-                        var fullTableLengthFooterCell = angular.element("<table><td></td></table>").find("td");
-                        fullTableLengthFooterCell.attr("colspan", "999"); //TODO: fix this hack
-                        tableFooterRowTemplate.append(fullTableLengthFooterCell);
-
-                        var footerOpsContainer = angular.element("<div>");
-                        footerOpsContainer.attr(footerDirectiveAttribute, "");
-                        fullTableLengthFooterCell.append(footerOpsContainer);
-                    }
-
-                    if (insertFooterElement) {
-                        templateElement.prepend(tableFooterElement);
-                    }
-
-                    if (insertHeadElement) {
-                        templateElement.prepend(tableHeadElement);
-                    }
-
+                    fixTableElements(templateElement);
                     return {
-                        // we receive a reference to a real element that will appear in the DOM, after the controller was created, but before binding setup
-                        pre: function (scope, instanceElement, tAttrs, controller) {
-                            scope.toggleItemSelection = function (item, $event) {
-                                controller.toggleItemSelection(item, $event);
-                            };
-                            scope.toggleSorting = function (propertyName) {
-                                controller.toggleSorting(propertyName);
-                            };
-                            controller.alignTableStructureToFields(scope);
+                        post: function (isolatedScope, instanceElement, tAttrs, controller, transcludeFn) {
+                            controller.alignTableStructureToFields(instanceElement, true);
                         }
                     };
                 }
@@ -752,12 +739,18 @@ var TrNgGrid;
                     if (isCustomized) {
                         var childrenElements = templateElement.children();
                         var firstChildElement = angular.element(childrenElements[0]);
-                        if (!firstChildElement.attr(cellHeaderCustomTemplateDirectiveAttribute)) {
-                            templateElement.wrap(angular.element("<div></div>").attr(cellHeaderCustomTemplateDirectiveAttribute, ""));
+                        if (childrenElements.length !== 1 || !firstChildElement.attr(cellHeaderTemplateDirectiveAttribute)) {
+                            // wrap the children of the custom template cell
+                            templateElement.empty();
+                            var templateWrapElement = angular.element("<div></div>").attr(cellHeaderTemplateDirectiveAttribute, "");
+                            templateElement.append(templateWrapElement);
+                            angular.forEach(childrenElements, function (childElement) {
+                                templateWrapElement.append(angular.element(childElement));
+                            });
                         }
                     } else {
                         templateElement.empty();
-                        templateElement.append(angular.element("<div></div>").attr(cellHeaderStandardTemplateDirectiveAttribute, ""));
+                        templateElement.append(angular.element("<div></div>").attr(cellHeaderTemplateDirectiveAttribute, ""));
                     }
 
                     return {
@@ -773,10 +766,14 @@ var TrNgGrid;
                             controller.linkAttrs(tAttrs, columnOptions);
 
                             // set up the new scope
+                            scope.TrNgGrid = TrNgGrid;
                             scope.gridOptions = controller.gridOptions;
-                            controller.gridOptions.gridColumnDefs[parseInt(tAttrs[cellHeaderDirective])] = columnOptions;
+                            scope.gridOptions.gridColumnDefs[parseInt(tAttrs[cellHeaderDirective])] = columnOptions;
                             scope.columnOptions = columnOptions;
                             scope.isCustomized = isCustomized;
+                            scope.toggleSorting = function (propertyName) {
+                                controller.toggleSorting(propertyName);
+                            };
 
                             // set up the column title
                             setupColumnTitle(scope);
@@ -791,23 +788,13 @@ var TrNgGrid;
                 }
             };
         }
-    ]).directive(cellHeaderStandardTemplateDirective, [
+    ]).directive(cellHeaderTemplateDirective, [
         function () {
             return {
                 restrict: 'A',
-                templateUrl: TrNgGrid.cellHeaderStandardTemplateId,
-                replace: true,
-                scope: false
-            };
-        }
-    ]).directive(cellHeaderCustomTemplateDirective, [
-        function () {
-            return {
-                restrict: 'A',
-                templateUrl: TrNgGrid.cellHeaderCustomTemplateId,
-                replace: true,
+                templateUrl: TrNgGrid.cellHeaderTemplateId,
                 transclude: true,
-                scope: false
+                replace: true
             };
         }
     ]).directive(bodyDirective, [
@@ -819,7 +806,11 @@ var TrNgGrid;
                 compile: function (templateElement, tAttrs) {
                     return {
                         pre: function (scope, compiledInstanceElement, tAttrs, controller) {
+                            scope.TrNgGrid = TrNgGrid;
                             scope.gridOptions = controller.gridOptions;
+                            scope.toggleItemSelection = function (item, $event) {
+                                controller.toggleItemSelection(item, $event);
+                            };
                         }
                     };
                 }
@@ -850,14 +841,21 @@ var TrNgGrid;
                     if (isCustomized) {
                         var childrenElements = templateElement.children();
                         var firstChildElement = angular.element(childrenElements[0]);
-                        if (!firstChildElement.attr(cellBodyCustomTemplateDirectiveAttribute)) {
-                            templateElement.wrap(angular.element("<div></div>").attr(cellBodyCustomTemplateDirectiveAttribute, ""));
+                        if (childrenElements.length !== 1 || !firstChildElement.attr(cellBodyTemplateDirectiveAttribute)) {
+                            // wrap the children of the custom template cell
+                            templateElement.empty();
+                            var templateWrapElement = angular.element("<div></div>").attr(cellBodyTemplateDirectiveAttribute, "");
+                            templateElement.append(templateWrapElement);
+                            angular.forEach(childrenElements, function (childElement) {
+                                templateWrapElement.append(angular.element(childElement));
+                            });
                         }
                     } else {
                         templateElement.empty();
-                        templateElement.append(angular.element("<div></div>").attr(cellBodyStandardTemplateDirectiveAttribute, ""));
+                        templateElement.append(angular.element("<div></div>").attr(cellBodyTemplateDirectiveAttribute, ""));
                     }
 
+                    //console.log(templateElement[0].outerHTML);
                     return {
                         pre: function (scope, instanceElement, tAttrs, controller, $transclude) {
                             scope.columnOptions = controller.gridOptions.gridColumnDefs[parseInt(tAttrs[cellBodyDirective])];
@@ -868,23 +866,13 @@ var TrNgGrid;
                 }
             };
         }
-    ]).directive(cellBodyStandardTemplateDirective, [
+    ]).directive(cellBodyTemplateDirective, [
         function () {
             return {
                 restrict: 'A',
-                templateUrl: TrNgGrid.cellBodyStandardTemplateId,
-                replace: true,
-                scope: false
-            };
-        }
-    ]).directive(cellBodyCustomTemplateDirective, [
-        function () {
-            return {
-                restrict: 'A',
-                templateUrl: TrNgGrid.cellBodyCustomTemplateId,
-                replace: true,
-                scope: false,
-                transclude: true
+                templateUrl: TrNgGrid.cellBodyTemplateId,
+                transclude: true,
+                replace: true
             };
         }
     ]).directive(columnSortDirective, [
@@ -915,6 +903,7 @@ var TrNgGrid;
                     return {
                         pre: function (scope, compiledInstanceElement, tAttrs, controller) {
                             scope.gridOptions = controller.gridOptions;
+                            scope.TrNgGrid = TrNgGrid;
                         }
                     };
                 }
@@ -1024,9 +1013,13 @@ var TrNgGrid;
         "$templateCache",
         function ($templateCache) {
             // set up default templates
-            $templateCache.put(TrNgGrid.cellHeaderStandardTemplateId, '<div class="' + TrNgGrid.columnContentsCssClass + '">' + '    <div class="' + TrNgGrid.columnTitleCssClass + '">' + '      {{columnTitle}}' + '       <div ' + TrNgGrid.columnSortDirectiveAttribute + '=""></div>' + '    </div>' + '    <div ' + TrNgGrid.columnFilterDirectiveAttribute + '=""></div>' + '</div>');
-            $templateCache.put(TrNgGrid.cellHeaderCustomTemplateId, '<div class="' + TrNgGrid.columnContentsCssClass + '">' + '<div ng-transclude=""></div>' + '</div>');
+            $templateCache.put(TrNgGrid.cellHeaderTemplateId, '<div class="' + TrNgGrid.headerCellCssClass + '" ng-switch="isCustomized">' + '  <div ng-switch-when="true">' + '    <div ng-transclude=""></div>' + '  </div>' + '  <div ng-switch-default>' + '    <div class="' + TrNgGrid.columnTitleCssClass + '">' + '      {{columnTitle}}' + '       <div ' + TrNgGrid.columnSortDirectiveAttribute + '=""></div>' + '    </div>' + '    <div ' + TrNgGrid.columnFilterDirectiveAttribute + '=""></div>' + '  </div>' + '</div>');
 
+            //$templateCache.put(TrNgGrid.cellHeaderCustomTemplateId,
+            //    '<div class="' + TrNgGrid.headerCellCssClass + '">'
+            //    + '<div ng-transclude=""></div>'
+            //    + '</div>'
+            //    );
             /*$templateCache.put(TrNgGrid.bodyTemplateId,
             '<tbody>'
             + ' <tr'
@@ -1036,13 +1029,18 @@ var TrNgGrid;
             + '</tr>'
             + '</tbody>'
             );*/
-            $templateCache.put(TrNgGrid.cellBodyStandardTemplateId, '<div>' + '  {{gridItem[columnOptions.fieldName]}}' + '</div>');
-            $templateCache.put(TrNgGrid.cellBodyCustomTemplateId, '<div>' + '<div ng-transclude=""></div>' + '</div>');
-            $templateCache.put(TrNgGrid.columnFilterTemplateId, '<div ng-show="gridOptions.enableFiltering&&columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">' + ' <div class="' + TrNgGrid.columnFilterInputWrapperCssClass + '">' + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter"></input>' + ' </div>' + '</div>');
-            $templateCache.put(TrNgGrid.columnSortTemplateId, '<div title="Sort"' + ' ng-show="gridOptions.enableSorting&&columnOptions.enableSorting"' + ' ng-click="toggleSorting(columnOptions.fieldName)"' + ' class="' + TrNgGrid.columnSortCssClass + '" > ' + '  <div ng-class="{\'' + TrNgGrid.columnSortActiveCssClass + '\':gridOptions.orderBy==columnOptions.fieldName,\'' + TrNgGrid.columnSortInactiveCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName,\'' + TrNgGrid.columnSortNormalOrderCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName||!gridOptions.orderByReverse,\'' + TrNgGrid.columnSortReverseOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&gridOptions.orderByReverse}" >' + '  </div>' + '</div>');
+            $templateCache.put(TrNgGrid.cellBodyTemplateId, '<div ng-attr-class="' + TrNgGrid.bodyCellCssClass + ' text-{{columnOptions.displayAlign}}" ng-switch="isCustomized">' + '  <div ng-switch-when="true">' + '    <div ng-transclude=""></div>' + '  </div>' + '  <div ng-switch-default>{{cellData}}</div>' + '</div>');
+
+            //$templateCache.put(TrNgGrid.cellBodyCustomTemplateId,
+            //    '<div ng-attr-class="' + TrNgGrid.bodyCellCssClass + ' text-{{columnOptions.displayAlign}}">'
+            //    + '<div ng-transclude=""></div>'
+            //    + '</div>'
+            //    );
+            $templateCache.put(TrNgGrid.columnFilterTemplateId, '<div ng-show="gridOptions.enableFiltering||columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">' + ' <div class="' + TrNgGrid.columnFilterInputWrapperCssClass + '">' + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter"></input>' + ' </div>' + '</div>');
+            $templateCache.put(TrNgGrid.columnSortTemplateId, '<div title="Sort"' + ' ng-show="gridOptions.enableSorting||columnOptions.enableSorting"' + ' ng-click="toggleSorting(columnOptions.fieldName)"' + ' class="' + TrNgGrid.columnSortCssClass + '" > ' + '  <div ng-class="{\'' + TrNgGrid.columnSortActiveCssClass + '\':gridOptions.orderBy==columnOptions.fieldName,\'' + TrNgGrid.columnSortInactiveCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName,\'' + TrNgGrid.columnSortNormalOrderCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName||!gridOptions.orderByReverse,\'' + TrNgGrid.columnSortReverseOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&gridOptions.orderByReverse}" >' + '  </div>' + '</div>');
             $templateCache.put(TrNgGrid.footerTemplateId, '<div class="' + TrNgGrid.footerCssClass + '">' + '  <span ' + TrNgGrid.globalFilterDirectiveAttribute + '=""></span>' + '  <span ' + TrNgGrid.pagerDirectiveAttribute + '=""></span>' + '</div>');
             $templateCache.put(TrNgGrid.footerGlobalFilterTemplateId, '<span ng-show="gridOptions.enableFiltering" class="pull-left form-group">' + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" placeholder="Search"></input>' + '</span>');
-            $templateCache.put(TrNgGrid.footerPagerTemplateId, '<span class="pull-right form-group">' + ' <ul class="pagination">' + '   <li ng-show="pageCanGoBack" >' + '     <a href="#" ng-click="navigateToPage($event, 0)" title="First Page">|&lArr;</a>' + '   </li>' + '   <li ng-show="pageCanGoBack" >' + '     <a href="#" ng-click="navigateToPage($event, gridOptions.currentPage - 1)" title="Previous Page">&lArr;</a>' + '   </li>' + '   <li ng-show="pageSelectionActive" style="white-space: nowrap;">' + '     <span>Page: ' + '       <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes"></select>' + '     </span>' + '   </li>' + '   <li class="disabled" style="white-space: nowrap;">' + '     <span ng-hide="totalItemsCount">No items to display</span>' + '     <span ng-show="totalItemsCount" title="Select Page">' + '       {{startItemIndex+1}} - {{endItemIndex+1}} displayed' + '     <span>, {{totalItemsCount}} in total</span>' + '     </span > ' + '   </li>' + '   <li ng-show="pageCanGoForward">' + '     <a href="#" ng-click="navigateToPage($event, gridOptions.currentPage + 1)" title="Next Page">&rArr;</a>' + '   </li>' + '   <li>' + '   <li ng-show="pageCanGoForward">' + '     <a href="#" ng-show="pageCanGoForward" ng-click="navigateToPage($event, lastPageIndex)" title="Last Page">&rArr;|</a>' + '   </li>' + ' </ul>' + '</span>');
+            $templateCache.put(TrNgGrid.footerPagerTemplateId, '<span class="pull-right form-group">' + ' <ul class="pagination">' + '   <li ng-show="pageCanGoBack" >' + '     <a href="" ng-click="navigateToPage($event, 0)" title="First Page">|&lArr;</a>' + '   </li>' + '   <li ng-show="pageCanGoBack" >' + '     <a href="" ng-click="navigateToPage($event, gridOptions.currentPage - 1)" title="Previous Page">&lArr;</a>' + '   </li>' + '   <li ng-show="pageSelectionActive" style="white-space: nowrap;">' + '     <span>Page: ' + '       <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes"></select>' + '     </span>' + '   </li>' + '   <li class="disabled" style="white-space: nowrap;">' + '     <span ng-hide="totalItemsCount">No items to display</span>' + '     <span ng-show="totalItemsCount" title="Select Page">' + '       {{startItemIndex+1}} - {{endItemIndex+1}} displayed' + '       <span>, {{totalItemsCount}} in total</span>' + '     </span > ' + '   </li>' + '   <li ng-show="pageCanGoForward">' + '     <a href="" ng-click="navigateToPage($event, gridOptions.currentPage + 1)" title="Next Page">&rArr;</a>' + '   </li>' + '   <li ng-show="pageCanGoForward">' + '     <a href="" ng-show="pageCanGoForward" ng-click="navigateToPage($event, lastPageIndex)" title="Last Page">&rArr;|</a>' + '   </li>' + ' </ul>' + '</span>');
         }
     ]);
 })(TrNgGrid || (TrNgGrid = {}));

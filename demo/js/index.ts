@@ -6,6 +6,7 @@ module TrNgGridDemo{
         externalTestProp: string;
         myItemsTotalCount:number;
         myItems: Array<any>;
+        myFields: Array<string>;
         myItemsCurrentPageIndex:number;
         myPageItemsCount:number;
         mySelectedItems:Array<any>; 
@@ -27,7 +28,8 @@ module TrNgGridDemo{
         generateItems: (pageItems: number, totalItems?: number) => void;
         addDateToItems: () => void;
         showMessage:(event:ng.IAngularEvent, msg:string) => void;
-        simulateServerSideQueries:(pageItems:number, totalItems?:number)=>void;
+        simulateServerSideQueries: (pageItems: number, totalItems?: number) => void;
+        toogleFieldEnforcement: (fieldName: string) => void;
     }
 
     enum RndGenOptions{
@@ -46,12 +48,22 @@ module TrNgGridDemo{
             $scope.mySelectedItems=[];
             $scope.myItemsTotalCount = 0;
             $scope.myItems = [];
+            $scope.myFields = ['id','name','address'];
             $scope.myItemsCurrentPageIndex = 0;
             $scope.myPageItemsCount=10;
             $scope.myEnableFiltering = true;
             $scope.myEnableSorting = true;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
+            $scope.toogleFieldEnforcement = (fieldName: string) => {
+                var fieldIndex = $scope.myFields.indexOf(fieldName);
+                if (fieldIndex < 0) {
+                    $scope.myFields.push(fieldName);
+                }
+                else {
+                    $scope.myFields.splice(fieldIndex, 1);
+                }
+            };
             $scope.generateItems = (pageItems: number, totalItems?: number) => {
                 $scope.myItems = [];
                 //$scope.myItems.splice(0);
@@ -210,7 +222,7 @@ module TrNgGridDemo{
         }
     }
 
-    angular.module("trNgGridDemo", ["ngRoute", "ngAnimate", "trNgGrid"])
+    angular.module("trNgGridDemo", ["ngRoute", "ngAnimate", "trNgGrid", "ui.bootstrap"])
         .config(["$routeProvider", "$locationProvider", ($routeProvider: any, $locationProvider: any) => {
             $routeProvider
                 .when('/Common', {

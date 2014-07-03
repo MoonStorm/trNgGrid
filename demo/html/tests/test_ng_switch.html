@@ -21,12 +21,12 @@
     </div>
     <div class="row" ng-init="gridSelection=false">
         <div class="col-md-12">
-            Grid selection (first/second): <input type="checkbox" ng-model="gridSelection"/>
+            Grid selection (first/second): <input type="checkbox" ng-model="gridSelection"></input>
         </div>
 <div class="col-md-12" project-markup-to="#trNgGrid_ng_switch_bug">
     <div ng-switch="gridSelection">
         <div ng-switch-when="false">
-            <table tr-ng-grid items="myItems" page-items="5"/>            
+            <table tr-ng-grid items="myItems" page-items="5"></table>            
         </div>
         <div ng-switch-when="true">
             <table tr-ng-grid items="myItems" page-items="10">

@@ -1,102 +1,106 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html ng-app="trNgGridDemo" ng-controller="TrNgGridDemo.MainController">
-    <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=Edge">        
-        <meta charset="utf-8">
-        <title>trNgGrid</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" ng-href="{{themeUrl}}"/>
-        <link rel="stylesheet" href="demo/css/index.css" />
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta charset="utf-8">
+    <title>trNgGrid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" ng-href="{{themeUrl}}" />
+    <link rel="stylesheet" href="demo/css/index.css" />
 
-        <!--Debug-->
-        <link rel="stylesheet" href="src/css/trNgGrid.css" />
-        <!--Release-->
-        <!--<link rel="stylesheet" href="release/trNgGrid.min.css" />-->
+    <!--Debug-->
+    <link rel="stylesheet" href="src/css/trNgGrid.css" />
+    <!--Release-->
+    <!--<link rel="stylesheet" href="release/trNgGrid.min.css" />-->
 
-        <link rel="stylesheet" href="demo/css/index.css" />
-        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
-        <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>-->
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
-        <!--<script src="//code.angularjs.org/1.2.9/i18n/angular-locale_en-gb.js"></script>-->
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script>
+    <link rel="stylesheet" href="demo/css/index.css" />
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
+    <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>-->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
+    <!--<script src="//code.angularjs.org/1.2.9/i18n/angular-locale_en-gb.js"></script>-->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script>
 
-        <!--Debug-->
-        <script src="src/js/trNgGrid.js"></script>
-        <!--Release-->
-        <!--<script src="release/trNgGrid.min.js"></script>-->
+    <!--Debug-->
+    <script src="src/js/trNgGrid.js"></script>
+    <!--Release-->
+    <!--<script src="release/trNgGrid.min.js"></script>-->
 
-        <script src="demo/js/index.js"></script>
-        <!--<script ng-src="{{localeUrl}}"></script>-->
-    </head>
+    <script src="demo/js/index.js"></script>
+    <!--<script ng-src="{{localeUrl}}"></script>-->
+</head>
 
-    <body>
-        <div class="navbar navbar-default demo-menu" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main_navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <span class="navbar-brand">trNgGrid</span>
-            </div>
-
-            <div class="collapse navbar-collapse" id="main_navbar">
-                <ul class="nav navbar-nav">
-                    <li><a href="#/Common">Plug & Play</a></li>
-                    <li><a href="#/ColumnPicker">Column Definition</a></li>
-                    <li><a href="#/Paging">Paging</a></li>
-                    <li><a href="#/Selections">Selections</a></li>
-                    <li><a href="#/GlobalOptions">Grid Options</a></li>
-                    <li><a href="#/ServerSide">Server Side Queries</a></li>
-                    <li><a href="#/Templates">Templating</a></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" href="" data-toggle="dropdown">Test Cases<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#/TestNgSwitch">Case #9 (ng-switch)</a></li>                            
-                            <li><a href="#/TestItemsUpdate">Case #6 (replacing the 'items' array) </a></li>   
-                            <!--<li><a href="#/TestFixedHeaderFooter">Case #22 (fixed header and footer) </a></li>   -->
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="//github.com/MoonStorm/trNgGrid" target="_blank">Source & Download</a></li>
-                    <li class="dropdown"> <!--onclick="$(this).toggleClass('open'); return false;"-->
-                        <a class="dropdown-toggle" href="" data-toggle="dropdown">Bootswatch theme <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li ng-click="theme='slate'"><a href="">Slate</a></li>
-                            <li ng-click="theme='amelia'"><a href="">Amelia</a></li>
-                            <li ng-click="theme='cerulean'"><a href="">Cerulean</a></li>
-                            <li ng-click="theme='cosmo'"><a href="">Cosmo</a></li>
-                            <li ng-click="theme='cyborg'"><a href="">Cyborg</a></li>
-                            <li ng-click="theme='flatly'"><a href="">Flatly</a></li>
-                            <li ng-click="theme='journal'"><a href="">Journal</a></li>
-                            <li ng-click="theme='readable'"><a href="">Readable</a></li>
-                            <li ng-click="theme='simplex'"><a href="">Simplex</a></li>
-                            <li ng-click="theme='slate'"><a href="">Slate</a></li>
-                            <li ng-click="theme='spacelab'"><a href="">Spacelab</a></li>
-                            <li ng-click="theme='united'"><a href="">United</a></li>
-                            <li ng-click="theme='yeti'"><a href="">Yeti</a></li>
-                            <li class="divider"></li>
-                            <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+<body class="row">
+    <nav class="navbar navbar-default demo-menu" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">trNgGrid</a>
         </div>
 
-        <div ng-view class="row"></div>
+        <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed=true">
+            <ul class="nav navbar-nav">
+                <li><a href="#/Common">Plug & Play</a></li>
+                <li><a href="#/ColumnPicker">Column Definition</a></li>
+                <li><a href="#/Paging">Paging</a></li>
+                <li><a href="#/Selections">Selections</a></li>
+                <li><a href="#/GlobalOptions">Grid Options</a></li>
+                <li><a href="#/ServerSide">Server Side Queries</a></li>
+                <li><a href="#/Templates">Templating</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="">Test Cases<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#/TestNgSwitch">Case #9 (ng-switch)</a></li>
+                        <li><a href="#/TestItemsUpdate">Case #6 (replacing the 'items' array) </a></li>
+                        <!--<li><a href="#/TestFixedHeaderFooter">Case #22 (fixed header and footer) </a></li>   -->
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="//github.com/MoonStorm/trNgGrid" target="_blank">Source & Download</a></li>
+                <li class="dropdown">
+                    <!--onclick="$(this).toggleClass('open'); return false;"-->
+                    <a class="dropdown-toggle" href="" data-toggle="dropdown">Bootswatch theme <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li ng-click="theme='slate'"><a href="">Slate</a></li>
+                        <li ng-click="theme='amelia'"><a href="">Amelia</a></li>
+                        <li ng-click="theme='cerulean'"><a href="">Cerulean</a></li>
+                        <li ng-click="theme='cosmo'"><a href="">Cosmo</a></li>
+                        <li ng-click="theme='cyborg'"><a href="">Cyborg</a></li>
+                        <li ng-click="theme='flatly'"><a href="">Flatly</a></li>
+                        <li ng-click="theme='journal'"><a href="">Journal</a></li>
+                        <li ng-click="theme='readable'"><a href="">Readable</a></li>
+                        <li ng-click="theme='simplex'"><a href="">Simplex</a></li>
+                        <li ng-click="theme='slate'"><a href="">Slate</a></li>
+                        <li ng-click="theme='spacelab'"><a href="">Spacelab</a></li>
+                        <li ng-click="theme='united'"><a href="">United</a></li>
+                        <li ng-click="theme='yeti'"><a href="">Yeti</a></li>
+                        <li class="divider"></li>
+                        <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <div ng-view class=" col-md-12"></div>
 
-            ga('create', 'UA-47475030-1', 'moonstorm.github.io');
-            ga('send', 'pageview');
-        </script>
-    </body>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-47475030-1', 'moonstorm.github.io');
+        ga('send', 'pageview');
+    </script>
+</body>
 </html>
