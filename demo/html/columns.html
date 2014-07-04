@@ -1,41 +1,38 @@
 <div class="row">
-    <div class="row">
-        <div class="col-md-7">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Field Selection
-                </div>
-                <div class="panel-body">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Field Selection
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-7">
                     <p>
                         One of the most common scenarios is to provide the field names yourself, stopping the grid from auto discovering the columns.
                         One way to achieve that is by providing the list of columns in the table definition, inside a <em>fields</em> attribute.
                         This list can be provided as verbatim, or as a variable.
                     </p>
                     <p>
-                        This alwo works for nested objects (e.g. field-name="address.postCode").
+                        This alwo works for nested objects (e.g. 'address.postCode').
                     </p>
 
                     <pre id="trNgGrid_Sample_Columns_Manual_Fields">
-                    </pre>
+                </pre>
+                </div>
+                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Manual_Fields" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(3)">
+<table tr-ng-grid items="myItems" fields="['id','name']" /></table>
                 </div>
             </div>
         </div>
-        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Manual_Fields" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(3)">
-<table tr-ng-grid items="myItems" fields="['id','name']"/></table>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Column Options
         </div>
-    </div>
-    <div class="row">
-        <hr />
-    </div>
-    <div class="row">
-        <div class="col-md-7">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Column Options
-                </div>
-                <div class="panel-body">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-7">
                     <p>
-                        Column options can be provided by setting up the <em>field-name</em> attribute on the <em>&lt;TH&gt;</em> elements that you'll have to include in the markup of a single <em>&lt;TR&gt;</em> element, part of <em>&lt;THEAD&gt;</em>.<br/>
+                        Column options can be provided by setting up the <em>field-name</em> attribute on the <em>&lt;TH&gt;</em> elements that you'll have to include in the markup of a single <em>&lt;TR&gt;</em> element, part of <em>&lt;THEAD&gt;</em>.<br />
                     </p>
                     <p>
                         Once the <em>field-name</em> was set, a range of options can tweak the behavior and appearance of the column. You can
@@ -59,43 +56,37 @@
                     </p>
 
                     <pre id="trNgGrid_Sample_Columns_Simple_Definition">
-                    </pre>
+                     </pre>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(10)">
+                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10)">
 <table tr-ng-grid items="myItems">
     <thead>
         <tr>
-            <th field-name="id" enable-filtering="false" enable-sorting="false" cell-width="4em" display-align="right"/>
-            <th field-name="name" display-format="uppercase"/>
+            <th field-name="id" enable-filtering="false" enable-sorting="false" cell-width="4em" display-align="right" />
+            <th field-name="name" display-format="uppercase" />
         </tr>
     </thead>
 </table>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">
-        <hr/>
-    </div>
-    <div class="row">
-        <div class="col-md-7">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Custom Columns
-                </div>
-                <div class="panel-body">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Custom Columns
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-7">
                     <p>
                         Extra columns can be added in the body, even without defining the header. Tapping into the currently bound row item can be done through the <em>gridItem</em> scope property.
                         More examples that are covering this topic are available in the <em>"Templating"</em> section.
                     </p>
 
                     <pre id="trNgGrid_Sample_Columns_Extra">
-
-                    </pre>
+                            </pre>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Extra" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(4)">
+                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Extra" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(4)">
 <table tr-ng-grid items="myItems">
     <tbody>
         <tr>
@@ -107,6 +98,8 @@
         </tr>
     </tbody>
 </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -19,10 +19,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-7 control-label">Field Enforcement (fields)</label>
-                            <div class="col-md-5">                                
-                                <span class="checkbox" ng-repeat="fieldName in ['id', 'name', 'address']">                                
-                                    <input type="checkbox" ng-model="dummyFieldSelector" ng-checked="myFields.indexOf(fieldName)&gt;=0" ng-change="toogleFieldEnforcement(fieldName)" >
+                            <label class="col-md-7 control-label">Fields (fields)</label>
+                            <div class="col-md-5">
+                                <span class="checkbox">
+                                    <input type="checkbox" ng-model="myEnableFieldAutoDetection" /> Autodetect (fields = null or not set)
+                                </span>
+                                <span class="checkbox" ng-repeat="fieldName in availableFields" ng-if="!myEnableFieldAutoDetection">
+                                    <input type="checkbox" ng-model="myFields[$index]" ng-true-value="{{fieldName}}" ng-false-value="" />
                                     {{fieldName}}
                                 </span>
                             </div>
@@ -79,28 +82,27 @@
                         <div class="form-group">
                             <label class="col-md-7 control-label">Selection Mode (selection-mode)</label>
                             <div class="col-md-5">
-                                <select class="form-control" ng-model="mySelectionMode" ng-options="modeName for modeName in ['None', 'SingleRow', 'MultiRow', 'MultiRowWithKeyModifiers']" >
-                                </select>
+                                <select class="form-control" ng-model="mySelectionMode" ng-options="modeName for modeName in ['None', 'SingleRow', 'MultiRow', 'MultiRowWithKeyModifiers']"></select>
                             </div>
                         </div>
                         <!--<div class="form-group">
-                            <label class="col-md-7 control-label">Selection Enabled (enable-selections)</label>
-                            <div class="col-md-5">
-                                <span class="checkbox">
-                                    <input type="checkbox" ng-model="myEnableSelections"/>
-                                    <label class="text-danger">DEPRECATED!</label>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group" ng-show="myEnableSelections">
-                            <label class="col-md-7 control-label">Multi-row Selections (enable-multi-row-selections)</label>
-                            <div class="col-md-5">
-                                <span class="checkbox">
-                                    <input type="checkbox" ng-model="myEnableMultiRowSelections"/>
-                                    <label class="text-danger">DEPRECATED!</label>
-                                </span>
-                            </div>
-                        </div>-->
+            <label class="col-md-7 control-label">Selection Enabled (enable-selections)</label>
+            <div class="col-md-5">
+                <span class="checkbox">
+                    <input type="checkbox" ng-model="myEnableSelections"/>
+                    <label class="text-danger">DEPRECATED!</label>
+                </span>
+            </div>
+        </div>
+        <div class="form-group" ng-show="myEnableSelections">
+            <label class="col-md-7 control-label">Multi-row Selections (enable-multi-row-selections)</label>
+            <div class="col-md-5">
+                <span class="checkbox">
+                    <input type="checkbox" ng-model="myEnableMultiRowSelections"/>
+                    <label class="text-danger">DEPRECATED!</label>
+                </span>
+            </div>
+        </div>-->
                         <div class="form-group" ng-show="myEnableSelections">
                             <label class="col-md-7 control-label">Selected Items (selected-items)</label>
                             <div class="col-md-5">
@@ -121,20 +123,20 @@
         </div>
     </div>
     <div class="col-md-7" project-markup-to="#trNgGrid_Sample_Full">
-        <table tr-ng-grid
-               items="myItems"
-               fields="myFields"
-               enable-filtering="myEnableFiltering"
-               enable-sorting="myEnableSorting"
-               filter-by="myGlobalFilter"
-               order-by="myOrderBy"
-               order-by-reverse="myOrderByReversed"
-               page-items="myPageItemsCount"
-               selected-items="mySelectedItems"
-               current-page="myCurrentPage"
-               selection-mode="{{mySelectionMode}}">
-            <!--deprecated: enable-selections="myEnableSelections"-->
-            <!--deprecated: enable-multi-row-selections="myEnableMultiRowSelections"-->
-        </table>
+<table tr-ng-grid
+       items="myItems"
+       fields="myFields"
+       enable-filtering="myEnableFiltering"
+       enable-sorting="myEnableSorting"
+       filter-by="myGlobalFilter"
+       order-by="myOrderBy"
+       order-by-reverse="myOrderByReversed"
+       page-items="myPageItemsCount"
+       selected-items="mySelectedItems"
+       current-page="myCurrentPage"
+       selection-mode="{{mySelectionMode}}">
+    <!--deprecated: enable-selections="myEnableSelections"-->
+    <!--deprecated: enable-multi-row-selections="myEnableMultiRowSelections"-->
+</table>
     </div>
 </div>

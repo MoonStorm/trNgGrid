@@ -23,21 +23,24 @@ var TrNgGridDemo;
             $scope.mySelectedItems = [];
             $scope.myItemsTotalCount = 0;
             $scope.myItems = [];
-            $scope.myFields = ['id', 'name', 'address'];
+            $scope.myEnableFieldAutoDetection = true, $scope.availableFields = ["id", "name", "address"];
+            $scope.myFields = null;
             $scope.myItemsCurrentPageIndex = 0;
             $scope.myPageItemsCount = 10;
             $scope.myEnableFiltering = true;
             $scope.myEnableSorting = true;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
-            $scope.toogleFieldEnforcement = function (fieldName) {
-                var fieldIndex = $scope.myFields.indexOf(fieldName);
-                if (fieldIndex < 0) {
-                    $scope.myFields.push(fieldName);
-                } else {
-                    $scope.myFields.splice(fieldIndex, 1);
-                }
-            };
+
+            /*$scope.toogleFieldEnforcement = (fieldName: string) => {
+            var fieldIndex = $scope.myFields.indexOf(fieldName);
+            if (fieldIndex < 0) {
+            $scope.myFields.push(fieldName);
+            }
+            else {
+            $scope.myFields.splice(fieldIndex, 1);
+            }
+            };*/
             $scope.generateItems = function (pageItems, totalItems) {
                 $scope.myItems = [];
 
@@ -93,6 +96,17 @@ var TrNgGridDemo;
                 event.stopPropagation();
                 $window.alert(msg);
             };
+
+            $scope.$watch("myEnableFieldAutoDetection", function (newValue, oldValue) {
+                if (newValue === oldValue)
+                    return;
+
+                if (newValue) {
+                    $scope.myFields = null;
+                } else {
+                    $scope.myFields = $scope.availableFields.slice();
+                }
+            });
         }
         TestController.prototype.generateItems = function (items, itemCount) {
             for (var index = 0; index < itemCount; index++) {
@@ -195,7 +209,7 @@ var TrNgGridDemo;
     })();
     TrNgGridDemo.MainController = MainController;
 
-    angular.module("trNgGridDemo", ["ngRoute", "ngAnimate", "trNgGrid", "ui.bootstrap"]).config([
+    angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap"]).config([
         "$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
             $routeProvider.when('/Common', {
                 templateUrl: 'demo/html/common.html'
