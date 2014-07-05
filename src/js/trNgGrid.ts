@@ -9,12 +9,15 @@ module TrNgGrid{
     }
 
     export declare var defaultColumnOptions: IBasicGridColumnOptions;
+    export declare var translations: { [textId: string]: string };
+
     export declare var columnSortDirectiveAttribute: string;
     export declare var columnFilterDirectiveAttribute: string;
     export declare var globalFilterDirectiveAttribute: string;
     export declare var pagerDirectiveAttribute: string;
 
     export declare var dataPagingFilter: string;
+    export declare var translateFilter: string;
 
     export declare var tableCssClass: string;
     export declare var cellCssClass: string;
@@ -53,8 +56,11 @@ module TrNgGrid{
         enableSorting:null
     };
 
+    translations = {};
+
     var tableDirective = "trNgGrid";
     dataPagingFilter = tableDirective + "DataPagingFilter";
+    translateFilter = tableDirective + "Translate";
 
     //var headerDirective="trNgGridHeader";
     //var headerDirectiveAttribute = "tr-ng-grid-header";
@@ -321,7 +327,7 @@ module TrNgGrid{
             this.cells = null;
         }
 
-        public configureSection(gridElement: JQuery, columnDefs: Array<IGridColumnOptions>) {
+        public configureSection(gridElement: JQuery, columnDefs: Array<IGridColumnOptions>):JQuery {
             // remove the old section element
             //var sectionElement = this.getSectionElement(gridElement, false);
             //if (sectionElement) {
@@ -367,6 +373,8 @@ module TrNgGrid{
                 // finally add it to the parent
                 templatedRowElement.append(gridCellElement);
             });
+
+            return sectionElement;
         }
 
         public extractPartialColumnDefinitions(): Array<IGridColumn> {
@@ -434,6 +442,7 @@ module TrNgGrid{
         private templatedFooter: TemplatedSection;
         //private gridElement:ng.IAugmentedJQuery;
         private columnDefsItemsWatcherDeregistration:Function;
+        private columnDefsFieldsWatcherDeregistration: Function;
         private dataRequestPromise: ng.IPromise<any>;
 
         constructor(
@@ -527,15 +536,6 @@ module TrNgGrid{
 
             // the new settings
             this.$isolatedScope.$watch("gridOptions.selectionMode", (newValue: any, oldValue: SelectionMode) => {
-                /*if (typeof (newValue) === 'string' || newValue instanceof String) {
-                    var originalNewValue = newValue;
-                    newValue = SelectionMode[newValue];
-                    //if (typeof (newValue) == "undefined") {
-                    //    newValue = this.internalScope.$eval(originalNewValue);
-                    //    newValue = SelectionMode[newValue];
-                    //}
-                    // this.internalScope["selectionMode"] = newValue;
-                }*/
                 if (newValue !== oldValue) {
                     // when this value is changing we need to handle the selectedItems
                     switch (newValue) {
@@ -680,28 +680,30 @@ module TrNgGrid{
             this.templatedBody.discoverCells(gridElement);
         }
 
-        configureTableStructure(parentScope: ng.IScope, gridElement: ng.IAugmentedJQuery, bypassFieldWatcherRegistration?: boolean) {
+        configureTableStructure(parentScope: ng.IScope, gridElement: ng.IAugmentedJQuery) {
             var scope = parentScope.$new();  
             gridElement.empty();
 
-            // make sure we're no longer watching items for column defs
+            // make sure we're no longer watching for column defs
             if (this.columnDefsItemsWatcherDeregistration) {
                 this.columnDefsItemsWatcherDeregistration();
                 this.columnDefsItemsWatcherDeregistration = null;
             }
+            if (this.columnDefsFieldsWatcherDeregistration) {
+                this.columnDefsFieldsWatcherDeregistration();
+                this.columnDefsFieldsWatcherDeregistration = null;
+            }
 
             // watch for a change in field values
-            if (!bypassFieldWatcherRegistration) {
-                // don't be tempted to use watchcollection, it always returns same values which can't be compared
-                // https://github.com/angular/angular.js/issues/2621
-                // which causes us the recompile even if we don't have to
-                this.$isolatedScope.$watch("gridOptions.fields", (newValue: Array<any>, oldValue: Array<any>) => {
-                    if (!angular.equals(newValue, oldValue)) {
-                        scope.$destroy();
-                        this.configureTableStructure(parentScope, gridElement, true);
-                    }
-                }, true);
-            }
+            // don't be tempted to use watchcollection, it always returns same values which can't be compared
+            // https://github.com/angular/angular.js/issues/2621
+            // which causes us the recompile even if we don't have to
+            this.columnDefsFieldsWatcherDeregistration = this.$isolatedScope.$watch("gridOptions.fields", (newValue: Array<any>, oldValue: Array<any>) => {
+                if (!angular.equals(newValue, oldValue)) {
+                    scope.$destroy();
+                    this.configureTableStructure(parentScope, gridElement);
+                }
+            }, true);
 
             // prepare a partial list of column definitions
             var templatedHeaderPartialGridColumnDefs = this.templatedHeader.extractPartialColumnDefinitions();
@@ -737,7 +739,7 @@ module TrNgGrid{
                         this.columnDefsItemsWatcherDeregistration = this.$isolatedScope.$watch("gridOptions.items.length", (newValue: number, oldValue: number) => {
                             if (newValue) {
                                 scope.$destroy();
-                                this.configureTableStructure(parentScope, gridElement, true);
+                                this.configureTableStructure(parentScope, gridElement);
                             }
                         });
                         return;
@@ -764,28 +766,27 @@ module TrNgGrid{
                 templatedFooterPartialGridColumnDefs.push({ isStandardColumn: true });
             }
             this.gridOptions.gridColumnDefs = finalPartialGridColumnDefs;
-            this.templatedHeader.configureSection(gridElement, finalPartialGridColumnDefs);
-            this.templatedFooter.configureSection(gridElement, templatedFooterPartialGridColumnDefs);
-            this.templatedBody.configureSection(gridElement, finalPartialGridColumnDefs);
-
-            // transclusion with templates opens a big can of worms
-            // it's best to prepare it here instead
-            var bodyElement = this.templatedBody.getSectionElement(gridElement);
-            var headerElement = this.templatedHeader.getSectionElement(gridElement);
-            var footerElement = this.templatedFooter.getSectionElement(gridElement);
+            var headerElement = this.templatedHeader.configureSection(gridElement, finalPartialGridColumnDefs);
+            var footerElement = this.templatedFooter.configureSection(gridElement, templatedFooterPartialGridColumnDefs);
+            var bodyElement = this.templatedBody.configureSection(gridElement, finalPartialGridColumnDefs);             
+            
             var templatedBodyRowElement = this.templatedBody.getTemplatedRowElement(bodyElement);
             var templatedHeaderRowElement = this.templatedHeader.getTemplatedRowElement(headerElement);
 
             bodyElement.attr(bodyDirectiveAttribute, "");
             templatedBodyRowElement.attr("ng-click", "toggleItemSelection(gridItem, $event)");
-            //TODO: when server-side get is active (scope.gridOptions.onDataRequired), the filtering through the standard filters should be disabled
-            templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
+            // when server-side get is active (scope.gridOptions.onDataRequired), the filtering through the standard filters should be disabled
+            if (this.gridOptions.onDataRequired) {
+                templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items");
+            }
+            else {
+                templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
+            }
             templatedBodyRowElement.attr("ng-class", "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem)>=0}");
 
-            //var gridScope = angular.element(gridElement).scope();
-            this.$compile(headerElement)(scope);
-            this.$compile(footerElement)(scope);
-            this.$compile(bodyElement)(scope);
+            headerElement.replaceWith(this.$compile(headerElement)(scope)); 
+            footerElement.replaceWith(this.$compile(footerElement)(scope));
+            bodyElement.replaceWith(this.$compile(bodyElement)(scope));
         }
 
         linkAttrs(tAttrs: ng.IAttributes, localStorage: any) {
@@ -1099,142 +1100,6 @@ module TrNgGrid{
                 };
             }
         ])
-    /*.directive(bodyDirective, ["$compile",
-        function ($compile: ng.ICompileService) {
-            return {
-                restrict: 'A',
-                scope: true,
-                require: '^' + tableDirective,
-                replace: true,
-                compile: function (templateElement: JQuery, tAttrs: Object) {
-                    // we cannot allow angular to use the body row template just yet
-                    var bodyOriginalTemplateRow = templateElement.children("tr");
-                    templateElement.contents().remove();
-
-                    return {
-                        // we receive a reference to a real element that will appear in the DOM, after the controller was created, but before binding setup
-                        pre: function (scope: IGridBodyScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
-                            // set up the scope
-                            scope.gridOptions = controller.gridOptions;
-                            scope.toggleItemSelection = (item, $event) => controller.toggleItemSelection(item, $event);
-
-                            // we're too early, we've got to wait for the grid column definitions to become available
-                            // equality checks described here: http://teropa.info/blog/2014/01/26/the-three-watch-depths-of-angularjs.html
-                            scope.$watchCollection("gridOptions.gridColumnDefs", (newColumnDefs: Array<IGridColumnOptions>, oldColumnDefs: Array<IGridColumnOptions>) => {
-                                // find the body row template, which was initially excluded from the compilation
-                                // apply the ng-repeat
-                                var ngRepeatAttrValue = "gridItem in gridOptions.items";
-                                if () {
-                                    // data is retrieved externally, watchers set up in the controller take care of calling this method
-                                }
-                                else {
-                                    // the grid's internal mechanisms are active
-                                    ngRepeatAttrValue += " | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions";
-                                }
-
-                                // ng-switch calls the post-linking function to refresh the dom, so we can't mess the original template
-                                var bodyTemplateRow = bodyOriginalTemplateRow.clone(true);
-
-                                bodyTemplateRow.attr("ng-repeat", ngRepeatAttrValue);
-                                if (!bodyTemplateRow.attr("ng-click")) {
-                                    bodyTemplateRow.attr("ng-click", "toggleItemSelection(gridItem, $event)");
-                                }
-                                bodyTemplateRow.attr("ng-class", "{'" + rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem)>=0}");
-
-                                bodyTemplateRow.attr(rowPageItemIndexAttribute, "{{$index}}");
-
-                                angular.forEach(newColumnDefs, (columnOptions: IGridColumnOptions, index: number) => {
-                                    var cellTemplateElement = bodyTemplateRow.children("td:nth-child(" + (index + 1) + ")");
-                                    var cellTemplateFieldName = cellTemplateElement.attr("field-name"); // cellTemplateElement.is("[" + columnDirectiveAttribute + "]");
-                                    var createInnerCellContents = false;
-
-                                    if (cellTemplateFieldName !== columnOptions.fieldName) {
-                                        // inconsistencies between column definition and body cell template
-                                        createInnerCellContents = true;
-
-                                        var newCellTemplateElement = $("<td>");
-                                        if (cellTemplateElement.length == 0)
-                                            bodyTemplateRow.append(newCellTemplateElement);
-                                        else
-                                            cellTemplateElement.before(newCellTemplateElement);
-
-                                        cellTemplateElement = newCellTemplateElement;
-                                    }
-                                    else {
-                                        // create the content if the td had no children
-                                        createInnerCellContents = (cellTemplateElement.text() == "");
-                                    }
-
-                                    if (createInnerCellContents) {
-                                        var cellContentsElement = $("<div>").addClass(cellCssClass);
-                                        if (columnOptions.fieldName) {
-                                            // according to the column options, a model bound cell is needed here
-                                            cellContentsElement.attr("field-name", columnOptions.fieldName);
-                                            var cellContentsElementText = "{{gridItem." + columnOptions.fieldName;
-                                            if (columnOptions.displayFormat) {
-                                                // add the display filter
-                                                if (columnOptions.displayFormat[0] != '|' && columnOptions.displayFormat[0] != '.') {
-                                                    cellContentsElementText += " | "; // assume an angular filter by default
-                                                }
-                                                cellContentsElementText += columnOptions.displayFormat;
-                                            }
-                                            cellContentsElementText += "}}";
-                                            cellContentsElement.text(cellContentsElementText);
-                                        }
-                                        else {
-                                            cellContentsElement.text("Invalid column match inside the table body");
-                                        }
-
-                                        cellTemplateElement.append(cellContentsElement); 
-                                    }
-
-                                    if (columnOptions.displayAlign) {
-                                        cellTemplateElement.addClass("text-" + columnOptions.displayAlign);
-                                    }
-                                    if (columnOptions.cellWidth) {
-                                        cellTemplateElement.css("width", columnOptions.cellWidth);
-                                    }
-                                    if (columnOptions.cellHeight) {
-                                        cellTemplateElement.css("height", columnOptions.cellHeight);
-                                    }
-                                });
-
-                                // now we need to compile, but in order for this to work, we need to have the dom in place
-                                // also we remove the column directive, it was just used to mark data bound body columns
-                                instanceElement.contents().remove();
-                                instanceElement.append($compile(bodyTemplateRow)(scope));
-                                instanceElement.removeAttr(bodyDirectiveAttribute);
-                                instanceElement.children("td[" + cellHeaderDirectiveAttribute + "]").removeAttr(cellHeaderDirectiveAttribute);
-                            });
-
-                        },                               
-                        //post linking function - executed after all the children have been linked, safe to perform DOM manipulations
-                        post: function (scope: IGridBodyScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
-                        }
-                    }
-                }
-            }
-        }
-    ])*/
-        /*.directive(footerDirective, [
-            function () {
-                return {
-                    restrict: 'A',
-                    scope: true,
-                    require: '^' + tableDirective,
-                    replace: true,
-                    templateUrl: footerTemplateId,
-                    compile: (templateElement: JQuery, tAttrs: Object) => {
-                        return {
-                            pre: function (scope: IGridFooterScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
-                                scope.gridOptions = controller.gridOptions;
-                                scope.TrNgGrid = TrNgGrid;
-                            },
-                        };
-                    }
-                };
-            }
-        ])*/
         .directive(globalFilterDirective, [
             function () {
                 return {
@@ -1348,6 +1213,26 @@ module TrNgGrid{
                 return input.slice(startIndex, endIndex);
             };
         })
+        .filter(translateFilter, ["$filter", ($filter:ng.IFilterService) => {
+            return (inputTextId: string) => {
+                // check for a filter directive
+                var translatedText: string;
+                var externalTranslationFilter = $filter("translate");
+                if (externalTranslationFilter) {
+                    translatedText = externalTranslationFilter(inputTextId);
+                }
+
+                if (!translatedText) {
+                    translatedText = translations[inputTextId];
+                }
+
+                if (!translatedText) {
+                    translatedText = inputTextId;
+                }
+
+                return translatedText;
+            };
+        }])
         .run(["$templateCache",
             function ($templateCache: ng.ITemplateCacheService) {
                 // set up default templates
