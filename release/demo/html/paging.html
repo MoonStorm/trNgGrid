@@ -1,0 +1,73 @@
+<div class="row">
+    <div class="row" ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(22)">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Paging
+                </div>
+                <div class="panel-body">
+                    <p>
+                        By default, all the items in the data array are displayed on a single page in the grid. Scrollbars can be manually added through CSS.<br/>
+                        If you wish to activate paging, you must set the <em>page-items</em> attribute. Paging is applied after the data was filtered through the global search filter, the column search filters, and finally after applying sorting.
+                    </p>
+
+<!--
+                    <p>
+                        <strong class="text-warning">
+                            Don't forget that with the exception of column definitions, every attribute on this component is using two-way data binding. Which means that if you wish to pass a constant as a value, you need to wrap your value in quotes.
+                        </strong>
+                    </p>
+-->
+
+                    <pre id="trNgGrid_Sample_Paging">
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Paging">
+<table tr-ng-grid items="myItems" page-items="5">
+</table>
+        </div>
+    </div>
+    <div class="row">
+        <hr/>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Selections
+                </div>
+                <div class="panel-body">
+                    <p>
+                        Selections are enabled by default. They are controlled by the <em>enable-selections</em> and the <em>enable-multi-row-selections</em> attributes.<br/>
+                    </p>
+                    <p>
+                        If you wish to watch or manipulate the grid selections, you can assign a scope variable to the <em>selected-items</em> attribute.
+                        That will trigger the two-way data binding.
+                    </p>
+                    <p>
+                        The following example shows the powerful data binding mechanism to directly bind two grids, the second one displaying the current selection in the first one.
+                        <span class="text-info">Without writing a single line of script!</span>
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Selection_1">
+                    </pre>
+                    <pre id="trNgGrid_Sample_Selection_2">
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(10)">
+        <div class="col-md-6" project-markup-to="#trNgGrid_Sample_Selection_1">
+<table tr-ng-grid items="myItems" selected-items="mySelectedItems" enable-selections="true" enable-multi-row-selections="true">
+</table>
+        </div>
+        <div class="col-md-6" project-markup-to="#trNgGrid_Sample_Selection_2">
+<table tr-ng-grid items="mySelectedItems" enable-selections="false">
+</table>
+        </div>
+    </div>
+</div>

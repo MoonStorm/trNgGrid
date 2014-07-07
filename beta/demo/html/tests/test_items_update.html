@@ -1,0 +1,26 @@
+﻿<div class="container-fluid" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(20)">
+    <div class="col-md-5">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                ng-switch
+            </div>
+            <div class="panel-body">
+                <p>
+                    <a href="https://github.com/MoonStorm/trNgGrid/issues/6" target="_blank">GitHub Case</a>                    
+                </p>
+                <p>
+                    This is a test for checking whether the items array is properly monitored by the grid, even if the instance of the array gets replaced inside the scope.
+                </p>
+                <pre id="trNgGrid_items_update_bug">
+                </pre>
+            </div>
+        </div>
+    </div>        
+    <div class="col-md-7" project-markup-to="#trNgGrid_items_update_bug">
+<button type="button" class="btn btn-default" ng-click="generateItems(20)">Regenerate</button>
+<div>
+    <table tr-ng-grid items="myItems" page-items="5"/>            
+</div>
+    </div>
+</div>
+

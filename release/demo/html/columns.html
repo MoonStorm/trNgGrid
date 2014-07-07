@@ -1,0 +1,86 @@
+<div class="row">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Column Definition
+                </div>
+                <div class="panel-body">
+                    <p>
+                        One of the most common scenarios is to provide the data binding yourself, stopping the grid from auto discovering the columns.
+                        This is achieved by setting up the <em>field-name</em> attribute on the <em>&lt;TH&gt;</em> elements that you'll have to include in the markup of a single <em>&lt;TR&gt;</em> element, part of <em>&lt;THEAD&gt;</em>.<br/>
+                        This alwo works for nested objects (e.g. field-name="address.postCode").
+                    </p>
+                    <p>
+                        Once the <em>field-name</em> was set, a range of other options can tweak the behavior and appearance of the column. You can
+                        <ul>
+                            <li>Provide the display name for the header (<em>display-name</em>)</li>
+                            <li>Turn sorting on/off (<em>enable-sorting</em>)</li>
+                            <li>Turn column filtering on/off (<em>enable-filtering</em>)</li>
+                            <li>Set the width or height of the column cells, in any measurement unit you want (<em>cell-width/cell-height</em>)</li>
+                            <li>Specify the alignment for the data cells (<em>display-align="center|left|right"</em>) </li>
+                            <li>
+                                Specify the display format (<em>display-format</em>)
+                                <ul>
+                                    <li>By default the format is interpreted as an angular filter (e.g. display-format="number:2") </li>
+                                    <li>You may also specify a method to be called (e.g display-format=".toShortDateTime()") </li>
+                                </ul>
+                            </li>
+                            <li>
+                                Don't forget the <em>field-name</em> attribute. It's the minimum requirement for column customization.
+                            </li>
+                        </ul>
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Columns_Simple_Definition">
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(10)">
+<table tr-ng-grid items="myItems">
+    <thead>
+        <tr>
+            <th field-name="id" enable-filtering="false" enable-sorting="false" cell-width="4em" display-align="right"/>
+            <th field-name="name" display-format="uppercase"/>
+        </tr>
+    </thead>
+</table>
+        </div>
+    </div>
+    <div class="row">
+        <hr/>
+    </div>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Custom Columns
+                </div>
+                <div class="panel-body">
+                    <p>
+                        Extra columns can be added in the body, even without defining the header. Tapping into the currently bound row item can be done through the <em>gridItem</em> scope property.
+                        More examples that are covering this topic are available in the <em>"Templating"</em> section.
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Columns_Extra">
+
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Extra" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(4)">
+<table tr-ng-grid items="myItems">
+    <tbody>
+        <tr>
+            <td>
+                <button class="btn btn-default" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
+                    Remove
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+        </div>
+    </div>
+</div>
