@@ -48,7 +48,7 @@ module TrNgGrid{
     defaultColumnOptions = {
         cellWidth: null,
         cellHeight: null,
-        displayAlign: "left",
+        displayAlign: null,
         displayFormat: null,
         displayName: null,
         filter: null,
@@ -869,50 +869,50 @@ module TrNgGrid{
     angular.module("trNgGrid", [])
         .directive(tableDirective, [
             () => {
-            return {
-                restrict: 'A',
-                scope: {
-                    items: '=',
-                    selectedItems: '=?',
-                    filterBy: '=?',
-                    filterByFields: '=?',
-                    orderBy: '=?',
-                    orderByReverse: '=?',
-                    pageItems: '=?',
-                    currentPage: '=?',
-                    totalItems: '=?',
-                    enableFiltering: '=?',
-                    enableSorting: '=?',
-                    enableSelections: '=?', // deprecated
-                    enableMultiRowSelections: '=?', // deprecated
-                    selectionMode: '@',
-                    onDataRequired: '&',
-                    onDataRequiredDelay: '=?',
-                    fields: '=?'
-                },
-                template: (templateElement: JQuery, tAttrs: Object) => {
-                    templateElement.addClass(tableCssClass);
+                return {
+                    restrict: 'A',
+                    scope: {
+                        items: '=',
+                        selectedItems: '=?',
+                        filterBy: '=?',
+                        filterByFields: '=?',
+                        orderBy: '=?',
+                        orderByReverse: '=?',
+                        pageItems: '=?',
+                        currentPage: '=?',
+                        totalItems: '=?',
+                        enableFiltering: '=?',
+                        enableSorting: '=?',
+                        enableSelections: '=?', // deprecated
+                        enableMultiRowSelections: '=?', // deprecated
+                        selectionMode: '@',
+                        onDataRequired: '&',
+                        onDataRequiredDelay: '=?',
+                        fields: '=?'
+                    },
+                    template: (templateElement: JQuery, tAttrs: Object) => {
+                        templateElement.addClass(tableCssClass);
 
-                    // at this stage, no elements can be bound
-                    angular.forEach(templateElement.children(), (childElement: JQuery) => {
-                        childElement = angular.element(childElement);
-                        childElement.attr("ng-non-bindable", "");
-                    });
-                },
-                controller: ["$compile", "$scope", "$attrs", "$parse", "$timeout", GridController],
-                compile: (templateElement: JQuery, tAttrs: Object) => {
+                        // at this stage, no elements can be bound
+                        angular.forEach(templateElement.children(), (childElement: JQuery) => {
+                            childElement = angular.element(childElement);
+                            childElement.attr("ng-non-bindable", "");
+                        });
+                    },
+                    controller: ["$compile", "$scope", "$attrs", "$parse", "$timeout", GridController],
+                    compile: (templateElement: JQuery, tAttrs: Object) => {
                     return {
-                        pre: (isolatedScope: ng.IScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
-                            controller.discoverTemplates(instanceElement);
-                        },
-                        post: (isolatedScope: ng.IScope, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
-                            var gridScope = instanceElement.scope();
-                            controller.configureTableStructure(gridScope, instanceElement);
+                            pre: (isolatedScope: ng.IScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
+                                controller.discoverTemplates(instanceElement);
+                            },
+                            post: (isolatedScope: ng.IScope, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
+                                var gridScope = instanceElement.scope();
+                                controller.configureTableStructure(gridScope, instanceElement);
+                            }
                         }
-                    }
                 }
-            };
-        }])
+                };
+            }])
         .directive(cellHeaderDirective, [
             () => {
                 var setupColumnTitle = (scope: IGridHeaderColumnScope) => {
@@ -981,7 +981,7 @@ module TrNgGrid{
                     restrict: 'A',
                     templateUrl: cellHeaderTemplateId,
                     transclude: true,
-                    replace:true,
+                    replace: true,
                 };
             }
         ])
@@ -1033,7 +1033,7 @@ module TrNgGrid{
                                 scope.TrNgGrid = TrNgGrid;
                                 scope.columnOptions = controller.gridOptions.gridColumnDefs[parseInt(tAttrs[cellBodyDirective])];
                                 scope.isCustomized = isCustomized;
-                                setupCellData(scope); 
+                                setupCellData(scope);
                             }
                         };
                     }
@@ -1179,11 +1179,11 @@ module TrNgGrid{
                 };
             }
         ])
-        /*.filter("testFilter", () => {
-            return (input: Array<any>) => {
-                debugger;
-            };
-        })*/
+    /*.filter("testFilter", () => {
+        return (input: Array<any>) => {
+            debugger;
+        };
+    })*/
         .filter(dataPagingFilter, () => {
             return (input: Array<any>, gridOptions: IGridOptions) => {
                 //currentPage?:number, pageItems?:number
@@ -1213,13 +1213,17 @@ module TrNgGrid{
                 return input.slice(startIndex, endIndex);
             };
         })
-        .filter(translateFilter, ["$filter", ($filter:ng.IFilterService) => {
+        .filter(translateFilter, ["$filter", ($filter: ng.IFilterService) => {
             return (inputTextId: string) => {
                 // check for a filter directive
                 var translatedText: string;
-                var externalTranslationFilter = $filter("translate");
-                if (externalTranslationFilter) {
-                    translatedText = externalTranslationFilter(inputTextId);
+                try {
+                    var externalTranslationFilter = $filter("translate");
+                    if (externalTranslationFilter) {
+                        translatedText = externalTranslationFilter(inputTextId);
+                    }
+                }
+                catch (ex) {
                 }
 
                 if (!translatedText) {
@@ -1244,7 +1248,7 @@ module TrNgGrid{
                     + '  <div ng-switch-default>'
                     + '    <div class="' + TrNgGrid.columnTitleCssClass + '">'
                     + '      {{columnTitle}}'
-                    + '       <div ' + TrNgGrid.columnSortDirectiveAttribute + '=""></div>' 
+                    + '       <div ' + TrNgGrid.columnSortDirectiveAttribute + '=""></div>'
                     + '    </div>'
                     + '    <div ' + TrNgGrid.columnFilterDirectiveAttribute + '=""></div>'
                     + '  </div>'
@@ -1289,10 +1293,10 @@ module TrNgGrid{
                     + ' ng-click="toggleSorting(columnOptions.fieldName)"'
                     + ' class="' + TrNgGrid.columnSortCssClass + '" > '
                     + '  <div ng-class="{\''
-                    +      TrNgGrid.columnSortActiveCssClass + '\':gridOptions.orderBy==columnOptions.fieldName,\''
-                    +      TrNgGrid.columnSortInactiveCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName,\'' 
-                    +      TrNgGrid.columnSortNormalOrderCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName||!gridOptions.orderByReverse,\'' 
-                    +      TrNgGrid.columnSortReverseOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&gridOptions.orderByReverse}" >'
+                    + TrNgGrid.columnSortActiveCssClass + '\':gridOptions.orderBy==columnOptions.fieldName,\''
+                    + TrNgGrid.columnSortInactiveCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName,\''
+                    + TrNgGrid.columnSortNormalOrderCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName||!gridOptions.orderByReverse,\''
+                    + TrNgGrid.columnSortReverseOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&gridOptions.orderByReverse}" >'
                     + '  </div>'
                     + '</div>');
                 $templateCache.put(TrNgGrid.cellFooterTemplateId,
@@ -1307,12 +1311,12 @@ module TrNgGrid{
                     + '</div>');
                 $templateCache.put(TrNgGrid.footerGlobalFilterTemplateId,
                     '<span ng-show="gridOptions.enableFiltering" class="pull-left form-group">'
-                    + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" placeholder="Search"></input>'
+                    + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" ng-attr-placeholder="{{\'trNgGrid_Search\'|' + TrNgGrid.translateFilter + '}}"></input>'
                     + '</span>');
                 $templateCache.put(TrNgGrid.footerPagerTemplateId,
                     '<span class="pull-right form-group">'
                     + ' <ul class="pagination">'
-                    + '   <li ng-show="pageCanGoBack" >' 
+                    + '   <li ng-show="pageCanGoBack" >'
                     + '     <a href="" ng-click="navigateToPage($event, 0)" title="First Page">|&lArr;</a>'
                     + '   </li>'
                     + '   <li ng-show="pageCanGoBack" >'
@@ -1339,5 +1343,9 @@ module TrNgGrid{
                     + ' </ul>'
                     + '</span>');
             }
-        ]); 
+        ])
+        .run(function () {
+            TrNgGrid.defaultColumnOptions.displayAlign = 'left';
+            TrNgGrid.translations["trNgGrid_Search"] = "Search";
+        });
 }
