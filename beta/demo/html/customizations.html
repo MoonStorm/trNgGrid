@@ -1,0 +1,102 @@
+<div ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(21)">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Permanent Customizations
+        </div>
+        <div class="panel-body">
+            <p>
+                When you've configured your own app, you have the option of tweaking the default look and feel of all the trNgGrid instances.
+            </p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Styles
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                                Various variable are used by the grid when rendering and some of them are CSS classes that will get applied to various elements on the grids.
+                                You can customize these the moment you configure your app:
+                            </p>
+                            <pre>
+.run(function () {
+    TrNgGrid.tableCssClass = "tr-ng-grid table table-bordered table-hover";
+    TrNgGrid.cellCssClass = "tr-ng-cell";
+    TrNgGrid.headerCellCssClass = "tr-ng-column-header " + TrNgGrid.cellCssClass;
+    TrNgGrid.bodyCellCssClass = cellCssClass;
+    TrNgGrid.columnTitleCssClass = "tr-ng-title";
+    TrNgGrid.columnSortCssClass = "tr-ng-sort";
+    TrNgGrid.columnFilterCssClass = "tr-ng-column-filter";
+    TrNgGrid.columnFilterInputWrapperCssClass = "";
+    TrNgGrid.columnSortActiveCssClass = "tr-ng-sort-active text-info";
+    TrNgGrid.columnSortInactiveCssClass = "tr-ng-sort-inactive text-muted";
+    TrNgGrid.columnSortReverseOrderCssClass = "tr-ng-sort-order-reverse glyphicon glyphicon-chevron-up";
+    TrNgGrid.columnSortNormalOrderCssClass = "tr-ng-sort-order-normal glyphicon glyphicon-chevron-down";
+    TrNgGrid.rowSelectedCssClass = "active";
+    TrNgGrid.footerCssClass = "tr-ng-grid-footer form-inline";
+})
+                        </pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                Templates
+                            </div>
+                            <div class="panel-body">
+                                <p>
+                                    Most of the templates used throughout the construction of the grid can be customized. You can override them in your app config.
+                                </p>
+                                <pre>
+.run(["$templateCache", function ($templateCache){
+   $templateCache.put(
+        TrNgGrid.cellBodyTemplateId, 
+        'Copy & paste the content of the template from the trNgGrid.ts file. Adjust it to your needs here.'
+   );
+}])
+                            </pre>
+                                <p class="text-warning">
+                                    As the standard templates are likely to change from version to version, you'll need to check and adjust your custom templates whenever you upgrade the component.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                Default column options
+                            </div>
+                            <div class="panel-body">
+                                <pre>
+TrNggrid.defaultColumnOptions.displayAlign="center";
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Instance Customizations
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                        Customizations can occur at the header, body and footer level.
+                    </p>
+                    <p>
+                        One very important rule to remember for the templates of the data cells (the ones inside the <em>TBODY</em> element) is to always provide the <em>field-name</em> attribute
+                        if they refer to a column which is data bound by the grid. trNgGrid will match these cells with the ones in the header, either automatically produced (if the <em>THEAD</em> element was empty or did not exist) or manually defined and marked with the same <em>field-name</em> attribute.<br />
+                        The cells part of custom columns don't require any special attention. They will be matched with the position of the corresponding cells in the header.
+                    </p>
+                    <p class="text-info">
+                        This section will be updated with examples soon. In the meantime, please see the section on column definitions for various examples involving configuring and adding custom columns.                        
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
