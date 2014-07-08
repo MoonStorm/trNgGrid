@@ -19,7 +19,9 @@ Simply because everything else you're gonna find out there:
 #### Convinced?
 You can download the grid from the release folder in the master branch. Make sure you also include JQuery, Angular, and a Boostrap theme of your choice. Themes can be found on the Bootswatch website. Of course you can craft your own, as the grid layout is quite easy to style.
 
-##### Branch Legend
-- master : stable
-- gh-pages : QA/BETA & demo site
+##### Legend
+- master/release : stable
+- master/beta : BETA
+- gh-pages: DEMO site
+- dev: broken in a million pieces
 
