@@ -30,10 +30,12 @@
     <Content Include="demo\html\selections.html" />
     <Content Include="demo\html\paging.html" />
     <Content Include="demo\html\serverside.html" />
-    <Content Include="demo\html\templates.html" />
+    <Content Include="demo\html\customizations.html" />
+    <Content Include="demo\html\tests\test_benchmark.html" />
     <Content Include="demo\html\tests\test_fixed_header_footer.html" />
     <Content Include="demo\html\tests\test_items_update.html" />
     <Content Include="demo\html\tests\test_ng_switch.html" />
+    <TypeScriptCompile Include="demo\js\benchmark.ts" />
     <TypeScriptCompile Include="demo\js\index.ts" />
     <Content Include="demo\js\index.js">
       <DependentUpon>index.ts</DependentUpon>
@@ -41,6 +43,7 @@
     <Content Include="demo\js\index.min.js">
       <DependentUpon>index.js</DependentUpon>
     </Content>
+    <Content Include="demo\js\ocLazyLoad.js" />
     <Content Include="index.html" />
     <Content Include="src\css\trNgGrid.css" />
     <Content Include="src\css\trNgGrid.min.css">

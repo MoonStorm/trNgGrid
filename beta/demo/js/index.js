@@ -1,4 +1,4 @@
-﻿/// <reference path="../../src/external/typings/jquery/jquery.d.ts" />
+/// <reference path="../../src/external/typings/jquery/jquery.d.ts" />
 /// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
@@ -201,7 +201,8 @@ var TrNgGridDemo;
     })();
     TrNgGridDemo.MainController = MainController;
 
-    angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap"]).config([
+    // https://github.com/ocombe/ocLazyLoad
+    angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap", "oc.lazyLoad"]).config([
         "$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
             $routeProvider.when('/Common', {
                 templateUrl: 'demo/html/common.html'
@@ -213,8 +214,8 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/selections.html'
             }).when('/ServerSide', {
                 templateUrl: 'demo/html/serverside.html'
-            }).when('/Templates', {
-                templateUrl: 'demo/html/templates.html'
+            }).when('/Customizations', {
+                templateUrl: 'demo/html/customizations.html'
             }).when('/GlobalOptions', {
                 templateUrl: 'demo/html/globaloptions.html'
             }).when('/Localization', {
@@ -225,6 +226,23 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/tests/test_items_update.html'
             }).when('/TestFixedHeaderFooter', {
                 templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
+            }).when('/Benchmark', {
+                templateUrl: 'demo/html/tests/test_benchmark.html',
+                resolve: {
+                    loadMyCtrl: [
+                        '$ocLazyLoad', function ($ocLazyLoad) {
+                            // you can lazy load files for an existing module
+                            return $ocLazyLoad.load({
+                                name: 'ngGrid',
+                                files: [
+                                    '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js',
+                                    '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css',
+                                    '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid-flexible-height.min.js',
+                                    '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js'
+                                ]
+                            });
+                        }]
+                }
             }).otherwise({
                 templateUrl: 'demo/html/default.html'
             });
@@ -242,6 +260,8 @@ var TrNgGridDemo;
             };
         }
     ]).run(function () {
+        TrNgGrid.debugMode = true;
+
         var defaultTranslation = {};
 
         var enTranslation = angular.extend({}, defaultTranslation);

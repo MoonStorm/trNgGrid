@@ -27,7 +27,6 @@
     <Content Include="demo\html\default.html" />
     <Content Include="demo\html\globaloptions.html" />
     <Content Include="demo\html\localization.html" />
-    <Content Include="demo\html\selections.html" />
     <Content Include="demo\html\paging.html" />
     <Content Include="demo\html\serverside.html" />
     <Content Include="demo\html\templates.html" />
