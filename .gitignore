@@ -1,12 +1,12 @@
-/*
+/
 !/.gitignore
 !/README.md
 !/LICENSE
 !/beta/trNgGrid.min.css
 !/beta/trNgGrid.min.js
-!/bets/src/*
+!/beta/src/
 !/release/trNgGrid.min.css
 !/release/trNgGrid.min.js
-!/release/src/*
+!/release/src/
 
 
