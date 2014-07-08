@@ -1,2 +1,12 @@
-bin
-obj
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/beta/trNgGrid.min.css
+!/beta/trNgGrid.min.js
+!/bets/src/*
+!/release/trNgGrid.min.css
+!/release/trNgGrid.min.js
+!/release/src/*
+
+
