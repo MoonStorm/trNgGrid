@@ -25,3 +25,13 @@ You can download the grid from the release folder in the master branch. Make sur
 - gh-pages: DEMO site
 - dev: broken in a million pieces
 
+##### Change Log
+###### 3.0 Beta
+- Multiple types of selection.
+- Ability to override the default CSS and templates.
+- Better handling of various elements in the header: user experience improved and better monitoring of various column settings.
+- Localization support. This doesn't mean though that the grid will provide localized text out of the box.
+- jQuery no longer a dependency.
+- Filtering uses the display format rather than the original field value.
+- Please give me a hand in testing it so we can make it into a nice release package. Thank you.
+
