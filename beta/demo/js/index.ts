@@ -1,4 +1,4 @@
-/// <reference path="../../src/external/typings/jquery/jquery.d.ts" />
+﻿/// <reference path="../../src/external/typings/jquery/jquery.d.ts" />
 /// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 
 module TrNgGridDemo{
@@ -351,7 +351,7 @@ module TrNgGridDemo{
                 "Born": "Geboren",
                 "Search": "Suche",
                 "First Page": "Erste Seite",
-                "Next Page": "N�chste Seite",
+                "Next Page": "Nächste Seite",
                 "Previous Page": "Vorherige Seite",
                 "Last Page": "Letzte Seite",
                 "Sort": "Sortieren",

@@ -111,4 +111,9 @@
     <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(VSToolsPath)\TypeScript\Microsoft.TypeScript.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(ProjectDir)\src\css\trNgGrid.min.css" "$(ProjectDir)"
+copy /Y "$(ProjectDir)\src\js\trNgGrid.min.js" "$(ProjectDir)"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

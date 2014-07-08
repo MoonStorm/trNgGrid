@@ -1,1 +1,0 @@
-C:\_work\Source\trNgGrid\beta\obj\Debug\TrNgGrid_Beta.csprojResolveAssemblyReference.cache

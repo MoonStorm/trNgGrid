@@ -1,7 +1,5 @@
-node_modules
-
 d.ts
 *.suo
-/bin
-/obj
 /TrNgGrid.csproj.user
+bin
+obj

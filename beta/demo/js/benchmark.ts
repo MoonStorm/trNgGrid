@@ -1,4 +1,5 @@
 ﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+/// <reference path="index.ts" />
 
 module TrNgGridDemo {
     declare var ngGridFlexibleHeightPlugin;
