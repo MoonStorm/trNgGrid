@@ -1,5 +1,6 @@
 /
 !/.gitignore
+!/bower.json
 !/README.md
 !/LICENSE
 !/beta/trNgGrid.min.css
