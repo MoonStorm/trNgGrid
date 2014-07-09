@@ -1,6 +1,8 @@
 /// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 
 module TrNgGridDemo{
+    declare var prettyPrintOne: (unformattedText: string, language?: string, generateLineNumbers?: boolean) => string;
+
     export interface ITestControllerScope extends ng.IScope{ 
         externalTestProp: string;
         myItemsTotalCount:number;
@@ -207,7 +209,7 @@ module TrNgGridDemo{
     }
 
     angular.module("trNgGridDemo", ["ngRoute", "ngAnimate", "trNgGrid"])
-        .config(["$routeProvider", "$locationProvider", ($routeProvider:any, $locationProvider:any)=>{
+        .config(["$routeProvider", "$locationProvider", ($routeProvider: any, $locationProvider: any) => {
             $routeProvider
                 .when('/Common', {
                     templateUrl: 'demo/html/common.html'
@@ -222,7 +224,7 @@ module TrNgGridDemo{
                     templateUrl: 'demo/html/serverside.html'
                 })
                 .when('/Templates', {
-                    templateUrl: 'demo/html/templates.html' 
+                    templateUrl: 'demo/html/templates.html'
                 })
                 .when('/GlobalOptions', {
                     templateUrl: 'demo/html/globaloptions.html'
@@ -236,26 +238,40 @@ module TrNgGridDemo{
                 .when('/Localization', {
                     templateUrl: 'demo/html/localization.html'
                 })
-                .otherwise({  
+                .otherwise({
                     templateUrl: 'demo/html/default.html'
-                });     
-             
+                });
+
             // configure html5 to get links working on jsfiddle
             //$locationProvider.html5Mode(true);
         }])
-        .directive("projectMarkupTo",[
-            ()=>{
-                return{
-                    restrict:"EA",
-                    template: (element:JQuery, tAttr:ng.IAttributes) => {
+        .directive("projectMarkupTo", [
+            () => {
+                return {
+                    restrict: "EA",
+                    template: (element: JQuery, tAttr: ng.IAttributes) => {
                         var projectionElementId = tAttr["projectMarkupTo"];
                         var currentElementContents = element
                             .html()
-                            .replace(/</g, "&lt;")
-                            .replace(/>/g, "&gt;")
-                            .replace(/"/g, "&quot;")
-                            .replace(/  /g, "&nbsp;&nbsp;");
-                        angular.element(document.querySelector(projectionElementId)).html(currentElementContents);
+                            .replace(/&/g, '&amp;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#39;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/\n/g, '<br>');
+                        //.replace(/</g, "&lt;")
+                        //.replace(/>/g, "&gt;")
+                        //.replace(/"/g, "&quot;");
+                        currentElementContents = prettyPrintOne(currentElementContents, null, false);
+
+                        //.replace(/</g, "&lt;")
+                        //.replace(/>/g, "&gt;")
+                        //.replace(/"/g, "&quot;");
+                        //.replace(/  /g, "&nbsp;&nbsp;");
+                        angular.element(document.querySelector(projectionElementId))
+                            .html(currentElementContents)
+                            .addClass('prettyprint prettyprinted')
+                            .attr("ng-non-bindable", "");
                     }
                 };
             }

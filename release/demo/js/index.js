@@ -1,4 +1,4 @@
-/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     var RndGenOptions;
@@ -214,8 +214,18 @@ var TrNgGridDemo;
                 restrict: "EA",
                 template: function (element, tAttr) {
                     var projectionElementId = tAttr["projectMarkupTo"];
-                    var currentElementContents = element.html().replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/  /g, "&nbsp;&nbsp;");
-                    angular.element(document.querySelector(projectionElementId)).html(currentElementContents);
+                    var currentElementContents = element.html().replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+
+                    //.replace(/</g, "&lt;")
+                    //.replace(/>/g, "&gt;")
+                    //.replace(/"/g, "&quot;");
+                    currentElementContents = prettyPrintOne(currentElementContents, null, false);
+
+                    //.replace(/</g, "&lt;")
+                    //.replace(/>/g, "&gt;")
+                    //.replace(/"/g, "&quot;");
+                    //.replace(/  /g, "&nbsp;&nbsp;");
+                    angular.element(document.querySelector(projectionElementId)).html(currentElementContents).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
                 }
             };
         }
