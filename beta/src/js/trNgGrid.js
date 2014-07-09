@@ -640,7 +640,6 @@ var TrNgGrid;
 
         GridController.prototype.computeFormattedItems = function (scope) {
             TrNgGrid.debugMode && this.log("formatting items of length " + (scope.gridOptions.items ? scope.gridOptions.items.length : 0));
-
             var input = scope.gridOptions.items;
             var formattedItems = scope.formattedItems = (scope.formattedItems || []);
             if (scope.gridOptions.onDataRequired) {
@@ -652,6 +651,11 @@ var TrNgGrid;
             for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
                 var inputItem = input[inputIndex];
                 var outputItem;
+
+                while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== inputItem) {
+                    formattedItems.splice(inputIndex, 1);
+                }
+
                 if (inputIndex < formattedItems.length) {
                     outputItem = formattedItems[inputIndex];
                     if (outputItem.$$_gridItem !== inputItem) {
@@ -680,6 +684,11 @@ var TrNgGrid;
                         }
                     }
                 }
+            }
+
+            // remove any extra elements from the formatted list
+            if (formattedItems.length > input.length) {
+                formattedItems.splice(input.length, formattedItems.length - input.length);
             }
         };
 
