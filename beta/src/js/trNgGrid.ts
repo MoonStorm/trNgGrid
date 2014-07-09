@@ -810,7 +810,6 @@ module TrNgGrid{
 
         computeFormattedItems(scope: IGridScope) {
             debugMode && this.log("formatting items of length " + (scope.gridOptions.items ? scope.gridOptions.items.length : 0));
-
             var input = scope.gridOptions.items;
             var formattedItems: Array<IGridDisplayItem> = scope.formattedItems = (scope.formattedItems || <Array<IGridDisplayItem>>[]);
             if (scope.gridOptions.onDataRequired) {
@@ -823,6 +822,12 @@ module TrNgGrid{
             for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
                 var inputItem = input[inputIndex];
                 var outputItem: IGridDisplayItem;
+
+                // check for removed items, try to keep the item instances intact
+                while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== inputItem) {
+                    formattedItems.splice(inputIndex, 1);
+                }
+
                 if (inputIndex < formattedItems.length) {
                     outputItem = formattedItems[inputIndex];
                     if (outputItem.$$_gridItem !== inputItem) {
@@ -854,6 +859,11 @@ module TrNgGrid{
                         }
                     }
                 }
+            }
+
+            // remove any extra elements from the formatted list
+            if (formattedItems.length > input.length) {
+                formattedItems.splice(input.length, formattedItems.length - input.length);
             }
         }
 
