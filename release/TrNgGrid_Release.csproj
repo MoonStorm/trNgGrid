@@ -30,10 +30,9 @@
     <Content Include="demo\html\paging.html" />
     <Content Include="demo\html\serverside.html" />
     <Content Include="demo\html\templates.html" />
-    <Content Include="demo\html\tests\test_fixed_header_footer.html" />
-    <Content Include="demo\html\tests\test_items_update.html" />
-    <Content Include="demo\html\tests\test_ng_switch.html" />
     <TypeScriptCompile Include="demo\js\index.ts" />
+    <Content Include="demo\html\test_items_update.html" />
+    <Content Include="demo\html\test_ng_switch.html" />
     <Content Include="demo\js\index.js">
       <DependentUpon>index.ts</DependentUpon>
     </Content>

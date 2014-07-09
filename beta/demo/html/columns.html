@@ -19,7 +19,7 @@
                 </pre>
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Manual_Fields" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(3)">
-<table tr-ng-grid items="myItems" fields="['id','name']" /></table>
+                    <table tr-ng-grid items="myItems" fields="['id','name']" /></table>
                 </div>
             </div>
         </div>
@@ -79,8 +79,8 @@
             <div class="row">
                 <div class="col-md-7">
                     <p>
-                        Extra columns can be added in the body, even without defining the header. Tapping into the currently bound row item can be done through the <em>gridItem</em> scope property.
-                        More examples that are covering this topic are available in the <em>"Templating"</em> section.
+                        Extra columns can be added in the body, even without defining the header.<br/>
+                        Tapping into the currently bound row item can be done through the <em>gridItem</em> scope field, which poins to the actual data item, and <em>gridDisplayItem</em>, which points to the formatted item and should only be used for display purposes.
                     </p>
 
                     <pre id="trNgGrid_Sample_Columns_Extra">
@@ -92,7 +92,7 @@
         <tr>
             <td>
                 <button class="btn btn-default" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
-                    Remove
+                    Remove {{gridDisplayItem.id}}
                 </button>
             </td>
         </tr>
