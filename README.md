@@ -1,4 +1,4 @@
-### trNgGrid is a feature rich data grid based on the popular AngularJs framework and making use of plain simple table HTML elements.
+### trNgGrid is a feature rich data grid based on the popular AngularJs framework and making use of plain simple HTML table elements.
 
 #### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/)
 
