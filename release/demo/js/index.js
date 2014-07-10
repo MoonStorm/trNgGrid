@@ -1,4 +1,4 @@
-﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     var RndGenOptions;

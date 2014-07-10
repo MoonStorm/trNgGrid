@@ -10,30 +10,31 @@ module TrNgGridDemo{
         myLocale: string;
         myItems: Array<any>;
         myFields: Array<string>;
-        myItemsCurrentPageIndex:number;
-        myPageItemsCount:number;
-        mySelectedItems:Array<any>; 
-        myGlobalFilter:string;
-        myColumnFilter:Object;
+        myItemsCurrentPageIndex: number;
+        myPageItemsCount: number;
+        mySelectedItems: Array<any>;
+        myGlobalFilter: string;
+        myColumnFilter: Object;
         myOrderBy: string;
         myEnableFieldAutoDetection: boolean;
-        myOrderByReversed:boolean;
-        myEnableFiltering:boolean;
-        myEnableSorting:boolean;
+        myOrderByReversed: boolean;
+        myEnableFiltering: boolean;
+        myEnableSorting: boolean;
         myEnableSelections: boolean;
         mySelectionMode: TrNgGrid.SelectionMode;
         myEnableMultiRowSelections: boolean;
         SelectionMode: any;
         availableFields: Array<string>;
 
-        requestedItemsGridOptions:Object;
+        requestedItemsGridOptions: Object;
 
-        addNew:()=>void;
-        onServerSideItemsRequested:(currentPage:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>void;
+        addNew: () => void;
+        onServerSideItemsRequested: (currentPage: number, filterBy: string, filterByFields: Object, orderBy: string, orderByReverse: boolean) => void;
         generateItems: (pageItems: number, totalItems?: number) => void;
         addDateToItems: () => void;
-        showMessage:(event:ng.IAngularEvent, msg:string) => void;
+        showMessage: (event: ng.IAngularEvent, msg: string) => void;
         simulateServerSideQueries: (pageItems: number, totalItems?: number) => void;
+        removeSelectedElements: () => void;
         //toogleFieldEnforcement: (fieldName: string) => void;
     }
 
@@ -72,6 +73,11 @@ module TrNgGridDemo{
                     $scope.myFields.splice(fieldIndex, 1);
                 }
             };*/
+            $scope.removeSelectedElements = () => {
+                angular.forEach($scope.mySelectedItems, (selectedItem) => {
+                    $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
+                });
+            };
             $scope.generateItems = (pageItems: number, totalItems?: number) => {
                 $scope.myItems = [];
                 //$scope.myItems.splice(0);
@@ -207,10 +213,12 @@ module TrNgGridDemo{
     export interface IMainControllerScope extends ng.IScope {
         theme: string;
         themeUrl: string;
+        isFrame: boolean;
     }
 
     export class MainController {
-        constructor(private $scope: IMainControllerScope, private $sce:ng.ISCEService) {
+        constructor(private $scope: IMainControllerScope, private $sce: ng.ISCEService, $location:ng.ILocationService) {
+            $scope.isFrame = $location.search().isFrame;
             $scope.theme = "slate";
             this.setupThemeUrl();
 
@@ -269,6 +277,9 @@ module TrNgGridDemo{
                 .when('/TestFixedHeaderFooter', {
                     templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
                 })
+                .when('/TemplatePager', {
+                    templateUrl: 'demo/html/tests/test_template_pager.html'
+                })
                 .when('/Benchmark', {
                     templateUrl: 'demo/html/tests/test_benchmark.html',
                     resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
@@ -295,28 +306,6 @@ module TrNgGridDemo{
             // configure html5 to get links working on jsfiddle
             //$locationProvider.html5Mode(true);
         }])
-        //.directive('script', function () {
-        //    return {
-        //        restrict: 'E',
-        //        scope: false,
-        //        link: function (scope, elem, attr) {
-        //            if (attr.type === 'text/javascript-lazy') {
-        //                var s = document.createElement("script");
-        //                s.type = "text/javascript";
-        //                var src = elem.attr('src');
-        //                if (src !== undefined) {
-        //                    s.src = src;
-        //                }
-        //                else {
-        //                    var code = elem.text();
-        //                    s.text = code;
-        //                }
-        //                document.head.appendChild(s);
-        //                elem.remove();
-        //            }
-        //        }
-        //    };
-        //})
         .directive("projectMarkupTo", [
             () => {
                 return {

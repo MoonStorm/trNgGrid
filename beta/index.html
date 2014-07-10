@@ -22,7 +22,7 @@
     <script src="//google-code-prettify.googlecode.com/svn/loader/prettify.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
     <!--<script src="//code.angularjs.org/1.2.9/i18n/angular-locale_en-gb.js"></script>-->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>-->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script>
     <script src="demo/js/ocLazyLoad.js"></script>
@@ -38,7 +38,7 @@
 </head>
 
 <body class="row">
-    <nav class="navbar navbar-default demo-menu" role="navigation">
+    <nav class="navbar navbar-default demo-menu" role="navigation" ng-if="!isFrame">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
@@ -98,7 +98,7 @@
         </div>
     </nav>
 
-    <div ng-view class=" col-md-12"></div>
+    <div ng-view class="col-md-12"></div>
 
     <script>
         (function (i, s, o, g, r, a, m) {

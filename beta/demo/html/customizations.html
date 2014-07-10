@@ -1,4 +1,4 @@
-<div ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(21)">
+<div class="row">
     <div class="panel panel-primary">
         <div class="panel-heading">
             Permanent Customizations
@@ -8,7 +8,7 @@
                 When you've configured your own app, you have the option of tweaking the default look and feel of all the trNgGrid instances.
             </p>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             Styles
@@ -39,42 +39,54 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                Templates
-                            </div>
-                            <div class="panel-body">
-                                <p>
-                                    Most of the templates used throughout the construction of the grid can be customized. You can override them in your app config.
-                                </p>
-                                <pre>
-.run(["$templateCache", function ($templateCache){
-   $templateCache.put(
-        TrNgGrid.cellBodyTemplateId, 
-        'Copy & paste the content of the template from the trNgGrid.ts file. Adjust it to your needs here.'
-   );
-}])
-                            </pre>
-                                <p class="text-warning">
-                                    As the standard templates are likely to change from version to version, you'll need to check and adjust your custom templates whenever you upgrade the component.
-                                </p>
-                            </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Default column options
                         </div>
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                Default column options
-                            </div>
-                            <div class="panel-body">
-                                <pre>
-TrNggrid.defaultColumnOptions.displayAlign="center";
-                                </pre>
-                            </div>
+                        <div class="panel-body">
+                            <pre>
+.run(function () {
+    TrNggrid.defaultColumnOptions.displayAlign="center";
+})
+                       </pre>
                         </div>
                     </div>
                 </div>
-              </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Templates
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                                Most of the templates used throughout the construction of the grid can be customized.
+                                You can override them in your app config.
+                                Browse through the code of the <em>trNgGrid.ts</em> to find the default templates and their identifiers.
+                            </p>
+                            <h4 class="text-warning">
+                                As you'll be marrying your templates with the inner guts of the component,
+                                you'll have to check and adjust your custom templates whenever you upgrade.
+                            </h4>
+                            <p>
+                                The example below shows how to override the default pager template.
+                            </p>
+
+                            <pre>
+.run(["$templateCache", function ($templateCache){
+   $templateCache.put(
+        TrNgGrid.footerPagerTemplateId, 
+        'Copy & paste the content of the template from the trNgGrid.ts file. Adjust it to your needs here.'
+   );
+}])
+                                </pre>
+                            <iframe src="index.html#/TemplatePager?isFrame=true" style="height:45em;"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="panel panel-primary">
@@ -82,19 +94,76 @@ TrNggrid.defaultColumnOptions.displayAlign="center";
             Instance Customizations
         </div>
         <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
+            <p>
+                Per grid instance customization is possible as well. This is possbile at the header, body and the footer level.
+                Below are a few examples.
+            </p>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Custom header and body cells
+                </div>
+                <div class="panel-body" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(5)">
                     <p>
-                        Customizations can occur at the header, body and footer level.
+                        When you start adding additional cells in either the header or the body, there is one rule to remember:<br />
+                        The grid will match the position of the header template cells with the ones in the body through the fields identified by the <em>field-name</em> attribute.
+                        Everything that is not bound to a field will be matched by position as well, and the extra non-field elements will turn into columns placed at the far right end of the grid.
                     </p>
+                    <pre id="trNgGrid_Customize_Header_Body"></pre>
+
+                    <div project-markup-to="#trNgGrid_Customize_Header_Body">
+<table tr-ng-grid="" items="myItems" selected-items="mySelectedItems" selection-mode="None">
+    <thead>
+        <tr>
+            <th display-align="center" cell-width="2em">
+                <div class="tr-ng-title">&nbsp;</div>
+                <input type="checkbox" ng-model="areAllSelected" ng-change="!areAllSelected?mySelectedItems.splice(0, mySelectedItems.length):mySelectedItems.push.apply(mySelectedItems, myItems)" />
+            </th>
+            <th field-name="id" />
+            <th field-name="name" />
+            <th field-name="address" />
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <input type="checkbox" ng-model="isSelected" ng-checked="mySelectedItems.indexOf(gridItem)>=0" ng-change="isSelected?mySelectedItems.push(gridItem):mySelectedItems.splice(mySelectedItems.indexOf(gridItem),1)" />
+            </td>
+            <td>
+                <button class="btn btn-default btn-sm" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
+                    Remove {{gridDisplayItem.id}}
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    New elements in the footer
+                </div>
+                <div class="panel-body" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(21)">
                     <p>
-                        One very important rule to remember for the templates of the data cells (the ones inside the <em>TBODY</em> element) is to always provide the <em>field-name</em> attribute
-                        if they refer to a column which is data bound by the grid. trNgGrid will match these cells with the ones in the header, either automatically produced (if the <em>THEAD</em> element was empty or did not exist) or manually defined and marked with the same <em>field-name</em> attribute.<br />
-                        The cells part of custom columns don't require any special attention. They will be matched with the position of the corresponding cells in the header.
+                        Customizing the footer means you're going to have to add manually the inner directives that are bound to various features of the grid, such as global filtering and paging.
                     </p>
-                    <p class="text-info">
-                        This section will be updated with examples soon. In the meantime, please see the section on column definitions for various examples involving configuring and adding custom columns.                        
-                    </p>
+                    <pre id="trNgGrid_Customize_Footer"></pre>
+
+                    <div project-markup-to="#trNgGrid_Customize_Footer">
+<table tr-ng-grid items="myItems" selected-items="mySelectedItems" page-items="5">
+    <tfoot>
+        <tr>
+            <td>
+                <span tr-ng-grid-global-filter=""></span>
+                <span class="form-group pull-left">
+                    <button class="btn btn-primary" ng-click="removeSelectedElements()" ng-class="{'disabled':!mySelectedItems.length}">Remove Selected Items</button>
+                </span>
+                <span tr-ng-grid-pager=""></span>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+                    </div>
                 </div>
             </div>
         </div>

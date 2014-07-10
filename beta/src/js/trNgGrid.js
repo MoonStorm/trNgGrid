@@ -943,45 +943,6 @@ var TrNgGrid;
         }
     ]).directive(cellBodyDirective, [
         function () {
-            /*var setupCellData: (scope: IGridBodyColumnScope) => void = null;
-            setupCellData = (scope: IGridBodyColumnScope) => {
-            var cellContentsElementText = "gridItem['" + scope.columnOptions.fieldName+"']";
-            if (scope.columnOptions.displayFormat) {
-            // add the display filter
-            if (scope.columnOptions.displayFormat[0] != '.') {
-            // assume an angular filter by default
-            if (scope.columnOptions.displayFormat[0] != '|') {
-            cellContentsElementText += " | ";
-            }
-            }
-            cellContentsElementText += scope.columnOptions.displayFormat;
-            }
-            //cellContentsElementText += "}}";
-            scope.cellData = scope.$eval(cellContentsElementText);
-            };
-            
-            var setupCellDataMonitoring =  (scope: IGridBodyColumnScope) => {
-            var watchExpression = "[gridItem['" + scope.columnOptions.fieldName+"']";
-            if (scope.columnOptions.displayFormat && scope.columnOptions.displayFormat[0] != '.') {
-            // watch the parameters
-            var displayfilters = scope.columnOptions.displayFormat.split('|');
-            angular.forEach(displayfilters, (displayFilter: string) => {
-            var displayFilterParams = displayFilter.split(':');
-            if (displayFilterParams.length > 1) {
-            angular.forEach(displayFilterParams.slice(1), (displayFilterParam: string) => {
-            displayFilterParam = displayFilterParam.trim();
-            if (displayFilterParam) {
-            watchExpression += "," + displayFilterParam;
-            }
-            });
-            }
-            });
-            }
-            watchExpression += "]";
-            scope.$watchCollection(watchExpression, () => {
-            setupCellData(scope);
-            });
-            };*/
             return {
                 restrict: 'A',
                 require: '^' + tableDirective,
@@ -994,10 +955,6 @@ var TrNgGrid;
                         pre: function (scope, instanceElement, tAttrs, controller, $transclude) {
                             scope.columnOptions = scope.gridOptions.gridColumnDefs[parseInt(tAttrs[cellBodyDirective])];
                             scope.gridItem = scope.gridDisplayItem.$$_gridItem;
-
-                            http:
-                            //setupCellData(scope);
-                            //setupCellDataMonitoring(scope);
                             scope.isCustomized = isCustomized;
                         }
                     };
@@ -1129,6 +1086,7 @@ var TrNgGrid;
             };
         }
     ]).filter(TrNgGrid.dataPagingFilter, function () {
+        // when server-side logic is enabled, this directive should not be used!
         return function (input, gridOptions) {
             //currentPage?:number, pageItems?:number
             if (input)
@@ -1148,12 +1106,6 @@ var TrNgGrid;
             }
             var endIndex = gridOptions.currentPage * gridOptions.pageItems + gridOptions.pageItems;
 
-            /*              Update: Not called for server-side paging
-            if(startIndex>=input.length){
-            // server side paging, ignore the operation
-            return input;
-            }
-            */
             return input.slice(startIndex, endIndex);
         };
     }).filter(TrNgGrid.translateFilter, [

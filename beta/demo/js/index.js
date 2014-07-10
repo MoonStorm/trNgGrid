@@ -42,6 +42,11 @@ var TrNgGridDemo;
             $scope.myFields.splice(fieldIndex, 1);
             }
             };*/
+            $scope.removeSelectedElements = function () {
+                angular.forEach($scope.mySelectedItems, function (selectedItem) {
+                    $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
+                });
+            };
             $scope.generateItems = function (pageItems, totalItems) {
                 $scope.myItems = [];
 
@@ -176,10 +181,11 @@ var TrNgGridDemo;
     TrNgGridDemo.TestController = TestController;
 
     var MainController = (function () {
-        function MainController($scope, $sce) {
+        function MainController($scope, $sce, $location) {
             var _this = this;
             this.$scope = $scope;
             this.$sce = $sce;
+            $scope.isFrame = $location.search().isFrame;
             $scope.theme = "slate";
             this.setupThemeUrl();
 
@@ -226,6 +232,8 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/tests/test_items_update.html'
             }).when('/TestFixedHeaderFooter', {
                 templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
+            }).when('/TemplatePager', {
+                templateUrl: 'demo/html/tests/test_template_pager.html'
             }).when('/Benchmark', {
                 templateUrl: 'demo/html/tests/test_benchmark.html',
                 resolve: {

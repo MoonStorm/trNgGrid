@@ -24,6 +24,7 @@
     <Content Include="demo\css\tests\test_fixed_header_footer.css" />
     <Content Include="demo\html\columns.html" />
     <Content Include="demo\html\common.html" />
+    <Content Include="demo\html\tests\test_template_pager.html" />
     <Content Include="demo\html\default.html" />
     <Content Include="demo\html\globaloptions.html" />
     <Content Include="demo\html\localization.html" />

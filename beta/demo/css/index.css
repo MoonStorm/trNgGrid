@@ -6,3 +6,9 @@ html, body{
 .demo-menu{
     font-size:0.9em;
 }
+
+iframe{
+    width:100%;
+    min-height:27em;
+    border:none;
+}
