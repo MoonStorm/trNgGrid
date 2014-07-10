@@ -230,6 +230,8 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/tests/test_ng_switch.html'
             }).when('/TestItemsUpdate', {
                 templateUrl: 'demo/html/tests/test_items_update.html'
+            }).when('/TestHybridMode', {
+                templateUrl: 'demo/html/tests/test_hybrid_mode.html'
             }).when('/TestFixedHeaderFooter', {
                 templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
             }).when('/TemplatePager', {

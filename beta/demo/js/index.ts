@@ -9,6 +9,7 @@ module TrNgGridDemo{
         myItemsTotalCount: number;
         myLocale: string;
         myItems: Array<any>;
+        myCurrentPage: number;
         myFields: Array<string>;
         myItemsCurrentPageIndex: number;
         myPageItemsCount: number;
@@ -45,7 +46,7 @@ module TrNgGridDemo{
     }
 
     export class TestController{ 
-        constructor(private $scope:ITestControllerScope, $window:ng.IWindowService, $timeout:ng.ITimeoutService){
+        constructor(public $scope:ITestControllerScope, $window:ng.IWindowService, $timeout:ng.ITimeoutService){
             $scope.externalTestProp = "Externals should be visible";
             $scope.myLocale = "en";
             $scope.myGlobalFilter="";
@@ -273,6 +274,9 @@ module TrNgGridDemo{
                 })
                 .when('/TestItemsUpdate', {
                     templateUrl: 'demo/html/tests/test_items_update.html'
+                })
+                .when('/TestHybridMode', {
+                    templateUrl: 'demo/html/tests/test_hybrid_mode.html'
                 })
                 .when('/TestFixedHeaderFooter', {
                     templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
