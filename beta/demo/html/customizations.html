@@ -108,34 +108,41 @@
                         The grid will match the position of the header template cells with the ones in the body through the fields identified by the <em>field-name</em> attribute.
                         Everything that is not bound to a field will be matched by position as well, and the extra non-field elements will turn into columns placed at the far right end of the grid.
                     </p>
+                    <p>
+                        Tapping into the currently bound row item can be done through the
+                        <ul>
+                            <li><em>gridItem</em> scope variable, which points to the actual data item, and</li>
+                            <li><em>gridDisplayItem</em>, which points to the formatted item and should only be used for presentation purposes.</li>
+                        </ul>
+                    </p>
                     <pre id="trNgGrid_Customize_Header_Body"></pre>
 
                     <div project-markup-to="#trNgGrid_Customize_Header_Body">
-<table tr-ng-grid="" items="myItems" selected-items="mySelectedItems" selection-mode="None">
-    <thead>
-        <tr>
-            <th display-align="center" cell-width="2em">
-                <div class="tr-ng-title">&nbsp;</div>
-                <input type="checkbox" ng-model="areAllSelected" ng-change="!areAllSelected?mySelectedItems.splice(0, mySelectedItems.length):mySelectedItems.push.apply(mySelectedItems, myItems)" />
-            </th>
-            <th field-name="id" />
-            <th field-name="name" />
-            <th field-name="address" />
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                <input type="checkbox" ng-model="isSelected" ng-checked="mySelectedItems.indexOf(gridItem)>=0" ng-change="isSelected?mySelectedItems.push(gridItem):mySelectedItems.splice(mySelectedItems.indexOf(gridItem),1)" />
-            </td>
-            <td>
-                <button class="btn btn-default btn-sm" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
-                    Remove {{gridDisplayItem.id}}
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+                        <table tr-ng-grid="" items="myItems" selected-items="mySelectedItems" selection-mode="None">
+                            <thead>
+                                <tr>
+                                    <th display-align="center" cell-width="2em">
+                                        <div class="tr-ng-title">&nbsp;</div>
+                                        <input type="checkbox" ng-model="areAllSelected" ng-change="!areAllSelected?mySelectedItems.splice(0, mySelectedItems.length):mySelectedItems.push.apply(mySelectedItems, myItems)" />
+                                    </th>
+                                    <th field-name="id" />
+                                    <th field-name="name" />
+                                    <th field-name="address" />
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" ng-model="isSelected" ng-checked="mySelectedItems.indexOf(gridItem)>=0" ng-change="isSelected?mySelectedItems.push(gridItem):mySelectedItems.splice(mySelectedItems.indexOf(gridItem),1)" />
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-default btn-sm" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
+                                            Remove {{gridDisplayItem.id}}
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -150,19 +157,19 @@
                     <pre id="trNgGrid_Customize_Footer"></pre>
 
                     <div project-markup-to="#trNgGrid_Customize_Footer">
-<table tr-ng-grid items="myItems" selected-items="mySelectedItems" page-items="5">
-    <tfoot>
-        <tr>
-            <td>
-                <span tr-ng-grid-global-filter=""></span>
-                <span class="form-group pull-left">
-                    <button class="btn btn-primary" ng-click="removeSelectedElements()" ng-class="{'disabled':!mySelectedItems.length}">Remove Selected Items</button>
-                </span>
-                <span tr-ng-grid-pager=""></span>
-            </td>
-        </tr>
-    </tfoot>
-</table>
+                        <table tr-ng-grid items="myItems" selected-items="mySelectedItems" page-items="5">
+                            <tfoot>
+                                <tr>
+                                    <td>
+                                        <span tr-ng-grid-global-filter=""></span>
+                                        <span class="form-group pull-left">
+                                            <button class="btn btn-primary" ng-click="removeSelectedElements()" ng-class="{'disabled':!mySelectedItems.length}">Remove Selected Items</button>
+                                        </span>
+                                        <span tr-ng-grid-pager=""></span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
