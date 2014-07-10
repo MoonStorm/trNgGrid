@@ -205,7 +205,7 @@ module TrNgGrid{
         pageCanGoForward: boolean;
         pageSelectionActive: boolean;
         switchPageSelection: ($event: ng.IAngularEvent, pageSelectionActive: boolean) => void;
-        navigateToPage:($event:ng.IAngularEvent, pageIndex:number)=>void;
+        navigateToPage:(pageIndex:number)=>void;
     }
 
     splitByCamelCasing = (input) => {
@@ -1244,10 +1244,10 @@ module TrNgGrid{
                     scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage > 0;
                     scope.pageCanGoForward = scope.isPaged && scope.gridOptions.currentPage < scope.lastPageIndex;
 
-                    scope.navigateToPage = ($event, pageIndex) => {
+                    scope.navigateToPage = (pageIndex) => {
                         scope.gridOptions.currentPage = pageIndex;
-                        $event.preventDefault();
-                        $event.stopPropagation();
+                        /*$event.preventDefault();
+                        $event.stopPropagation();*/
                     }
 
                     scope.switchPageSelection = ($event, pageSelectionActive) => {
@@ -1453,10 +1453,10 @@ module TrNgGrid{
                 '<span class="pull-right form-group">'
                 + ' <ul class="pagination">'
                 + '   <li ng-show="pageCanGoBack" >'
-                + '     <a href="" ng-click="navigateToPage($event, 0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>'
+                + '     <a href="" ng-click="navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>'
                 + '   </li>'
                 + '   <li ng-show="pageCanGoBack" >'
-                + '     <a href="" ng-click="navigateToPage($event, gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
+                + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
                 + '   </li>'
                 + '   <li ng-show="pageSelectionActive" style="white-space: nowrap;">'
                 + '     <span>Page: '
@@ -1471,10 +1471,10 @@ module TrNgGrid{
                 + '     </span > '
                 + '   </li>'
                 + '   <li ng-show="pageCanGoForward">'
-                + '     <a href="" ng-click="navigateToPage($event, gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>'
+                + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>'
                 + '   </li>'
                 + '   <li ng-show="pageCanGoForward">'
-                + '     <a href="" ng-show="pageCanGoForward" ng-click="navigateToPage($event, lastPageIndex)" title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>'
+                + '     <a href="" ng-show="pageCanGoForward" ng-click="navigateToPage(lastPageIndex)" title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>'
                 + '   </li>'
                 + ' </ul>'
                 + '</span>');
