@@ -39,6 +39,7 @@
     <Content Include="demo\html\tests\test_ng_switch.html" />
     <TypeScriptCompile Include="demo\js\benchmark.ts" />
     <TypeScriptCompile Include="demo\js\index.ts" />
+    <Content Include="demo\js\benchmark.js" />
     <Content Include="demo\js\index.js">
       <DependentUpon>index.ts</DependentUpon>
     </Content>
@@ -46,6 +47,7 @@
       <DependentUpon>index.js</DependentUpon>
     </Content>
     <Content Include="demo\js\ocLazyLoad.js" />
+    <Content Include="demo\js\test_hybrid_mode.js" />
     <Content Include="index.html" />
     <Content Include="src\css\trNgGrid.css" />
     <Content Include="src\css\trNgGrid.min.css">
