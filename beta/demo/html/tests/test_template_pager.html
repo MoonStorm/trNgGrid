@@ -4,7 +4,7 @@
     <span class="pull-right form-group">
         <ul class="pagination">
             <li ng-repeat="pageIndex in pageIndexes" ng-class="{'active':gridOptions.currentPage==pageIndex}">
-                <a href="" ng-click="navigateToPage(pageIndex)">{{pageIndex}}</a>
+                <a href="" ng-click="navigateToPage(pageIndex)">{{pageIndex+1}}</a>
             </li>
         </ul>
     </span>
