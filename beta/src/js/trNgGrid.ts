@@ -205,7 +205,7 @@ module TrNgGrid{
         pageCanGoForward: boolean;
         pageSelectionActive: boolean;
         switchPageSelection: ($event: ng.IAngularEvent, pageSelectionActive: boolean) => void;
-        navigateToPage:($event:ng.IAngularEvent, pageIndex:number)=>void;
+        navigateToPage:(pageIndex:number)=>void;
     }
 
     splitByCamelCasing = (input) => {
@@ -1127,46 +1127,6 @@ module TrNgGrid{
         ])
         .directive(cellBodyDirective, [
             () => {
-                /*var setupCellData: (scope: IGridBodyColumnScope) => void = null;
-                setupCellData = (scope: IGridBodyColumnScope) => {
-                    var cellContentsElementText = "gridItem['" + scope.columnOptions.fieldName+"']";
-                    if (scope.columnOptions.displayFormat) {
-                        // add the display filter
-                        if (scope.columnOptions.displayFormat[0] != '.') {
-                            // assume an angular filter by default
-                            if (scope.columnOptions.displayFormat[0] != '|') {
-                                cellContentsElementText += " | ";
-                            }
-                        }
-                        cellContentsElementText += scope.columnOptions.displayFormat;
-                    }
-                    //cellContentsElementText += "}}";
-                    scope.cellData = scope.$eval(cellContentsElementText);
-                };
-
-                var setupCellDataMonitoring =  (scope: IGridBodyColumnScope) => {
-                    var watchExpression = "[gridItem['" + scope.columnOptions.fieldName+"']";
-                    if (scope.columnOptions.displayFormat && scope.columnOptions.displayFormat[0] != '.') {
-                        // watch the parameters
-                        var displayfilters = scope.columnOptions.displayFormat.split('|');
-                        angular.forEach(displayfilters, (displayFilter: string) => {
-                            var displayFilterParams = displayFilter.split(':');
-                            if (displayFilterParams.length > 1) {
-                                angular.forEach(displayFilterParams.slice(1), (displayFilterParam: string) => {
-                                    displayFilterParam = displayFilterParam.trim();
-                                    if (displayFilterParam) {
-                                        watchExpression += "," + displayFilterParam;
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    watchExpression += "]";
-                    scope.$watchCollection(watchExpression, () => {
-                        setupCellData(scope);
-                    });
-                };*/
-
                 return {
                     restrict: 'A',
                     require: '^' + tableDirective,
@@ -1179,10 +1139,6 @@ module TrNgGrid{
                             pre: (scope: IGridBodyColumnScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController, $transclude: ng.ITranscludeFunction) => {
                                 scope.columnOptions = scope.gridOptions.gridColumnDefs[parseInt(tAttrs[cellBodyDirective])];
                                 scope.gridItem = scope.gridDisplayItem.$$_gridItem;
-                                // default angular filtering technique is bad, as it executes on every digest, hence we'll need to perform it manually
-                                http://www.bennadel.com/blog/2489-how-often-do-filters-execute-in-angularjs.htm
-                                //setupCellData(scope);
-                                //setupCellDataMonitoring(scope);
                                 scope.isCustomized = isCustomized;
                             }
                         };
@@ -1288,10 +1244,10 @@ module TrNgGrid{
                     scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage > 0;
                     scope.pageCanGoForward = scope.isPaged && scope.gridOptions.currentPage < scope.lastPageIndex;
 
-                    scope.navigateToPage = ($event, pageIndex) => {
+                    scope.navigateToPage = (pageIndex) => {
                         scope.gridOptions.currentPage = pageIndex;
-                        $event.preventDefault();
-                        $event.stopPropagation();
+                        /*$event.preventDefault();
+                        $event.stopPropagation();*/
                     }
 
                     scope.switchPageSelection = ($event, pageSelectionActive) => {
@@ -1332,6 +1288,7 @@ module TrNgGrid{
         };
     })*/
         .filter(dataPagingFilter, () => {
+            // when server-side logic is enabled, this directive should not be used!
             return (input: Array<any>, gridOptions: IGridOptions) => {
                 //currentPage?:number, pageItems?:number
                 if (input)
@@ -1351,12 +1308,6 @@ module TrNgGrid{
                 }
                 var endIndex = gridOptions.currentPage * gridOptions.pageItems + gridOptions.pageItems;
 
-                /*              Update: Not called for server-side paging
-                                if(startIndex>=input.length){
-                                    // server side paging, ignore the operation
-                                    return input;
-                                }
-                */
                 return input.slice(startIndex, endIndex);
             };
         })
@@ -1502,10 +1453,10 @@ module TrNgGrid{
                 '<span class="pull-right form-group">'
                 + ' <ul class="pagination">'
                 + '   <li ng-show="pageCanGoBack" >'
-                + '     <a href="" ng-click="navigateToPage($event, 0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>'
+                + '     <a href="" ng-click="navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>'
                 + '   </li>'
                 + '   <li ng-show="pageCanGoBack" >'
-                + '     <a href="" ng-click="navigateToPage($event, gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
+                + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
                 + '   </li>'
                 + '   <li ng-show="pageSelectionActive" style="white-space: nowrap;">'
                 + '     <span>Page: '
@@ -1520,10 +1471,10 @@ module TrNgGrid{
                 + '     </span > '
                 + '   </li>'
                 + '   <li ng-show="pageCanGoForward">'
-                + '     <a href="" ng-click="navigateToPage($event, gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>'
+                + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>'
                 + '   </li>'
                 + '   <li ng-show="pageCanGoForward">'
-                + '     <a href="" ng-show="pageCanGoForward" ng-click="navigateToPage($event, lastPageIndex)" title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>'
+                + '     <a href="" ng-show="pageCanGoForward" ng-click="navigateToPage(lastPageIndex)" title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>'
                 + '   </li>'
                 + ' </ul>'
                 + '</span>');
