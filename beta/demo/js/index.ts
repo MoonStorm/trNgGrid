@@ -218,8 +218,8 @@ module TrNgGridDemo{
     }
 
     export class MainController {
-        constructor(private $scope: IMainControllerScope, private $sce: ng.ISCEService, $location:ng.ILocationService) {
-            $scope.isFrame = $location.search().isFrame;
+        constructor(private $scope: IMainControllerScope, private $sce: ng.ISCEService, $location: ng.ILocationService) {
+            $scope.isFrame = $location.absUrl().indexOf("isFrame=true") >= 0;
             $scope.theme = "slate";
             this.setupThemeUrl();
 
@@ -244,6 +244,11 @@ module TrNgGridDemo{
     // https://github.com/ocombe/ocLazyLoad
     angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap", "oc.lazyLoad"])
         .config(["$routeProvider", "$locationProvider", ($routeProvider: any, $locationProvider: any) => {
+            // html5 is not working
+            //$locationProvider
+            //    .html5Mode(true)
+            //    .hashPrefix('!');
+
             $routeProvider
                 .when('/Common', {
                     templateUrl: 'demo/html/common.html'
@@ -306,9 +311,6 @@ module TrNgGridDemo{
                 .otherwise({
                     templateUrl: 'demo/html/default.html'
                 });
-
-            // configure html5 to get links working on jsfiddle
-            //$locationProvider.html5Mode(true);
         }])
         .directive("projectMarkupTo", [
             () => {

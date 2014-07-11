@@ -185,7 +185,7 @@ var TrNgGridDemo;
             var _this = this;
             this.$scope = $scope;
             this.$sce = $sce;
-            $scope.isFrame = $location.search().isFrame;
+            $scope.isFrame = $location.absUrl().indexOf("isFrame=true") >= 0;
             $scope.theme = "slate";
             this.setupThemeUrl();
 
@@ -210,6 +210,10 @@ var TrNgGridDemo;
     // https://github.com/ocombe/ocLazyLoad
     angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap", "oc.lazyLoad"]).config([
         "$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
+            // html5 is not working
+            //$locationProvider
+            //    .html5Mode(true)
+            //    .hashPrefix('!');
             $routeProvider.when('/Common', {
                 templateUrl: 'demo/html/common.html'
             }).when('/ColumnPicker', {
@@ -256,8 +260,6 @@ var TrNgGridDemo;
             }).otherwise({
                 templateUrl: 'demo/html/default.html'
             });
-            // configure html5 to get links working on jsfiddle
-            //$locationProvider.html5Mode(true);
         }]).directive("projectMarkupTo", [
         function () {
             return {
