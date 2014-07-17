@@ -15,8 +15,8 @@
 }
 
 .tr-ng-grid > thead > tr > th {
-    text-align: center;
-    vertical-align: top;    
+    text-align:center;
+    vertical-align:top;
 }
 
 .tr-ng-grid > thead > tr > th, 
@@ -30,10 +30,6 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-
-.tr-ng-grid > thead >tr > td{
-    vertical-align: middle;
 }
 
 .tr-ng-grid > tbody > tr > td > .tr-ng-cell {
@@ -67,12 +63,12 @@
     height: 0.8em;
 }
 
-.tr-ng-grid .tr-ng-title {
+.tr-ng-grid .tr-ng-column-header .tr-ng-title {
     padding-top: 0.8em;
     position: relative;
 }
 
-.tr-ng-grid .tr-ng-column-filter {
+.tr-ng-grid .tr-ng-column-header .tr-ng-column-filter {
   margin-top: 0.5em;
   margin-bottom: 0.1em;
 }
