@@ -863,11 +863,10 @@ var TrNgGrid;
         function () {
             var setupColumnTitle = function (scope) {
                 if (scope.columnOptions.displayName) {
-                    scope.columnTitle = scope.$eval(scope.columnOptions.displayName);
+                    scope.columnTitle = scope.columnOptions.displayName;
                 } else {
                     if (!scope.columnOptions.fieldName) {
                         scope.columnTitle = "[Invalid Field Name]";
-                        return;
                     } else {
                         scope.columnTitle = TrNgGrid.splitByCamelCasing(scope.columnOptions.fieldName);
                     }
