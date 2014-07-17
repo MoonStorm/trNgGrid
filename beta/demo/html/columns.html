@@ -12,14 +12,14 @@
                         This list can be provided as verbatim, or as a variable.
                     </p>
                     <p>
-                        This alwo works for nested objects (e.g. 'address.postCode').
+                        This alwo works for nested objects and arrays.
                     </p>
 
                     <pre id="trNgGrid_Sample_Columns_Manual_Fields">
                 </pre>
                 </div>
-                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Manual_Fields" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(3)">
-<table tr-ng-grid items="myItems" fields="['id','name']" /></table>
+                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Manual_Fields" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(3, null, true)">
+<table tr-ng-grid items="myItems" fields="['id','address.last']" /></table>
                 </div>
             </div>
         </div>
@@ -58,15 +58,19 @@
                     <pre id="trNgGrid_Sample_Columns_Simple_Definition">
                      </pre>
                 </div>
-                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10);">
-                    <table tr-ng-grid items="myItems">
-                        <thead>
-                            <tr>
-                                <th field-name="id" display-name="Employee No" enable-filtering="false" enable-sorting="false" cell-width="10em" display-align="right" />
-                                <th field-name="name" display-format="uppercase" />
-                            </tr>
-                        </thead>
-                    </table>
+                <div class="col-md-5">
+                    <div project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10, null, true);">
+<table tr-ng-grid items="myItems">
+    <thead>
+        <tr>
+            <th field-name="id" display-name="Employee No" enable-filtering="false" enable-sorting="false" cell-width="10em" display-align="right" />
+            <th field-name="address.last" display-name="Last Addr" display-format="uppercase" />
+            <th field-name="address.prev[0].address" display-name="First Addr" display-format="uppercase" />
+            <th field-name="address.prev.length" display-name="Known Addr Count" display-align="center" />
+        </tr>
+    </thead>
+</table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,7 +83,7 @@
             <div class="row">
                 <div class="col-md-7">
                     <p>
-                        Extra columns can be added in the body, even without defining the header.<br/>
+                        Extra columns can be added in the body, even without defining the header.<br />
                         Tapping into the currently bound row item can be done through the <em>gridItem</em> scope variable, which points to the actual data item, and <em>gridDisplayItem</em>, which points to the formatted item and should only be used for presentation purposes.
                         More details can be found in the <em>Customizations</em> section.
                     </p>

@@ -77,15 +77,6 @@ var TrNgGrid;
 
     
 
-    TrNgGrid.splitByCamelCasing = function (input) {
-        var splitInput = input.split(/(?=[A-Z])/);
-        if (splitInput.length && splitInput[0].length) {
-            splitInput[0] = splitInput[0][0].toLocaleUpperCase() + splitInput[0].substr(1);
-        }
-
-        return splitInput.join(" ");
-    };
-
     var findChildByTagName = function (parent, childTag) {
         childTag = childTag.toUpperCase();
         var children = parent.children();
@@ -426,11 +417,15 @@ var TrNgGrid;
             }
         };
 
-        GridController.prototype.setFilter = function (propertyName, filter) {
+        GridController.prototype.getFormattedFieldName = function (fieldName) {
+            return fieldName.replace(/[\.\[\]]/g, "_");
+        };
+
+        GridController.prototype.setFilter = function (fieldName, filter) {
             if (!filter) {
-                delete (this.gridOptions.filterByFields[propertyName]);
+                delete (this.gridOptions.filterByFields[fieldName]);
             } else {
-                this.gridOptions.filterByFields[propertyName] = filter;
+                this.gridOptions.filterByFields[fieldName] = filter;
             }
 
             // in order for someone to successfully listen to changes made to this object, we need to replace it
@@ -604,6 +599,14 @@ var TrNgGrid;
             if (templatedFooterPartialGridColumnDefs.length == 0) {
                 templatedFooterPartialGridColumnDefs.push({ isStandardColumn: true });
             }
+
+            // compute the formatted field names
+            angular.forEach(finalPartialGridColumnDefs, function (columnDefs) {
+                if (columnDefs.fieldName) {
+                    columnDefs.displayFieldName = _this.getFormattedFieldName(columnDefs.fieldName);
+                }
+            });
+
             this.gridOptions.gridColumnDefs = finalPartialGridColumnDefs;
             var headerElement = this.templatedHeader.configureSection(gridElement, finalPartialGridColumnDefs);
             var footerElement = this.templatedFooter.configureSection(gridElement, templatedFooterPartialGridColumnDefs);
@@ -667,21 +670,25 @@ var TrNgGrid;
                     formattedItems.push(outputItem);
                 }
                 for (var gridColumnDefIndex = 0; gridColumnDefIndex < gridColumnDefs.length; gridColumnDefIndex++) {
-                    var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
-                    var fieldName = gridColumnDef.fieldName;
-                    if (fieldName) {
-                        var displayFormat = gridColumnDef.displayFormat;
-                        if (displayFormat) {
-                            // apply the format
-                            if (displayFormat[0] == ".") {
-                                outputItem[fieldName] = eval("inputItem[fieldName]" + displayFormat);
+                    try  {
+                        var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
+                        var fieldName = gridColumnDef.fieldName;
+                        if (fieldName) {
+                            var displayFormat = gridColumnDef.displayFormat;
+                            if (displayFormat) {
+                                if (displayFormat[0] != "." && displayFormat[0] != "|") {
+                                    // angular filter
+                                    displayFormat = " | " + displayFormat;
+                                }
+
+                                // apply the format
+                                outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridOptions.items[" + inputIndex + "]." + fieldName + displayFormat);
                             } else {
-                                // angular filter
-                                outputItem[fieldName] = scope.$eval("gridOptions.items[" + inputIndex + "]['" + fieldName + "'] | " + displayFormat);
+                                outputItem[gridColumnDef.displayFieldName] = eval("inputItem." + fieldName);
                             }
-                        } else {
-                            outputItem[fieldName] = inputItem[fieldName];
                         }
+                    } catch (ex) {
+                        TrNgGrid.debugMode && this.log("Field evaluation failed for <" + fieldName + "> with error " + ex);
                     }
                 }
             }
@@ -693,8 +700,14 @@ var TrNgGrid;
         };
 
         GridController.prototype.computeFilteredItems = function (scope) {
+            scope.filterByDisplayFields = {};
+            if (scope.gridOptions.filterByFields) {
+                for (var fieldName in scope.gridOptions.filterByFields) {
+                    scope.filterByDisplayFields[this.getFormattedFieldName(fieldName)] = scope.gridOptions.filterByFields[fieldName];
+                }
+            }
             TrNgGrid.debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:'$$_gridItem.'+gridOptions.orderBy:gridOptions.orderByReverse | " + TrNgGrid.dataPagingFilter + ":gridOptions");
+            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | orderBy:'$$_gridItem.'+gridOptions.orderBy:gridOptions.orderByReverse | " + TrNgGrid.dataPagingFilter + ":gridOptions");
         };
 
         GridController.prototype.setupDisplayItemsArray = function (scope) {
@@ -868,7 +881,15 @@ var TrNgGrid;
                     if (!scope.columnOptions.fieldName) {
                         scope.columnTitle = "[Invalid Field Name]";
                     } else {
-                        scope.columnTitle = TrNgGrid.splitByCamelCasing(scope.columnOptions.fieldName);
+                        // exclude nested notations
+                        var splitFieldName = scope.columnOptions.fieldName.match(/^[^\.\[\]]*/);
+
+                        // split by camel-casing
+                        splitFieldName = splitFieldName[0].split(/(?=[A-Z])/);
+                        if (splitFieldName.length && splitFieldName[0].length) {
+                            splitFieldName[0] = splitFieldName[0][0].toLocaleUpperCase() + splitFieldName[0].substr(1);
+                        }
+                        scope.columnTitle = splitFieldName.join(" ");
                     }
                 }
             };
@@ -886,15 +907,15 @@ var TrNgGrid;
                         pre: function (scope, instanceElement, tAttrs, controller, $transclude) {
                             // we're not interested in creating an isolated scope just to parse the element attributes,
                             // so we're gonna have to do this manually
+                            var columnIndex = parseInt(tAttrs[cellHeaderDirective]);
+
                             // create a clone of the default column options
-                            var columnOptions = angular.extend({}, TrNgGrid.defaultColumnOptions);
-                            columnOptions.fieldName = "unknown";
+                            var columnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], TrNgGrid.defaultColumnOptions);
 
                             // now match and observe the attributes
                             controller.linkAttrs(tAttrs, columnOptions);
 
                             // set up the new scope
-                            scope.gridOptions.gridColumnDefs[parseInt(tAttrs[cellHeaderDirective])] = columnOptions;
                             scope.columnOptions = columnOptions;
                             scope.isCustomized = isCustomized;
                             scope.toggleSorting = function (propertyName) {
@@ -1179,7 +1200,7 @@ var TrNgGrid;
             $templateCache.put(TrNgGrid.cellHeaderTemplateId, '<div class="' + TrNgGrid.headerCellCssClass + '" ng-switch="isCustomized">' + '  <div ng-switch-when="true">' + '    <div ng-transclude=""></div>' + '  </div>' + '  <div ng-switch-default>' + '    <div class="' + TrNgGrid.columnTitleCssClass + '">' + '      {{columnTitle |' + TrNgGrid.translateFilter + ':gridOptions.locale}}' + '       <div ' + TrNgGrid.columnSortDirectiveAttribute + '=""></div>' + '    </div>' + '    <div ' + TrNgGrid.columnFilterDirectiveAttribute + '=""></div>' + '  </div>' + '</div>');
         }
         if (!$templateCache.get(TrNgGrid.cellBodyTemplateId)) {
-            $templateCache.put(TrNgGrid.cellBodyTemplateId, '<div ng-attr-class="' + TrNgGrid.bodyCellCssClass + ' text-{{columnOptions.displayAlign}}" ng-switch="isCustomized">' + '  <div ng-switch-when="true">' + '    <div ng-transclude=""></div>' + '  </div>' + '  <div ng-switch-default>{{gridDisplayItem[columnOptions.fieldName]}}</div>' + '</div>');
+            $templateCache.put(TrNgGrid.cellBodyTemplateId, '<div ng-attr-class="' + TrNgGrid.bodyCellCssClass + ' text-{{columnOptions.displayAlign}}" ng-switch="isCustomized">' + '  <div ng-switch-when="true">' + '    <div ng-transclude=""></div>' + '  </div>' + '  <div ng-switch-default>{{gridDisplayItem[columnOptions.displayFieldName]}}</div>' + '</div>');
         }
         if (!$templateCache.get(TrNgGrid.columnFilterTemplateId)) {
             $templateCache.put(TrNgGrid.columnFilterTemplateId, '<div ng-show="gridOptions.enableFiltering||columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">' + ' <div class="' + TrNgGrid.columnFilterInputWrapperCssClass + '">' + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter"></input>' + ' </div>' + '</div>');

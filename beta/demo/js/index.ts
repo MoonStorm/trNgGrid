@@ -31,7 +31,7 @@ module TrNgGridDemo{
 
         addNew: () => void;
         onServerSideItemsRequested: (currentPage: number, filterBy: string, filterByFields: Object, orderBy: string, orderByReverse: boolean) => void;
-        generateItems: (pageItems: number, totalItems?: number) => void;
+        generateItems: (pageItems: number, totalItems?: number, generateComplexItems?:boolean) => void;
         addDateToItems: () => void;
         showMessage: (event: ng.IAngularEvent, msg: string) => void;
         simulateServerSideQueries: (pageItems: number, totalItems?: number) => void;
@@ -39,11 +39,48 @@ module TrNgGridDemo{
         //toogleFieldEnforcement: (fieldName: string) => void;
     }
 
-    enum RndGenOptions{
+    export enum RndGenOptions{
         Numbers,
         Lowercase,
         Uppercase
     }
+
+    var charCodeA = "A".charCodeAt(0);
+    var charCodea = "a".charCodeAt(0);
+
+    var randomNumber = () => {
+        return Math.floor(Math.random() * 10).toString();
+    };
+
+    var randomUpercase = () => {
+        return String.fromCharCode(Math.floor(Math.random() * 26) + charCodeA);
+    };
+
+    var randomLowercase = () => {
+        return String.fromCharCode(Math.floor(Math.random() * 26) + charCodea);
+    };
+
+    export var randomString: (count: number, ...options: RndGenOptions[]) => string = (count: number, ...options: RndGenOptions[]) => {
+        if (options.length == 0) {
+            options = <Array<RndGenOptions>>[RndGenOptions.Lowercase, RndGenOptions.Uppercase, RndGenOptions.Numbers];
+        }
+        var s = '';
+        while (s.length < count) {
+            switch (options[Math.floor(Math.random() * options.length)]) {
+                case RndGenOptions.Numbers:
+                    s += randomNumber();
+                    break;
+                case RndGenOptions.Lowercase:
+                    s += randomLowercase();
+                    break;
+                case RndGenOptions.Uppercase:
+                    s += randomUpercase();
+                    break;
+
+            }
+        }
+        return s;
+    };
 
     export class TestController{ 
         constructor(public $scope:ITestControllerScope, $window:ng.IWindowService, $timeout:ng.ITimeoutService){
@@ -79,12 +116,12 @@ module TrNgGridDemo{
                     $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
                 });
             };
-            $scope.generateItems = (pageItems: number, totalItems?: number) => {
+            $scope.generateItems = (pageItems: number, totalItems?: number, generateComplexItems?:boolean) => {
                 $scope.myItems = [];
                 //$scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
                 $scope.myItemsTotalCount = totalItems?totalItems:$scope.myPageItemsCount;
-                this.generateItems($scope.myItems, $scope.myPageItemsCount);
+                this.generateItems($scope.myItems, $scope.myPageItemsCount, generateComplexItems);
                 //$scope.mySelectedItems=$scope.myItems.slice(0);
             };
 
@@ -105,7 +142,7 @@ module TrNgGridDemo{
                     requestTrapped:true
                 };
 
-                $scope.generateItems(10,100);
+                $scope.generateItems(10,100, true);
                 prevServerItemsRequestedCallbackPromise = $timeout(()=>{
                     $scope.requestedItemsGridOptions["requestTrapped"] = false;
                     prevServerItemsRequestedCallbackPromise = null;
@@ -146,22 +183,42 @@ module TrNgGridDemo{
 
         }
 
-        generateItems(items:Array<any>, itemCount:number){
+        generateItems(items:Array<any>, itemCount:number, generateComplexItems?:boolean){
             // generate n random myItems
             for(var index=0;index<itemCount;index++){
-                this.addNewRandomItem(items);
+                this.addNewRandomItem(items, generateComplexItems);
             }
         }
 
-        addNewRandomItem(items:Array<any>){
+        private generateAddress() {
+            var addressColumnFilter = this.$scope.myColumnFilter["address"] ? this.$scope.myColumnFilter["address"] : "";
+            return this.$scope.myGlobalFilter + randomString(2, RndGenOptions.Numbers) + " " + randomUpercase() + randomString(Math.random() * 10 + 1, RndGenOptions.Lowercase) + addressColumnFilter + " Ave";
+        }
+
+        addNewRandomItem(items: Array<any>, generateComplexItems?: boolean){
             var idColumnFilter = this.$scope.myColumnFilter["id"]?this.$scope.myColumnFilter["id"]:"";
             var nameColumnFilter = this.$scope.myColumnFilter["name"]?this.$scope.myColumnFilter["name"]:"";
-            var addressColumnFilter = this.$scope.myColumnFilter["address"]?this.$scope.myColumnFilter["address"]:"";
 
+            var itemAddress: any;
+            if (generateComplexItems) {
+                itemAddress = {
+                    last: this.generateAddress(),
+                    prev: []
+                };
+                for (var addrIndex = 0; addrIndex < Math.random() * 5 + 1; addrIndex++) {
+                    itemAddress.prev.push({
+                        address: this.generateAddress(),
+                        index: addrIndex
+                    });
+                }
+            }
+            else {
+                itemAddress = this.generateAddress();
+            }
             items.push({
-                id: parseInt(this.randomString(Math.random() * 2 + 1, RndGenOptions.Numbers) + idColumnFilter),
-                name: this.randomUpercase() + this.randomString(Math.random() * 5 + 1, RndGenOptions.Lowercase) + this.$scope.myGlobalFilter + nameColumnFilter,
-                address: this.$scope.myGlobalFilter + this.randomString(2, RndGenOptions.Numbers) + " " + this.randomUpercase() + this.randomString(Math.random() * 10 + 1, RndGenOptions.Lowercase) + addressColumnFilter + " Ave",
+                id: parseInt(randomString(Math.random() * 2 + 1, RndGenOptions.Numbers) + idColumnFilter),
+                name: randomUpercase() + randomString(Math.random() * 5 + 1, RndGenOptions.Lowercase) + this.$scope.myGlobalFilter + nameColumnFilter,
+                address: itemAddress,
             });
         }
 
@@ -171,43 +228,6 @@ module TrNgGridDemo{
                 var rndTimeSpan = Math.floor(Math.random() * maxTimeSpan);
                 this.$scope.myItems[itemIndex]["born"] = new Date(new Date(1980, 2, 4).getTime() + rndTimeSpan);
             }
-        }
-
-        private randomString(count:number,...options:RndGenOptions[]):string{
-            if(options.length==0){
-                options=<Array<RndGenOptions>>[RndGenOptions.Lowercase, RndGenOptions.Uppercase, RndGenOptions.Numbers];
-            }
-            var s= '';
-            while(s.length< count){
-                switch(options[Math.floor(Math.random()*options.length)]){
-                    case RndGenOptions.Numbers:
-                        s+=this.randomNumber();
-                        break;
-                    case RndGenOptions.Lowercase:
-                        s+=this.randomLowercase();
-                        break;
-                    case RndGenOptions.Uppercase:
-                        s+=this.randomUpercase();
-                        break;
-
-                }
-            }
-            return s;
-        }
-
-        private charCodeA = "A".charCodeAt(0);
-        private charCodea = "a".charCodeAt(0);
-
-        private randomNumber():string{
-            return Math.floor(Math.random()*10).toString();
-        }
-
-        private randomUpercase():string{
-            return String.fromCharCode(Math.floor(Math.random()*26)+this.charCodeA);
-        }
-
-        private randomLowercase():string{
-            return String.fromCharCode(Math.floor(Math.random()*26)+this.charCodea);
         }
     }
 

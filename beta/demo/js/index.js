@@ -2,19 +2,57 @@
 /// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
-    var RndGenOptions;
     (function (RndGenOptions) {
         RndGenOptions[RndGenOptions["Numbers"] = 0] = "Numbers";
         RndGenOptions[RndGenOptions["Lowercase"] = 1] = "Lowercase";
         RndGenOptions[RndGenOptions["Uppercase"] = 2] = "Uppercase";
-    })(RndGenOptions || (RndGenOptions = {}));
+    })(TrNgGridDemo.RndGenOptions || (TrNgGridDemo.RndGenOptions = {}));
+    var RndGenOptions = TrNgGridDemo.RndGenOptions;
+
+    var charCodeA = "A".charCodeAt(0);
+    var charCodea = "a".charCodeAt(0);
+
+    var randomNumber = function () {
+        return Math.floor(Math.random() * 10).toString();
+    };
+
+    var randomUpercase = function () {
+        return String.fromCharCode(Math.floor(Math.random() * 26) + charCodeA);
+    };
+
+    var randomLowercase = function () {
+        return String.fromCharCode(Math.floor(Math.random() * 26) + charCodea);
+    };
+
+    TrNgGridDemo.randomString = function (count) {
+        var options = [];
+        for (var _i = 0; _i < (arguments.length - 1); _i++) {
+            options[_i] = arguments[_i + 1];
+        }
+        if (options.length == 0) {
+            options = [1 /* Lowercase */, 2 /* Uppercase */, 0 /* Numbers */];
+        }
+        var s = '';
+        while (s.length < count) {
+            switch (options[Math.floor(Math.random() * options.length)]) {
+                case 0 /* Numbers */:
+                    s += randomNumber();
+                    break;
+                case 1 /* Lowercase */:
+                    s += randomLowercase();
+                    break;
+                case 2 /* Uppercase */:
+                    s += randomUpercase();
+                    break;
+            }
+        }
+        return s;
+    };
 
     var TestController = (function () {
         function TestController($scope, $window, $timeout) {
             var _this = this;
             this.$scope = $scope;
-            this.charCodeA = "A".charCodeAt(0);
-            this.charCodea = "a".charCodeAt(0);
             $scope.externalTestProp = "Externals should be visible";
             $scope.myLocale = "en";
             $scope.myGlobalFilter = "";
@@ -47,13 +85,13 @@ var TrNgGridDemo;
                     $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
                 });
             };
-            $scope.generateItems = function (pageItems, totalItems) {
+            $scope.generateItems = function (pageItems, totalItems, generateComplexItems) {
                 $scope.myItems = [];
 
                 //$scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
                 $scope.myItemsTotalCount = totalItems ? totalItems : $scope.myPageItemsCount;
-                _this.generateItems($scope.myItems, $scope.myPageItemsCount);
+                _this.generateItems($scope.myItems, $scope.myPageItemsCount, generateComplexItems);
                 //$scope.mySelectedItems=$scope.myItems.slice(0);
             };
 
@@ -76,7 +114,7 @@ var TrNgGridDemo;
                     requestTrapped: true
                 };
 
-                $scope.generateItems(10, 100);
+                $scope.generateItems(10, 100, true);
                 prevServerItemsRequestedCallbackPromise = $timeout(function () {
                     $scope.requestedItemsGridOptions["requestTrapped"] = false;
                     prevServerItemsRequestedCallbackPromise = null;
@@ -114,21 +152,40 @@ var TrNgGridDemo;
                 }
             });
         }
-        TestController.prototype.generateItems = function (items, itemCount) {
+        TestController.prototype.generateItems = function (items, itemCount, generateComplexItems) {
             for (var index = 0; index < itemCount; index++) {
-                this.addNewRandomItem(items);
+                this.addNewRandomItem(items, generateComplexItems);
             }
         };
 
-        TestController.prototype.addNewRandomItem = function (items) {
+        TestController.prototype.generateAddress = function () {
+            var addressColumnFilter = this.$scope.myColumnFilter["address"] ? this.$scope.myColumnFilter["address"] : "";
+            return this.$scope.myGlobalFilter + TrNgGridDemo.randomString(2, 0 /* Numbers */) + " " + randomUpercase() + TrNgGridDemo.randomString(Math.random() * 10 + 1, 1 /* Lowercase */) + addressColumnFilter + " Ave";
+        };
+
+        TestController.prototype.addNewRandomItem = function (items, generateComplexItems) {
             var idColumnFilter = this.$scope.myColumnFilter["id"] ? this.$scope.myColumnFilter["id"] : "";
             var nameColumnFilter = this.$scope.myColumnFilter["name"] ? this.$scope.myColumnFilter["name"] : "";
-            var addressColumnFilter = this.$scope.myColumnFilter["address"] ? this.$scope.myColumnFilter["address"] : "";
 
+            var itemAddress;
+            if (generateComplexItems) {
+                itemAddress = {
+                    last: this.generateAddress(),
+                    prev: []
+                };
+                for (var addrIndex = 0; addrIndex < Math.random() * 5 + 1; addrIndex++) {
+                    itemAddress.prev.push({
+                        address: this.generateAddress(),
+                        index: addrIndex
+                    });
+                }
+            } else {
+                itemAddress = this.generateAddress();
+            }
             items.push({
-                id: parseInt(this.randomString(Math.random() * 2 + 1, 0 /* Numbers */) + idColumnFilter),
-                name: this.randomUpercase() + this.randomString(Math.random() * 5 + 1, 1 /* Lowercase */) + this.$scope.myGlobalFilter + nameColumnFilter,
-                address: this.$scope.myGlobalFilter + this.randomString(2, 0 /* Numbers */) + " " + this.randomUpercase() + this.randomString(Math.random() * 10 + 1, 1 /* Lowercase */) + addressColumnFilter + " Ave"
+                id: parseInt(TrNgGridDemo.randomString(Math.random() * 2 + 1, 0 /* Numbers */) + idColumnFilter),
+                name: randomUpercase() + TrNgGridDemo.randomString(Math.random() * 5 + 1, 1 /* Lowercase */) + this.$scope.myGlobalFilter + nameColumnFilter,
+                address: itemAddress
             });
         };
 
@@ -138,43 +195,6 @@ var TrNgGridDemo;
                 var rndTimeSpan = Math.floor(Math.random() * maxTimeSpan);
                 this.$scope.myItems[itemIndex]["born"] = new Date(new Date(1980, 2, 4).getTime() + rndTimeSpan);
             }
-        };
-
-        TestController.prototype.randomString = function (count) {
-            var options = [];
-            for (var _i = 0; _i < (arguments.length - 1); _i++) {
-                options[_i] = arguments[_i + 1];
-            }
-            if (options.length == 0) {
-                options = [1 /* Lowercase */, 2 /* Uppercase */, 0 /* Numbers */];
-            }
-            var s = '';
-            while (s.length < count) {
-                switch (options[Math.floor(Math.random() * options.length)]) {
-                    case 0 /* Numbers */:
-                        s += this.randomNumber();
-                        break;
-                    case 1 /* Lowercase */:
-                        s += this.randomLowercase();
-                        break;
-                    case 2 /* Uppercase */:
-                        s += this.randomUpercase();
-                        break;
-                }
-            }
-            return s;
-        };
-
-        TestController.prototype.randomNumber = function () {
-            return Math.floor(Math.random() * 10).toString();
-        };
-
-        TestController.prototype.randomUpercase = function () {
-            return String.fromCharCode(Math.floor(Math.random() * 26) + this.charCodeA);
-        };
-
-        TestController.prototype.randomLowercase = function () {
-            return String.fromCharCode(Math.floor(Math.random() * 26) + this.charCodea);
         };
         return TestController;
     })();
