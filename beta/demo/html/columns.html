@@ -58,15 +58,15 @@
                     <pre id="trNgGrid_Sample_Columns_Simple_Definition">
                      </pre>
                 </div>
-                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10)">
-<table tr-ng-grid items="myItems">
-    <thead>
-        <tr>
-            <th field-name="id" enable-filtering="false" enable-sorting="false" cell-width="4em" display-align="right" />
-            <th field-name="name" display-format="uppercase" />
-        </tr>
-    </thead>
-</table>
+                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10);">
+                    <table tr-ng-grid items="myItems">
+                        <thead>
+                            <tr>
+                                <th field-name="id" display-name="Employee No" enable-filtering="false" enable-sorting="false" cell-width="10em" display-align="right" />
+                                <th field-name="name" display-format="uppercase" />
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
