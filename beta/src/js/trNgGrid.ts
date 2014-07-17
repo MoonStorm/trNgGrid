@@ -1430,7 +1430,7 @@ module TrNgGrid{
         }
         if (!$templateCache.get(TrNgGrid.columnFilterTemplateId)) {
             $templateCache.put(TrNgGrid.columnFilterTemplateId,
-                '<div ng-show="gridOptions.enableFiltering||columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">'
+                '<div ng-show="(gridOptions.enableFiltering&&columnOptions.enableFiltering!==false)||columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">'
                 + ' <div class="' + TrNgGrid.columnFilterInputWrapperCssClass + '">'
                 + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter"></input>'
                 + ' </div>'
@@ -1439,7 +1439,7 @@ module TrNgGrid{
         if (!$templateCache.get(TrNgGrid.columnSortTemplateId)) {
             $templateCache.put(TrNgGrid.columnSortTemplateId,
                 '<div ng-attr-title="{{\'Sort\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}"'
-                + ' ng-show="gridOptions.enableSorting||columnOptions.enableSorting"'
+                + ' ng-show="(gridOptions.enableSorting&&columnOptions.enableSorting!==false)||columnOptions.enableSorting"'
                 + ' ng-click="toggleSorting(columnOptions.fieldName)"'
                 + ' class="' + TrNgGrid.columnSortCssClass + '" > '
                 + '  <div ng-class="{\''
