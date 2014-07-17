@@ -35,13 +35,6 @@
 .tr-ng-grid > tbody > tr > td > .tr-ng-cell {
   overflow: auto;
 }
-/*.tr-ng-grid .tr-ng-sort {
-  cursor: pointer;
-  display: block;
-  float: right;
-  width: 1em;
-  height: 1em;
-}*/
 
 .tr-ng-grid .tr-ng-column-header {
 }
