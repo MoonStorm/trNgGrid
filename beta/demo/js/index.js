@@ -206,22 +206,26 @@ var TrNgGridDemo;
             this.$scope = $scope;
             this.$sce = $sce;
             $scope.isFrame = $location.absUrl().indexOf("isFrame=true") >= 0;
-            $scope.theme = "slate";
+            $scope.ui = {
+                theme: "slate",
+                themeUrl: "",
+                isMenuExpanded: false
+            };
             this.setupThemeUrl();
 
-            this.$scope.$watch("theme", function (newValue, oldValue) {
-                if (newValue != oldValue) {
-                    _this.setupThemeUrl();
-                }
-            });
+            $scope.setTheme = function (theme) {
+                $scope.ui.theme = theme;
+                _this.setupThemeUrl();
+                $scope.ui.isMenuExpanded = false;
+            };
         }
         /*setupLocaleUrl() {
         var localeUrl = "https://code.angularjs.org/1.2.9/i18n/angular-locale_" + this.$scope.locale + ".js";
         this.$scope.localeUrl = this.$sce.trustAsResourceUrl(localeUrl);
         }*/
         MainController.prototype.setupThemeUrl = function () {
-            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/" + this.$scope.theme + "/bootstrap.min.css";
-            this.$scope.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
+            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/" + this.$scope.ui.theme + "/bootstrap.min.css";
+            this.$scope.ui.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
         };
         return MainController;
     })();
@@ -286,7 +290,7 @@ var TrNgGridDemo;
                 restrict: "EA",
                 template: function (element, tAttr) {
                     var projectionElementId = tAttr["projectMarkupTo"];
-                    var currentElementContents = element.html().replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+                    var currentElementContents = element.html().replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
 
                     //.replace(/</g, "&lt;")
                     //.replace(/>/g, "&gt;")

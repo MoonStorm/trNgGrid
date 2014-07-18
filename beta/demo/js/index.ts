@@ -232,22 +232,30 @@ module TrNgGridDemo{
     }
 
     export interface IMainControllerScope extends ng.IScope {
-        theme: string;
-        themeUrl: string;
+        ui: {
+            theme: string;
+            themeUrl: string;
+            isMenuExpanded: boolean;
+        };
         isFrame: boolean;
+        setTheme(theme:string);
     }
 
     export class MainController {
         constructor(private $scope: IMainControllerScope, private $sce: ng.ISCEService, $location: ng.ILocationService) {
             $scope.isFrame = $location.absUrl().indexOf("isFrame=true") >= 0;
-            $scope.theme = "slate";
+            $scope.ui = {
+                theme: "slate",
+                themeUrl: "",
+                isMenuExpanded: false
+            };
             this.setupThemeUrl();
 
-            this.$scope.$watch("theme", (newValue: string, oldValue: string) => {
-                if (newValue != oldValue) {
-                    this.setupThemeUrl();
-                }
-            });
+            $scope.setTheme = (theme: string) => {
+                $scope.ui.theme = theme;
+                this.setupThemeUrl();
+                $scope.ui.isMenuExpanded = false;
+            };
         }
 
         /*setupLocaleUrl() {
@@ -256,8 +264,8 @@ module TrNgGridDemo{
         }*/
 
         setupThemeUrl() {
-            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/"+this.$scope.theme+"/bootstrap.min.css";
-            this.$scope.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
+            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/"+this.$scope.ui.theme+"/bootstrap.min.css";
+            this.$scope.ui.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
         }
     }
 
@@ -345,7 +353,7 @@ module TrNgGridDemo{
                             .replace(/'/g, '&#39;')
                             .replace(/</g, '&lt;')
                             .replace(/>/g, '&gt;')
-                            .replace(/\n/g, '<br>');
+                            .replace(/\n/g, '<br/>');
                             //.replace(/</g, "&lt;")
                             //.replace(/>/g, "&gt;")
                             //.replace(/"/g, "&quot;");

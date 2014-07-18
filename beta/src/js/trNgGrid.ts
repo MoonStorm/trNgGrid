@@ -154,6 +154,7 @@ module TrNgGrid{
         onDataRequiredDelay: number;
         gridColumnDefs: Array<IGridColumnOptions>;
         locale: string;
+        immediateDataRetrieval: boolean;
     }
 
     interface IGridDisplayItem {
@@ -167,6 +168,7 @@ module TrNgGrid{
         filteredItems: Array<IGridDisplayItem>;
         requiresReFilteringTrigger: boolean;
         formattedItems: Array<IGridDisplayItem>;
+        speedUpAsyncDataRetrieval: ($event?: ng.IAngularEvent) => void;
     }
 
     interface IGridFooterScope extends IGridScope {
@@ -457,6 +459,7 @@ module TrNgGrid{
 
             // initialise the options
             this.gridOptions = <IGridOptions>{
+                immediateDataRetrieval: true,
                 items: [],
                 fields: null,
                 locale: "en",
@@ -487,23 +490,39 @@ module TrNgGrid{
 
             //set up watchers for some of the special attributes we support
 
-            if(this.gridOptions.onDataRequired){
+            if (this.gridOptions.onDataRequired) {
+                var retrieveDataCallback = () => {
+                    this.dataRequestPromise = null;
+                    this.gridOptions.immediateDataRetrieval = false;
+                    this.gridOptions.onDataRequired(this.gridOptions);
+                };
+
                 gridScope.$watchCollection("[gridOptions.filterBy, " +
                     "gridOptions.filterByFields, " +
                     "gridOptions.orderBy, " +
                     "gridOptions.orderByReverse, " +
                     "gridOptions.currentPage]",()=>{
 
-                    if(this.dataRequestPromise){
-                        this.$timeout.cancel(this.dataRequestPromise);
-                        this.dataRequestPromise = null;
-                    }
+                        if(this.dataRequestPromise){
+                            this.$timeout.cancel(this.dataRequestPromise);
+                            this.dataRequestPromise = null;
+                        }
 
-                    // for the time being, Angular is not able to bind only when losing focus, so we'll introduce a delay
-                    this.dataRequestPromise = this.$timeout(()=>{
-                        this.dataRequestPromise = null;
-                        this.gridOptions.onDataRequired(this.gridOptions);
-                    },this.gridOptions.onDataRequiredDelay, true);
+                        if (this.gridOptions.immediateDataRetrieval) {
+                            retrieveDataCallback();
+                        }
+                        else {
+                            this.dataRequestPromise = this.$timeout(() => {
+                                retrieveDataCallback();
+                            }, this.gridOptions.onDataRequiredDelay, true);
+                        }
+                });
+
+                gridScope.$watch("gridOptions.immediateDataRetrieval", (newValue: boolean) => {
+                    if (newValue && this.dataRequestPromise) {
+                        this.$timeout.cancel(this.dataRequestPromise);
+                        retrieveDataCallback();
+                    }
                 });
             }
 
@@ -557,6 +576,12 @@ module TrNgGrid{
             return gridScope;
         }
 
+        speedUpAsyncDataRetrieval($event?: ng.IAngularEvent) {
+            if (!$event || $event.keyCode == 13) {
+                this.gridOptions.immediateDataRetrieval = true;
+            }
+        }
+
         setColumnOptions(columnIndex: number, columnOptions: IGridColumnOptions): void {
             var originalOptions = this.gridOptions.gridColumnDefs[columnIndex];
             if (!originalOptions) {
@@ -579,6 +604,8 @@ module TrNgGrid{
                 // the sort direction has changed
                 this.gridOptions.orderByReverse=!this.gridOptions.orderByReverse;
             }
+
+            this.speedUpAsyncDataRetrieval();
         }
 
         getFormattedFieldName(fieldName: string) {
@@ -1043,6 +1070,7 @@ module TrNgGrid{
                             },
                             post: (isolatedScope: ng.IScope, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
                                 var gridScope = controller.setupScope(isolatedScope, instanceElement, tAttrs);
+                                gridScope.speedUpAsyncDataRetrieval = ($event) => controller.speedUpAsyncDataRetrieval($event);
                                 controller.configureTableStructure(gridScope, instanceElement);
                                 controller.setupDisplayItemsArray(gridScope);
                             }
@@ -1266,6 +1294,7 @@ module TrNgGrid{
 
                     scope.navigateToPage = (pageIndex) => {
                         scope.gridOptions.currentPage = pageIndex;
+                        scope.speedUpAsyncDataRetrieval();
                         /*$event.preventDefault();
                         $event.stopPropagation();*/
                     }
@@ -1432,7 +1461,7 @@ module TrNgGrid{
             $templateCache.put(TrNgGrid.columnFilterTemplateId,
                 '<div ng-show="(gridOptions.enableFiltering&&columnOptions.enableFiltering!==false)||columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">'
                 + ' <div class="' + TrNgGrid.columnFilterInputWrapperCssClass + '">'
-                + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter"></input>'
+                + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter" ng-keypress="speedUpAsyncDataRetrieval($event)"></input>'
                 + ' </div>'
                 + '</div>');
         }
@@ -1465,7 +1494,7 @@ module TrNgGrid{
         if (!$templateCache.get(TrNgGrid.footerGlobalFilterTemplateId)) {
             $templateCache.put(TrNgGrid.footerGlobalFilterTemplateId,
                 '<span ng-show="gridOptions.enableFiltering" class="pull-left form-group">'
-                + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" ng-attr-placeholder="{{\'Search\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}"></input>'
+                + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" ng-keypress="speedUpAsyncDataRetrieval($event)" ng-attr-placeholder="{{\'Search\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}"></input>'
                 + '</span>');
         }
         if (!$templateCache.get(TrNgGrid.footerPagerTemplateId)) {
@@ -1478,10 +1507,8 @@ module TrNgGrid{
                 + '   <li ng-show="pageCanGoBack" >'
                 + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
                 + '   </li>'
-                + '   <li ng-show="pageSelectionActive" style="white-space: nowrap;">'
-                + '     <span>Page: '
-                + '       <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes"></select>'
-                + '     </span>'
+                + '   <li ng-show="pageSelectionActive">'
+                + '         <span>Page: <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes" ng-change="speedUpAsyncDataRetrieval()"></select></span>'
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
                 + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'

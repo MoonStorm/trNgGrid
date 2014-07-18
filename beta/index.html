@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <title>trNgGrid</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" ng-href="{{themeUrl}}" />
+    <link rel="stylesheet" ng-href="{{ui.themeUrl}}" />
     <link rel="stylesheet" href="demo/css/index.css" />
     <link href="//google-code-prettify.googlecode.com/svn/loader/prettify.css" type="text/css" rel="stylesheet" />
     <!--<link href="//google-code-prettify.googlecode.com/svn/loader/skins/sons-of-obsidian.css" type="text/css" rel="stylesheet" />-->
@@ -73,23 +73,22 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="//github.com/MoonStorm/trNgGrid" target="_blank">Source & Download</a></li>
-                <li class="dropdown">
+                <li dropdown is-open="ui.isMenuExpanded">
                     <!--onclick="$(this).toggleClass('open'); return false;"-->
-                    <a class="dropdown-toggle" href="" data-toggle="dropdown">Bootswatch theme <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li ng-click="theme='slate'"><a href="">Slate</a></li>
-                        <li ng-click="theme='amelia'"><a href="">Amelia</a></li>
-                        <li ng-click="theme='cerulean'"><a href="">Cerulean</a></li>
-                        <li ng-click="theme='cosmo'"><a href="">Cosmo</a></li>
-                        <li ng-click="theme='cyborg'"><a href="">Cyborg</a></li>
-                        <li ng-click="theme='flatly'"><a href="">Flatly</a></li>
-                        <li ng-click="theme='journal'"><a href="">Journal</a></li>
-                        <li ng-click="theme='readable'"><a href="">Readable</a></li>
-                        <li ng-click="theme='simplex'"><a href="">Simplex</a></li>
-                        <li ng-click="theme='slate'"><a href="">Slate</a></li>
-                        <li ng-click="theme='spacelab'"><a href="">Spacelab</a></li>
-                        <li ng-click="theme='united'"><a href="">United</a></li>
-                        <li ng-click="theme='yeti'"><a href="">Yeti</a></li>
+                    <a class="dropdown-toggle" href="">Bootswatch theme <b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="" ng-click="setTheme('amelia')">Amelia</a></li>
+                        <li><a href="" ng-click="setTheme('cerulean')">Cerulean</a></li>
+                        <li><a href="" ng-click="setTheme('cosmo')">Cosmo</a></li>
+                        <li><a href="" ng-click="setTheme('cyborg')">Cyborg</a></li>
+                        <li><a href="" ng-click="setTheme('flatly')">Flatly</a></li>
+                        <li><a href="" ng-click="setTheme('journal')">Journal</a></li>
+                        <li><a href="" ng-click="setTheme('readable')">Readable</a></li>
+                        <li><a href="" ng-click="setTheme('simplex')">Simplex</a></li>
+                        <li><a href="" ng-click="setTheme('slate')">Slate</a></li>
+                        <li><a href="" ng-click="setTheme('spacelab')">Spacelab</a></li>
+                        <li><a href="" ng-click="setTheme('united')">United</a></li>
+                        <li><a href="" ng-click="setTheme('yeti')">Yeti</a></li>
                         <li class="divider"></li>
                         <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
                     </ul>

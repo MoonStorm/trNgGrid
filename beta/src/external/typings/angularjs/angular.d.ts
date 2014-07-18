@@ -256,6 +256,7 @@ declare module ng {
         defaultPrevented: boolean;
 
         // added by Dan C.
+        keyCode: number;
         ctrlKey:boolean;
         altKey: boolean;
         shiftKey: boolean;
