@@ -1508,7 +1508,7 @@ module TrNgGrid{
                 + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
                 + '   </li>'
                 + '   <li ng-show="pageSelectionActive">'
-                + '         <span>Page: <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes" ng-change="speedUpAsyncDataRetrieval()"></select></span>'
+                + '         <span>{{\'Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}: <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes" ng-change="speedUpAsyncDataRetrieval()"></select></span>'
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
                 + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
