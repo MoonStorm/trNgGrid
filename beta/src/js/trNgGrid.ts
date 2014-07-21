@@ -1536,7 +1536,7 @@ module TrNgGrid{
                 + '   </li>'
                 + '   <li ng-if="pageSelectionActive" ng-repeat="pageIndex in pageIndexes track by $index" ng-class="{disabled:pageIndex===null, active:pageIndex===gridOptions.currentPage}">'
                 + '      <span ng-if="pageIndex===null">...</span>'
-                + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-if="pageIndex!==null">{{pageIndex+1}}</a>'
+                + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-if="pageIndex!==null" ng-attr-title="{{\'Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">{{pageIndex+1}}</a>'
                 + '   </li>'
                 //+ '         <span>Page: <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes" ng-change="speedUpAsyncDataRetrieval()"></select></span>'
                 + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="isPaged">'
