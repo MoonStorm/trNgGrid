@@ -172,10 +172,6 @@ module TrNgGrid{
         speedUpAsyncDataRetrieval: ($event?: ng.IAngularEvent) => void;
     }
 
-    interface IGridFooterScope extends IGridScope {
-        isCustomized?: boolean;
-    }
-
     interface IGridColumnScope extends IGridScope{
         columnOptions: IGridColumnOptions;
         isCustomized?: boolean;
@@ -198,7 +194,9 @@ module TrNgGrid{
     }
 
     interface IGridFooterScope extends IGridScope{
-        isPaged:boolean;
+        isCustomized?: boolean;
+        isPaged: boolean;
+        extendedControlsActive: boolean;
         totalItemsCount:number;
         startItemIndex: number;
         lastPageIndex: number;
@@ -1275,6 +1273,7 @@ module TrNgGrid{
                     : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
 
                     scope.isPaged = (!!scope.gridOptions.pageItems) && (scope.gridOptions.pageItems < scope.totalItemsCount);
+                    scope.extendedControlsActive = false;
 
                     scope.startItemIndex = scope.isPaged ? (scope.gridOptions.pageItems * scope.gridOptions.currentPage) : 0;
                     scope.endItemIndex = scope.isPaged ? (scope.startItemIndex + scope.gridOptions.pageItems - 1) : scope.totalItemsCount - 1;
@@ -1295,24 +1294,43 @@ module TrNgGrid{
                     scope.pageIndexes.splice(0);
                     if (scope.isPaged) {
                         if (scope.lastPageIndex + 1 > TrNgGrid.defaultPagerMinifiedPageCountThreshold) {
-                            // only display the current page
-                            if (scope.gridOptions.currentPage > 1) {
+                            scope.extendedControlsActive = true;
+
+                            var pageIndexHalfRange = Math.floor(TrNgGrid.defaultPagerMinifiedPageCountThreshold/2);
+                            var lowPageIndex = scope.gridOptions.currentPage - pageIndexHalfRange;
+                            var highPageIndex = scope.gridOptions.currentPage + pageIndexHalfRange;
+
+                            // compute the high and low
+                            if (lowPageIndex < 0) {
+                                highPageIndex += -lowPageIndex;
+                                lowPageIndex = 0;
+                            }
+                            else if (highPageIndex > scope.lastPageIndex) {
+                                lowPageIndex -= highPageIndex - scope.lastPageIndex;
+                                highPageIndex = scope.lastPageIndex;
+                            }
+
+                            // add the extra controls where needed
+                            if (lowPageIndex > 0) {
                                 scope.pageIndexes.push(null);
+                                lowPageIndex++;
                             }
-                            if (scope.gridOptions.currentPage > 0) {
-                                scope.pageIndexes.push(scope.gridOptions.currentPage - 1);
+                            var highPageEllipsed = false;
+                            if (highPageIndex < scope.lastPageIndex) {
+                                highPageEllipsed = true;
+                                highPageIndex--;
                             }
 
-                            scope.pageIndexes.push(scope.gridOptions.currentPage);
-
-                            if (scope.gridOptions.currentPage < scope.lastPageIndex) {
-                                scope.pageIndexes.push(scope.gridOptions.currentPage + 1);
+                            for (var pageIndex = lowPageIndex; pageIndex <= highPageIndex; pageIndex++) {
+                                scope.pageIndexes.push(pageIndex);
                             }
-                            if (scope.gridOptions.currentPage < scope.lastPageIndex - 1) {
+
+                            if (highPageEllipsed) {
                                 scope.pageIndexes.push(null);
                             }
                         }
                         else {
+                            scope.extendedControlsActive = false;
                             // we can display all of them
                             for (var pageIndex = 0; pageIndex <= scope.lastPageIndex; pageIndex++) {
                                 scope.pageIndexes.push(pageIndex);
@@ -1453,7 +1471,7 @@ module TrNgGrid{
         })
         .run(function () {
             TrNgGrid.defaultColumnOptions.displayAlign = 'left';
-            TrNgGrid.defaultPagerMinifiedPageCountThreshold = 5;
+            TrNgGrid.defaultPagerMinifiedPageCountThreshold = 3;
         });
 
     function configureTemplates($templateCache: ng.ITemplateCacheService) {
@@ -1528,21 +1546,33 @@ module TrNgGrid{
             $templateCache.put(TrNgGrid.footerPagerTemplateId,
                 '<span class="pull-right form-group">'
                 + ' <ul class="pagination">'
-                + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="isPaged">'
-                + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>'
+                + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="extendedControlsActive">'
+                + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+                //+ '         <span class="glyphicon glyphicon-fast-backward"></span>' 
+                + '         <span>&laquo;</span>' 
+                + '     </a>'
                 + '   </li>'
-                + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="isPaged">'
-                + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
+                + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="extendedControlsActive">'
+                + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+                //+ '         <span class="glyphicon glyphicon-step-backward"></span>' 
+                + '         <span>&lsaquo;</span>' 
+                + '     </a>'
                 + '   </li>'
                 + '   <li ng-if="pageSelectionActive" ng-repeat="pageIndex in pageIndexes track by $index" ng-class="{disabled:pageIndex===null, active:pageIndex===gridOptions.currentPage}">'
                 + '      <span ng-if="pageIndex===null">...</span>'
                 + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-if="pageIndex!==null" ng-attr-title="{{\'Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">{{pageIndex+1}}</a>'
                 + '   </li>'
-                + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="isPaged">'
-                + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>'
+                + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="extendedControlsActive">'
+                + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+                //+ '         <span class="glyphicon glyphicon-step-forward"></span>' 
+                + '         <span>&rsaquo;</span>' 
+                + '     </a>'
                 + '   </li>'
-                + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="isPaged">'
-                + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(lastPageIndex)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>'
+                + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="extendedControlsActive">'
+                + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(lastPageIndex)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+                //+ '         <span class="glyphicon glyphicon-fast-forward"></span>' 
+                + '         <span>&raquo;</span>' 
+                + '     </a>'
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
                 + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
