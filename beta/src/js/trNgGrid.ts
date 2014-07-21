@@ -8,6 +8,7 @@ module TrNgGrid{
         MultiRowWithKeyModifiers
     }
 
+    export declare var defaultPagerMinifiedPageCountThreshold: number;
     export declare var defaultColumnOptions: IBasicGridColumnOptions;
     export declare var translations: { [language: string]: { [textId: string]: string } };
     export declare var translationDateFormat: string;
@@ -243,8 +244,8 @@ module TrNgGrid{
     var combineGridCellInfos = <T extends IGridColumn>(
         firstSet: Array<T>,
         secondSet: Array<T>,
-        addExtraItemsFirstSet?:boolean,
-        addExtraItemsSecondSet?: boolean): Array<T> => {
+        addExtraFieldItemsSecondSet?: boolean,
+        addExtraNonFieldItemsSecondSet?:boolean): Array<T> => {
 
         var combinedSet: Array<T> = [];
         var secondTempSet = secondSet.slice(0);
@@ -264,15 +265,17 @@ module TrNgGrid{
             if (foundSecondSetColumn) {
                 combinedSet.push(foundSecondSetColumn);
             }
-            else if(addExtraItemsFirstSet){
+            else{
                 combinedSet.push(firstSetColumn);
             }
         });
 
         // add the remaining items from the second set in the combined set
-        if (addExtraItemsSecondSet) {
+        if (addExtraFieldItemsSecondSet || addExtraNonFieldItemsSecondSet) {
             angular.forEach(secondTempSet, (secondSetColumn: T) => {
-                combinedSet.push(secondSetColumn);
+                if ((addExtraFieldItemsSecondSet && secondSetColumn.fieldName) || (addExtraNonFieldItemsSecondSet && !secondSetColumn.fieldName)) {
+                    combinedSet.push(secondSetColumn);
+                }
             });
         }
 
@@ -306,7 +309,8 @@ module TrNgGrid{
 
         constructor(public parent:TemplatedSection, public cellElement: JQuery) {
             this.fieldName = cellElement.attr(fieldNameAttribute);
-            this.isStandardColumn = cellElement.children().length === 0;
+            var customContent = cellElement.children();
+            this.isStandardColumn = customContent.length === 0;
         }
     }
 
@@ -334,7 +338,7 @@ module TrNgGrid{
             sectionElement.removeAttr("ng-non-bindable");
 
             // add the elements in order
-            var rowElementDefinitions = combineGridCellInfos(columnDefs, this.cells, true, false);
+            var rowElementDefinitions = combineGridCellInfos(columnDefs, this.cells, false, false);
 
             // grab the templated row
             var templatedRowElement = this.getTemplatedRowElement(sectionElement, true);
@@ -758,8 +762,8 @@ module TrNgGrid{
                     }
                 });
 
-                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedHeaderPartialGridColumnDefs, true, false);
-                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, false);
+                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedHeaderPartialGridColumnDefs, false, true);
+                finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, false, true);
             }
             else {
                 // check for the header markup
@@ -1264,12 +1268,13 @@ module TrNgGrid{
         .directive(pagerDirective, [
             function () {
                 var setupScope = (scope: IGridFooterScope, controller: GridController) => {
-                    scope.isPaged = !!scope.gridOptions.pageItems;
 
                     // do not set scope.gridOptions.totalItems, it might be set from the outside
                     scope.totalItemsCount = (typeof (scope.gridOptions.totalItems) != "undefined" && scope.gridOptions.totalItems != null)
                     ? scope.gridOptions.totalItems
                     : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
+
+                    scope.isPaged = (!!scope.gridOptions.pageItems) && (scope.gridOptions.pageItems < scope.totalItemsCount);
 
                     scope.startItemIndex = scope.isPaged ? (scope.gridOptions.pageItems * scope.gridOptions.currentPage) : 0;
                     scope.endItemIndex = scope.isPaged ? (scope.startItemIndex + scope.gridOptions.pageItems - 1) : scope.totalItemsCount - 1;
@@ -1283,14 +1288,38 @@ module TrNgGrid{
                     ? 0
                     : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
 
-                    scope.pageIndexes = [];
-                    for (var pageIndex = 0; pageIndex <= scope.lastPageIndex; pageIndex++) {
-                        scope.pageIndexes.push(pageIndex);
-                    }
-                    scope.pageSelectionActive = scope.pageIndexes.length > 1;
-
                     scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage > 0;
                     scope.pageCanGoForward = scope.isPaged && scope.gridOptions.currentPage < scope.lastPageIndex;
+
+                    scope.pageIndexes = scope.pageIndexes || [];
+                    scope.pageIndexes.splice(0);
+                    if (scope.isPaged) {
+                        if (scope.lastPageIndex + 1 > TrNgGrid.defaultPagerMinifiedPageCountThreshold) {
+                            // only display the current page
+                            if (scope.gridOptions.currentPage > 1) {
+                                scope.pageIndexes.push(null);
+                            }
+                            if (scope.gridOptions.currentPage > 0) {
+                                scope.pageIndexes.push(scope.gridOptions.currentPage - 1);
+                            }
+
+                            scope.pageIndexes.push(scope.gridOptions.currentPage);
+
+                            if (scope.gridOptions.currentPage < scope.lastPageIndex) {
+                                scope.pageIndexes.push(scope.gridOptions.currentPage + 1);
+                            }
+                            if (scope.gridOptions.currentPage < scope.lastPageIndex - 1) {
+                                scope.pageIndexes.push(null);
+                            }
+                        }
+                        else {
+                            // we can display all of them
+                            for (var pageIndex = 0; pageIndex <= scope.lastPageIndex; pageIndex++) {
+                                scope.pageIndexes.push(pageIndex);
+                            }
+                        }
+                    }
+                    scope.pageSelectionActive = scope.pageIndexes.length > 1;
 
                     scope.navigateToPage = (pageIndex) => {
                         scope.gridOptions.currentPage = pageIndex;
@@ -1423,10 +1452,8 @@ module TrNgGrid{
             TrNgGrid.footerCssClass = "tr-ng-grid-footer form-inline";
         })
         .run(function () {
-            //TrNgGrid.defaultColumnOptions.displayAlign = 'left';
-            //TrNgGrid.translations["en"] = {
-            //    "Search": "Search"
-            //};
+            TrNgGrid.defaultColumnOptions.displayAlign = 'left';
+            TrNgGrid.defaultPagerMinifiedPageCountThreshold = 5;
         });
 
     function configureTemplates($templateCache: ng.ITemplateCacheService) {
@@ -1501,14 +1528,22 @@ module TrNgGrid{
             $templateCache.put(TrNgGrid.footerPagerTemplateId,
                 '<span class="pull-right form-group">'
                 + ' <ul class="pagination">'
-                + '   <li ng-show="pageCanGoBack" >'
-                + '     <a href="" ng-click="navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>'
+                + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="isPaged">'
+                + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>'
                 + '   </li>'
-                + '   <li ng-show="pageCanGoBack" >'
-                + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
+                + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="isPaged">'
+                + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>'
                 + '   </li>'
-                + '   <li ng-show="pageSelectionActive">'
-                + '         <span>Page: <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes" ng-change="speedUpAsyncDataRetrieval()"></select></span>'
+                + '   <li ng-if="pageSelectionActive" ng-repeat="pageIndex in pageIndexes track by $index" ng-class="{disabled:pageIndex===null, active:pageIndex===gridOptions.currentPage}">'
+                + '      <span ng-if="pageIndex===null">...</span>'
+                + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-if="pageIndex!==null">{{pageIndex+1}}</a>'
+                + '   </li>'
+                //+ '         <span>Page: <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes" ng-change="speedUpAsyncDataRetrieval()"></select></span>'
+                + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="isPaged">'
+                + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>'
+                + '   </li>'
+                + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="isPaged">'
+                + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(lastPageIndex)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>'
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
                 + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
@@ -1516,12 +1551,6 @@ module TrNgGrid{
                 + '       {{startItemIndex+1}} - {{endItemIndex+1}} {{\'displayed\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}'
                 + '       <span>, {{totalItemsCount}} {{\'in total\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
                 + '     </span > '
-                + '   </li>'
-                + '   <li ng-show="pageCanGoForward">'
-                + '     <a href="" ng-click="navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>'
-                + '   </li>'
-                + '   <li ng-show="pageCanGoForward">'
-                + '     <a href="" ng-show="pageCanGoForward" ng-click="navigateToPage(lastPageIndex)" title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>'
                 + '   </li>'
                 + ' </ul>'
                 + '</span>');

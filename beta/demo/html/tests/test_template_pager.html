@@ -3,8 +3,11 @@
 <script type="text/ng-template" id="trNgGridPager.html">
     <span class="pull-right form-group">
         <ul class="pagination">
-            <li ng-repeat="pageIndex in pageIndexes" ng-class="{'active':gridOptions.currentPage==pageIndex}">
-                <a href="" ng-click="navigateToPage(pageIndex)">{{pageIndex+1}}</a>
+            <li>
+                <span>
+                    Page:
+                    <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes"></select>
+                </span>
             </li>
         </ul>
     </span>

@@ -12,10 +12,26 @@
                     </p>
 
                     <pre id="trNgGrid_Sample_Paging">
-                            </pre>
+                     </pre>
                 </div>
-                <div class="col-md-8" project-markup-to="#trNgGrid_Sample_Paging" ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(22)">
-<table tr-ng-grid items="myItems" page-items="5"></table>
+                <div class="col-md-8">
+                    <div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(22)" project-markup-to="#trNgGrid_Sample_Paging">
+<table tr-ng-grid="" items="myItems" page-items="5"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        If the number of pages falls under a certain threshold (which by default is 5), they will all get displayed in the pager section.
+                        Above the threshold however, ellipsis will be displayed instead.
+                        You can override the value of the threshold. More information can be found in the <em>Customizations</em> section.
+                    </p>
+                </div>
+                <div class="col-md-8">
+<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(100)" project-markup-to="#trNgGrid_Sample_Paging">
+    <table tr-ng-grid="" items="myItems" page-items="5"></table>
+</div>
                 </div>
             </div>
         </div>

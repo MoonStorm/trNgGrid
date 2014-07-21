@@ -311,6 +311,9 @@ module TrNgGridDemo{
                 .when('/TestHybridMode', {
                     templateUrl: 'demo/html/tests/test_hybrid_mode.html'
                 })
+                .when('/TestFieldsCustomColumns', {
+                    templateUrl: 'demo/html/tests/test_custom_columns_fields.html'
+                })
                 .when('/TestFixedHeaderFooter', {
                     templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
                 })

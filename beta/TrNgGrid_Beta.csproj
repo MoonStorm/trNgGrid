@@ -25,6 +25,7 @@
     <Content Include="demo\html\columns.html" />
     <Content Include="demo\html\common.html" />
     <Content Include="demo\html\tests\test_hybrid_mode.html" />
+    <Content Include="demo\html\tests\test_custom_columns_fields.html" />
     <Content Include="demo\html\tests\test_template_pager.html" />
     <Content Include="demo\html\default.html" />
     <Content Include="demo\html\globaloptions.html" />
