@@ -393,6 +393,7 @@ module TrNgGridDemo{
                 "Born": "Geboren",
                 "Search": "Suche",
                 "First Page": "Erste Seite",
+                "Page": "Seite",
                 "Next Page": "Nächste Seite",
                 "Previous Page": "Vorherige Seite",
                 "Last Page": "Letzte Seite",
