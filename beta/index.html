@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <title>trNgGrid</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" ng-href="{{ui.themeUrl}}" />
+    <link rel="stylesheet" ng-href="{{ui.themeUrl}}" media="screen" />
     <link rel="stylesheet" href="demo/css/index.css" />
     <link href="//google-code-prettify.googlecode.com/svn/loader/prettify.css" type="text/css" rel="stylesheet" />
     <!--<link href="//google-code-prettify.googlecode.com/svn/loader/skins/sons-of-obsidian.css" type="text/css" rel="stylesheet" />-->
@@ -78,7 +78,7 @@
                     <!--onclick="$(this).toggleClass('open'); return false;"-->
                     <a class="dropdown-toggle" href="">Bootswatch theme <b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a hhref=""><select class="form-control" ng-model="ui.themeVersion" ng-options="version for version in ['3.0.3','3.2.0']"></select></a></li>
+                        <li><a hhref=""><select class="form-control" ng-model="ui.themeVersion" ng-options="version for version in ['3.0.3','latest']"></select></a></li>
                         <li class="divider"></li>
                         <li><a href="" ng-click="setTheme('amelia')">Amelia</a></li>
                         <li><a href="" ng-click="setTheme('cerulean')">Cerulean</a></li>

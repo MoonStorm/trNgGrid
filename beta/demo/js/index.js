@@ -233,7 +233,12 @@ var TrNgGridDemo;
         this.$scope.localeUrl = this.$sce.trustAsResourceUrl(localeUrl);
         }*/
         MainController.prototype.setupThemeUrl = function () {
-            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/" + this.$scope.ui.themeVersion + "/" + this.$scope.ui.theme + "/bootstrap.min.css";
+            var themeUrl;
+            if (this.$scope.ui.themeVersion == "latest") {
+                themeUrl = "//bootswatch.com/" + this.$scope.ui.theme + "/bootstrap.css";
+            } else {
+                themeUrl = "//netdna.bootstrapcdn.com/bootswatch/" + this.$scope.ui.themeVersion + "/" + this.$scope.ui.theme + "/bootstrap.min.css";
+            }
             this.$scope.ui.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
         };
         return MainController;
