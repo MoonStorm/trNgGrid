@@ -5,10 +5,6 @@
   margin: 0; 
 }
 
-.tr-ng-grid .tr-ng-grid-footer.form-inline .form-control {
-  width: auto;
-}
-
 .tr-ng-grid > thead > tr > th {
     text-align:center;
     vertical-align:top;
@@ -28,7 +24,7 @@
 }
 
 .tr-ng-grid > tbody > tr > td > .tr-ng-cell {
-  overflow: auto;
+  overflow: visible;
 }
 
 .tr-ng-grid .tr-ng-column-header {
