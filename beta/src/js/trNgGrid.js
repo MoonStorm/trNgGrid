@@ -1079,6 +1079,7 @@ var TrNgGrid;
                 scope.totalItemsCount = (typeof (scope.gridOptions.totalItems) != "undefined" && scope.gridOptions.totalItems != null) ? scope.gridOptions.totalItems : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
 
                 scope.isPaged = (!!scope.gridOptions.pageItems) && (scope.gridOptions.pageItems < scope.totalItemsCount);
+                scope.extendedControlsActive = false;
 
                 scope.startItemIndex = scope.isPaged ? (scope.gridOptions.pageItems * scope.gridOptions.currentPage) : 0;
                 scope.endItemIndex = scope.isPaged ? (scope.startItemIndex + scope.gridOptions.pageItems - 1) : scope.totalItemsCount - 1;
@@ -1097,23 +1098,42 @@ var TrNgGrid;
                 scope.pageIndexes.splice(0);
                 if (scope.isPaged) {
                     if (scope.lastPageIndex + 1 > TrNgGrid.defaultPagerMinifiedPageCountThreshold) {
-                        // only display the current page
-                        if (scope.gridOptions.currentPage > 1) {
+                        scope.extendedControlsActive = true;
+
+                        var pageIndexHalfRange = Math.floor(TrNgGrid.defaultPagerMinifiedPageCountThreshold / 2);
+                        var lowPageIndex = scope.gridOptions.currentPage - pageIndexHalfRange;
+                        var highPageIndex = scope.gridOptions.currentPage + pageIndexHalfRange;
+
+                        // compute the high and low
+                        if (lowPageIndex < 0) {
+                            highPageIndex += -lowPageIndex;
+                            lowPageIndex = 0;
+                        } else if (highPageIndex > scope.lastPageIndex) {
+                            lowPageIndex -= highPageIndex - scope.lastPageIndex;
+                            highPageIndex = scope.lastPageIndex;
+                        }
+
+                        // add the extra controls where needed
+                        if (lowPageIndex > 0) {
                             scope.pageIndexes.push(null);
+                            lowPageIndex++;
                         }
-                        if (scope.gridOptions.currentPage > 0) {
-                            scope.pageIndexes.push(scope.gridOptions.currentPage - 1);
+                        var highPageEllipsed = false;
+                        if (highPageIndex < scope.lastPageIndex) {
+                            highPageEllipsed = true;
+                            highPageIndex--;
                         }
 
-                        scope.pageIndexes.push(scope.gridOptions.currentPage);
-
-                        if (scope.gridOptions.currentPage < scope.lastPageIndex) {
-                            scope.pageIndexes.push(scope.gridOptions.currentPage + 1);
+                        for (var pageIndex = lowPageIndex; pageIndex <= highPageIndex; pageIndex++) {
+                            scope.pageIndexes.push(pageIndex);
                         }
-                        if (scope.gridOptions.currentPage < scope.lastPageIndex - 1) {
+
+                        if (highPageEllipsed) {
                             scope.pageIndexes.push(null);
                         }
                     } else {
+                        scope.extendedControlsActive = false;
+
                         for (var pageIndex = 0; pageIndex <= scope.lastPageIndex; pageIndex++) {
                             scope.pageIndexes.push(pageIndex);
                         }
@@ -1242,7 +1262,7 @@ var TrNgGrid;
         TrNgGrid.footerCssClass = "tr-ng-grid-footer form-inline";
     }).run(function () {
         TrNgGrid.defaultColumnOptions.displayAlign = 'left';
-        TrNgGrid.defaultPagerMinifiedPageCountThreshold = 5;
+        TrNgGrid.defaultPagerMinifiedPageCountThreshold = 3;
     });
 
     function configureTemplates($templateCache) {
@@ -1266,7 +1286,7 @@ var TrNgGrid;
             $templateCache.put(TrNgGrid.footerGlobalFilterTemplateId, '<span ng-show="gridOptions.enableFiltering" class="pull-left form-group">' + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" ng-keypress="speedUpAsyncDataRetrieval($event)" ng-attr-placeholder="{{\'Search\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}"></input>' + '</span>');
         }
         if (!$templateCache.get(TrNgGrid.footerPagerTemplateId)) {
-            $templateCache.put(TrNgGrid.footerPagerTemplateId, '<span class="pull-right form-group">' + ' <ul class="pagination">' + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="isPaged">' + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">|&lArr;</a>' + '   </li>' + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="isPaged">' + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&lArr;</a>' + '   </li>' + '   <li ng-if="pageSelectionActive" ng-repeat="pageIndex in pageIndexes track by $index" ng-class="{disabled:pageIndex===null, active:pageIndex===gridOptions.currentPage}">' + '      <span ng-if="pageIndex===null">...</span>' + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-if="pageIndex!==null" ng-attr-title="{{\'Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">{{pageIndex+1}}</a>' + '   </li>' + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="isPaged">' + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;</a>' + '   </li>' + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="isPaged">' + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(lastPageIndex)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">&rArr;|</a>' + '   </li>' + '   <li class="disabled" style="white-space: nowrap;">' + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>' + '     <span ng-show="totalItemsCount" ng-attr-title="{{\'Select Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">' + '       {{startItemIndex+1}} - {{endItemIndex+1}} {{\'displayed\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}' + '       <span>, {{totalItemsCount}} {{\'in total\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>' + '     </span > ' + '   </li>' + ' </ul>' + '</span>');
+            $templateCache.put(TrNgGrid.footerPagerTemplateId, '<span class="pull-right form-group">' + ' <ul class="pagination">' + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="extendedControlsActive">' + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">' + '         <span>&laquo;</span>' + '     </a>' + '   </li>' + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="extendedControlsActive">' + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">' + '         <span>&lsaquo;</span>' + '     </a>' + '   </li>' + '   <li ng-if="pageSelectionActive" ng-repeat="pageIndex in pageIndexes track by $index" ng-class="{disabled:pageIndex===null, active:pageIndex===gridOptions.currentPage}">' + '      <span ng-if="pageIndex===null">...</span>' + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-if="pageIndex!==null" ng-attr-title="{{\'Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">{{pageIndex+1}}</a>' + '   </li>' + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="extendedControlsActive">' + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">' + '         <span>&rsaquo;</span>' + '     </a>' + '   </li>' + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="extendedControlsActive">' + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(lastPageIndex)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">' + '         <span>&raquo;</span>' + '     </a>' + '   </li>' + '   <li class="disabled" style="white-space: nowrap;">' + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>' + '     <span ng-show="totalItemsCount" ng-attr-title="{{\'Select Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">' + '       {{startItemIndex+1}} - {{endItemIndex+1}} {{\'displayed\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}' + '       <span>, {{totalItemsCount}} {{\'in total\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>' + '     </span > ' + '   </li>' + ' </ul>' + '</span>');
         }
     }
 })(TrNgGrid || (TrNgGrid = {}));
