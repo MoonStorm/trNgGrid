@@ -1,4 +1,4 @@
-### trNgGrid is a feature rich data grid based on the popular AngularJs framework and making use of plain simple HTML table elements.
+### trNgGrid is a feature rich data grid based on the popular AngularJs framework and making use of plain HTML table elements.
 
 #### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/)
 
@@ -33,5 +33,6 @@ You can download the grid from the `release` or `beta` folder in the master bran
 - Localization support. This doesn't mean though that the grid will provide localized text out of the box.
 - jQuery no longer a dependency.
 - Filtering uses the display format rather than the original field value.
+- Improved pagination.
 - Please give me a hand in testing it so we can make it into a nice release package. Thank you.
 
