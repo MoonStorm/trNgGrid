@@ -208,6 +208,7 @@ var TrNgGridDemo;
             $scope.isFrame = $location.absUrl().indexOf("isFrame=true") >= 0;
             $scope.ui = {
                 theme: "slate",
+                themeVersion: "3.0.3",
                 themeUrl: "",
                 isMenuExpanded: false
             };
@@ -218,13 +219,21 @@ var TrNgGridDemo;
                 _this.setupThemeUrl();
                 $scope.ui.isMenuExpanded = false;
             };
+            $scope.setThemeVersion = function (themeVersion) {
+                $scope.ui.themeVersion = themeVersion || $scope.ui.themeVersion;
+                _this.setupThemeUrl();
+                $scope.ui.isMenuExpanded = false;
+            };
+            $scope.$watch("ui.themeVersion", function () {
+                $scope.setThemeVersion();
+            });
         }
         /*setupLocaleUrl() {
         var localeUrl = "https://code.angularjs.org/1.2.9/i18n/angular-locale_" + this.$scope.locale + ".js";
         this.$scope.localeUrl = this.$sce.trustAsResourceUrl(localeUrl);
         }*/
         MainController.prototype.setupThemeUrl = function () {
-            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/" + this.$scope.ui.theme + "/bootstrap.min.css";
+            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/" + this.$scope.ui.themeVersion + "/" + this.$scope.ui.theme + "/bootstrap.min.css";
             this.$scope.ui.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
         };
         return MainController;

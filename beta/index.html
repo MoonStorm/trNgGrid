@@ -78,6 +78,8 @@
                     <!--onclick="$(this).toggleClass('open'); return false;"-->
                     <a class="dropdown-toggle" href="">Bootswatch theme <b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
+                        <li><a hhref=""><select class="form-control" ng-model="ui.themeVersion" ng-options="version for version in ['3.0.3','3.2.0']"></select></a></li>
+                        <li class="divider"></li>
                         <li><a href="" ng-click="setTheme('amelia')">Amelia</a></li>
                         <li><a href="" ng-click="setTheme('cerulean')">Cerulean</a></li>
                         <li><a href="" ng-click="setTheme('cosmo')">Cosmo</a></li>
@@ -90,6 +92,8 @@
                         <li><a href="" ng-click="setTheme('spacelab')">Spacelab</a></li>
                         <li><a href="" ng-click="setTheme('united')">United</a></li>
                         <li><a href="" ng-click="setTheme('yeti')">Yeti</a></li>
+                        <li ng-if="ui.themeVersion!='3.0.3'"><a href="" ng-click="setTheme('superhero')">Superhero</a></li>
+                        <li ng-if="ui.themeVersion!='3.0.3'"><a href="" ng-click="setTheme('lumen')">Lumen</a></li>
                         <li class="divider"></li>
                         <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
                     </ul>

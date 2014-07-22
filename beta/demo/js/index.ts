@@ -234,11 +234,13 @@ module TrNgGridDemo{
     export interface IMainControllerScope extends ng.IScope {
         ui: {
             theme: string;
+            themeVersion;
             themeUrl: string;
             isMenuExpanded: boolean;
         };
         isFrame: boolean;
         setTheme(theme:string);
+        setThemeVersion(themeVersion?: string);
     }
 
     export class MainController {
@@ -246,6 +248,7 @@ module TrNgGridDemo{
             $scope.isFrame = $location.absUrl().indexOf("isFrame=true") >= 0;
             $scope.ui = {
                 theme: "slate",
+                themeVersion: "3.0.3",
                 themeUrl: "",
                 isMenuExpanded: false
             };
@@ -256,6 +259,14 @@ module TrNgGridDemo{
                 this.setupThemeUrl();
                 $scope.ui.isMenuExpanded = false;
             };
+            $scope.setThemeVersion = (themeVersion?: string) => {
+                $scope.ui.themeVersion = themeVersion || $scope.ui.themeVersion;
+                this.setupThemeUrl();
+                $scope.ui.isMenuExpanded = false;
+            };
+            $scope.$watch("ui.themeVersion", () => {
+                $scope.setThemeVersion();
+            });
         }
 
         /*setupLocaleUrl() {
@@ -264,7 +275,7 @@ module TrNgGridDemo{
         }*/
 
         setupThemeUrl() {
-            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/3.0.3/"+this.$scope.ui.theme+"/bootstrap.min.css";
+            var themeUrl = "//netdna.bootstrapcdn.com/bootswatch/" + this.$scope.ui.themeVersion+"/"+this.$scope.ui.theme+"/bootstrap.min.css";
             this.$scope.ui.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
         }
     }
