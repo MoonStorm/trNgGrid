@@ -130,22 +130,23 @@ Selected Items: {{mySelectedItems.length}}
         fields="['id','name']"
         selection-mode="SingleRow">
     <thead>
-        <tr>
-            <th field-name="id" enable-sorting="false"></th>
-            <th field-name="address" display-align="right"></th>
-        </tr>
+      <tr>
+        <th field-name="id" enable-sorting="false"></th>
+        <th field-name="address" display-align="right"></th>
+      </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>
-                <div>
-                    <!--You can stop the click event to bubble up and mess up the selection set by calling $event.stopPropagation() -->
-                    <button class="btn btn-default" ng-click="alert('You clicked on ' + gridItem.id);$event.stopPropagation();">
-                        Display {{gridDisplayItem.name}}
-                    </button>
-                </div>
-            </td>
-        </tr>
+      <tr>
+        <td>
+          <div>
+            <!--You can stop the click event to bubble up and mess up the selection set by calling $event.stopPropagation() -->
+            <!--alert is a method on the scope which calls $window.alert-->
+            <button class="btn btn-default" ng-click="alert('You clicked on ' + gridItem.id);$event.stopPropagation();">
+              Display {{gridDisplayItem.name}}
+            </button>
+          </div>
+        </td>
+      </tr>
     </tbody>
 </table>
                 </div>
