@@ -70,6 +70,16 @@ var TrNgGridDemo;
             $scope.myEnableSorting = true;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
+            $scope.alert = function (message) {
+                $window.alert(message);
+            };
+            $scope.alertOnSelectionChange = function () {
+                $scope.$watch("mySelectedItems.length", function (newLength) {
+                    if (newLength > 0) {
+                        $window.alert("The selection now contains " + newLength + " items");
+                    }
+                });
+            };
 
             /*$scope.toogleFieldEnforcement = (fieldName: string) => {
             var fieldIndex = $scope.myFields.indexOf(fieldName);
@@ -254,7 +264,7 @@ var TrNgGridDemo;
             //    .hashPrefix('!');
             $routeProvider.when('/Common', {
                 templateUrl: 'demo/html/common.html'
-            }).when('/ColumnPicker', {
+            }).when('/Columns', {
                 templateUrl: 'demo/html/columns.html'
             }).when('/Paging', {
                 templateUrl: 'demo/html/paging.html'
@@ -274,8 +284,6 @@ var TrNgGridDemo;
                 templateUrl: 'demo/html/tests/test_items_update.html'
             }).when('/TestHybridMode', {
                 templateUrl: 'demo/html/tests/test_hybrid_mode.html'
-            }).when('/TestFieldsCustomColumns', {
-                templateUrl: 'demo/html/tests/test_custom_columns_fields.html'
             }).when('/TestFixedHeaderFooter', {
                 templateUrl: 'demo/html/tests/test_fixed_header_footer.html'
             }).when('/TemplatePager', {

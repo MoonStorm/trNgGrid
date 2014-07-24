@@ -29,6 +29,8 @@ module TrNgGridDemo{
 
         requestedItemsGridOptions: Object;
 
+        alert: (message: string) => void;
+        alertOnSelectionChange: () => void;
         addNew: () => void;
         onServerSideItemsRequested: (currentPage: number, filterBy: string, filterByFields: Object, orderBy: string, orderByReverse: boolean) => void;
         generateItems: (pageItems: number, totalItems?: number, generateComplexItems?:boolean) => void;
@@ -102,6 +104,16 @@ module TrNgGridDemo{
             $scope.myEnableSorting = true;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
+            $scope.alert = (message) => {
+                $window.alert(message);
+            };
+            $scope.alertOnSelectionChange = function(){
+                $scope.$watch("mySelectedItems.length", function(newLength: number){
+                    if (newLength > 0) {
+                        $window.alert("The selection now contains " + newLength + " items");
+                    }
+                });
+            };
             /*$scope.toogleFieldEnforcement = (fieldName: string) => {
                 var fieldIndex = $scope.myFields.indexOf(fieldName);
                 if (fieldIndex < 0) {
@@ -298,7 +310,7 @@ module TrNgGridDemo{
                 .when('/Common', {
                     templateUrl: 'demo/html/common.html'
                 })
-                .when('/ColumnPicker', {
+                .when('/Columns', {
                     templateUrl: 'demo/html/columns.html'
                 })
                 .when('/Paging', {
@@ -327,9 +339,6 @@ module TrNgGridDemo{
                 })
                 .when('/TestHybridMode', {
                     templateUrl: 'demo/html/tests/test_hybrid_mode.html'
-                })
-                .when('/TestFieldsCustomColumns', {
-                    templateUrl: 'demo/html/tests/test_custom_columns_fields.html'
                 })
                 .when('/TestFixedHeaderFooter', {
                     templateUrl: 'demo/html/tests/test_fixed_header_footer.html'

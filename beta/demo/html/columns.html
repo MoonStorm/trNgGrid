@@ -33,6 +33,7 @@
                 <div class="col-md-7">
                     <p>
                         Column options can be provided by setting up the <em>field-name</em> attribute on the <em>&lt;TH&gt;</em> elements that you'll have to include in the markup of a single <em>&lt;TR&gt;</em> element, part of <em>&lt;THEAD&gt;</em>.<br />
+                        When the <em>fields</em> property is not present, the field-bound <em>TH</em> elements will act as the selection of fields that will be displayed. 
                     </p>
                     <p>
                         Once the <em>field-name</em> was set, a range of options can tweak the behavior and appearance of the column. You can
@@ -107,4 +108,141 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Custom columns with fields enforced
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-7">
+                    <p>
+                        As mentioned earlier, the <em>fields</em> property can be used to select the fields that are going to be displayed. In this case, the definition of the columns in the header and the body should be used just for customizing the appearance of these columns.
+                    </p>
+                    <p>In this example, an extra column is added and will appear in the body. You'll notice that I've slightly changed some options for several field-bound columns, but the customization for the <em>address</em> field is not being used as the <em>fields</em> property doesn't list this one.</p>
+                    <pre id="trNgGrid_fields_custom_columns_bug_1">
+                    </pre>
+                </div>
+                <div class="col-md-5" project-markup-to="#trNgGrid_fields_custom_columns_bug_1" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(5)">
+Selected Items: {{mySelectedItems.length}}
+<table tr-ng-grid
+        selected-items="mySelectedItems"
+        items="myItems"
+        fields="['id','name']"
+        selection-mode="SingleRow">
+    <thead>
+        <tr>
+            <th field-name="id" enable-sorting="false"></th>
+            <th field-name="address" display-align="right"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <div>
+                    <!--You can stop the click event to bubble up and mess up the selection set by calling $event.stopPropagation() -->
+                    <button class="btn btn-default" ng-click="alert('You clicked on ' + gridItem.id);$event.stopPropagation();">
+                        Display {{gridDisplayItem.name}}
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-7">
+                    <p>
+                        Adding a header for the custom column should also work.
+                    </p>
+                    <pre id="trNgGrid_fields_custom_columns_bug_2">
+                    </pre>
+                    <p>
+                        In this example I'm also watching for a change in the data-bound selection array.
+                    </p>
+                    <pre>
+$scope.mySelectedItems=[];
+$scope.alertOnSelectionChange = function(){
+    $scope.$watch("mySelectedItems.length", function(newLength){
+        if (newLength > 0) {
+            $window.alert("The selection now contains " + newLength + " items");
+        }
+    });
+};
+                    </pre>
+                </div>
+                <div class="col-md-5" project-markup-to="#trNgGrid_fields_custom_columns_bug_2" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(15);">
+<div ng-init="alertOnSelectionChange();">
+    <table tr-ng-grid
+            items="myItems"
+            selected-items="mySelectedItems"
+            fields="['id','name']">
+        <thead>
+            <tr>
+                <th>
+                    <div class="tr-ng-title">
+                        Header
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div>
+                        Item {{gridDisplayItem.id}}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-7">
+                    <p>
+                        The <em>fields</em> property is enforcing the order of the field columns, but non-field-bound custom columns cannot be positioned, even when the header contains column customizations for some of the fields.
+                        The custom columns will always appear at the end.
+                        This only happens when the <em>fields</em> property is being used.
+                    </p>
+                    <pre id="trNgGrid_fields_custom_columns_bug_3">
+                    </pre>
+                </div>
+                <div class="col-md-5" project-markup-to="#trNgGrid_fields_custom_columns_bug_3" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10)">
+<table tr-ng-grid
+        items="myItems"
+        fields="['name', 'id']">
+    <thead>
+        <tr>
+            <th field-name="id">
+            </th>
+            <th>
+                <div class="tr-ng-title">
+                    Header
+                </div>
+            </th>
+            <th field-name="name">
+            </th>
+            <th field-name="address">
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <div>
+                    Item {{gridDisplayItem.id}}
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
