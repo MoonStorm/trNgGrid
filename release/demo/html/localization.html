@@ -1,31 +1,75 @@
-﻿    <div class="row">
-        <div class="col-md-7">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Localization
-                </div>
-                <div class="panel-body">
+﻿<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(40);addDateToItems();">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Localization
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-7">
                     <p>
-                        The current locale is set to 'en-us'
+                        The grid sports a basic translation filter, which is automatically used for all the static labels and field names.
+                        You are required to provide the translations for different languages you'd like to support, and also make sure the language is properly set inside the <em>locale</em> attribute.
                     </p>
                     <p>
-                        <!--Locale: <select ng-model="$parent.locale" ng-options="locale for locale in ['en-us', 'en-gb']" ></select>-->
-                        This is work-in-progress
+                        You can set the translation mappings in the app configuration section.<br />
+                        It's best to set the mappings by extending them from the most generic to the most specific.
+                    </p>
+                    <pre>
+.run(function () {
+    var defaultTranslation = {};
+    var enTranslation = angular.extend({}, defaultTranslation);
+    enTranslation[TrNgGrid.translationDateFormat] = "yyyy-MM-dd";
+    TrNgGrid.translations["en"] = enTranslation;
+    var enGbTranslation = angular.extend({}, enTranslation);
+    enGbTranslation[TrNgGrid.translationDateFormat] = "dd/MM/yyyy";
+    TrNgGrid.translations["en-gb"] = enGbTranslation;
+    var deTranslation = angular.extend({}, enTranslation, 
+        {
+        "Born": "Geboren",
+        "Search": "Suche",
+        "Page":"Seite",
+        "First Page": "Erste Seite",
+        "Next Page": "Nächste Seite",
+        "Previous Page": "Vorherige Seite",
+        "Last Page": "Letzte Seite",
+        "Sort": "Sortieren",
+        "No items to display": "Nichts darzustellen",
+        "displayed": "angezeigt",
+        "in total": "insgesamt"
+        });
+    TrNgGrid.translations["de"] = deTranslation;
+    var deChTranslation = angular.extend({}, deTranslation);
+    deChTranslation[TrNgGrid.translationDateFormat] = "dd.MM.yyyy";
+    TrNgGrid.translations["de-ch"] = deChTranslation;
+});
+                    </pre>
+                    <p>
+                        A special mapping is the <em> TrNgGrid.translationDateFormat </em>, which can be used to localize date fields.
                     </p>
                     <pre id="trNgGrid_Localization">
                     </pre>
+                    <p>
+                        You can alternatively use <a target="_blank" href="http://angular-translate.github.io/">Angular Translate</a>.
+                        The grid will automatically proxy the translation requests to a <em>translate</em> filter, if one is present.
+                        Be aware that if you wish to dynamically change the language through any 3rd party component, you still have to bind the locale id to the <em>locale</em> property,
+                        so the grid can refresh the localized resources dynamically.
+                    </p>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-5" project-markup-to="#trNgGrid_Localization" ng-controller="TrNgGridDemo.TestController"  ng-init="generateItems(10);addDateToItems();">
-<table tr-ng-grid items="myItems">
+                <div class="col-md-5" project-markup-to="#trNgGrid_Localization">
+<p>
+    Locale: <select ng-model="myLocale" ng-options="locale for locale in ['en', 'en-us', 'en-gb', 'de', 'de-ch']"></select>
+</p>
+<table tr-ng-grid items="myItems" locale="{{myLocale}}" page-items="20">
     <thead>
         <tr>
-            <th field-name="id"/>
-            <th field-name="name"/>
-            <th field-name="born" display-format="date:'shortDate'"/>
+            <th field-name="id" />
+            <th field-name="name" />
+            <th field-name="born" display-format="trNgGridTranslateFilter:gridOptions.locale" />
         </tr>
     </thead>
 </table>
+                </div>
+            </div>
         </div>
     </div>
+</div>

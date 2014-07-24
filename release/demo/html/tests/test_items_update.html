@@ -19,10 +19,15 @@
 <p>
     <button type="button" class="btn btn-default" ng-click="generateItems(20)">
         Generate Items
-    </button>&nbsp;
+    </button>
     Page: <input type="number" min="0" max="3" ng-model="myItemsCurrentPageIndex"></input>
 </p>
-<table tr-ng-grid items="myItems" page-items="5" current-page="myItemsCurrentPageIndex"></table>
+<table 
+        tr-ng-grid 
+        items="myItems" 
+        page-items="5" 
+        current-page="myItemsCurrentPageIndex">
+</table>
                 </div>
             </div>
         </div>

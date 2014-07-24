@@ -1,4 +1,4 @@
-<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(100)">
+<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(100);myPageItemsCount=20;myCurrentPage=0">
     <div class="col-md-5">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -6,85 +6,111 @@
             </div>
             <div class="panel-body">
                 <p>
-                    A range of options are available for altering the behaviour of the grid, regardless of the items displayed.<br/>
-                    All the parameters at this level are two-way data bound, which provides a huge degree of flexibility, as demonstrated by the sample below. <br/>
+                    A range of options are available for altering the behaviour of the entire grid, regardless of the items displayed.<br />
+                    All the parameters at this level are two-way data bound, which provides a huge degree of flexibility, as demonstrated by the sample below. <br />
                     You can always provide these parameters by value, and not by data bound variables.
                 </p>
                 <form class="form-horizontal well" role="form">
                     <fieldset>
-                        <div class="form-group" ng-show="myEnableSelections">
-                            <label class="col-md-5 control-label">Items (items)</label>
-                            <div class="col-md-7">
+                        <div class="form-group">
+                            <label class="col-md-7 control-label">Items (items)</label>
+                            <div class="col-md-5">
                                 <p class="form-control-static">{{myItems.length}}</p>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-5 control-label">Filtering Enabled (enable-filtering)</label>
-                            <div class="col-md-7">
+                            <label class="col-md-7 control-label">Fields (fields)</label>
+                            <div class="col-md-5">
                                 <span class="checkbox">
-                                    <input type="checkbox" ng-model="myEnableFiltering"/>
+                                    <input type="checkbox" ng-model="myEnableFieldAutoDetection" /> Autodetect (fields = null or not set)
+                                </span>
+                                <span class="checkbox" ng-repeat="fieldName in availableFields" ng-if="!myEnableFieldAutoDetection">
+                                    <input type="checkbox" ng-model="myFields[$index]" ng-true-value="{{fieldName}}" ng-false-value="" />
+                                    {{fieldName}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-7 control-label">Filtering Enabled (enable-filtering)</label>
+                            <div class="col-md-5">
+                                <span class="checkbox">
+                                    <input type="checkbox" ng-model="myEnableFiltering" />
                                 </span>
                             </div>
                         </div>
                         <div class="form-group" ng-show="myEnableFiltering">
-                            <label class="col-md-5 control-label">Global Filter (filter-by)</label>
-                            <div class="col-md-7">
-                                <input class="form-control" type="text" ng-model="myGlobalFilter"/>
+                            <label class="col-md-7 control-label">Global Filter (filter-by)</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" ng-model="myGlobalFilter" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-5 control-label">Sorting Enabled (enable-sorting)</label>
-                            <div class="col-md-7">
+                            <label class="col-md-7 control-label">Sorting Enabled (enable-sorting)</label>
+                            <div class="col-md-5">
                                 <span class="checkbox">
-                                    <input type="checkbox" ng-model="myEnableSorting"/>
+                                    <input type="checkbox" ng-model="myEnableSorting" />
                                 </span>
                             </div>
                         </div>
                         <div class="form-group" ng-show="myEnableSorting">
-                            <label class="col-md-5 control-label">Sort Column (order-by)</label>
-                            <div class="col-md-7">
+                            <label class="col-md-7 control-label">Sort Column (order-by)</label>
+                            <div class="col-md-5">
                                 <p class="form-control-static" ng-show="myOrderBy">{{myOrderBy}}</p>
                                 <p class="form-control-static" ng-hide="myOrderBy">unknown</p>
                             </div>
                         </div>
                         <div class="form-group" ng-show="myEnableSorting">
-                            <label class="col-md-5 control-label">Reverse Sort Order (order-by-reverse)</label>
-                            <div class="col-md-7">
+                            <label class="col-md-7 control-label">Reverse Sort Order (order-by-reverse)</label>
+                            <div class="col-md-5">
                                 <span class="checkbox">
-                                    <input type="checkbox" ng-model="myOrderByReversed"/>
+                                    <input type="checkbox" ng-model="myOrderByReversed" />
                                 </span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-5 control-label">Items per Page (page-items)</label>
-                            <div class="col-md-7">
-                                <input class="form-control" type="number" ng-model="myPageItemsCount" min="1"/>
+                            <label class="col-md-7 control-label">Items per Page (page-items)</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="number" ng-model="myPageItemsCount" min="1" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-5 control-label">Selection Enabled (enable-selections)</label>
-                            <div class="col-md-7">
-                                <span class="checkbox">
-                                    <input type="checkbox" ng-model="myEnableSelections"/>
-                                </span>
+                            <label class="col-md-7 control-label">Current Page</label>
+                            <div class="col-md-5">
+                                <p class="form-control-static">{{myCurrentPage}}</p>
                             </div>
                         </div>
-                        <div class="form-group" ng-show="myEnableSelections">
-                            <label class="col-md-5 control-label">Multi-row Selections (enable-multi-row-selections)</label>
-                            <div class="col-md-7">
-                                <span class="checkbox">
-                                    <input type="checkbox" ng-model="myEnableMultiRowSelections"/>
-                                </span>
+                        <div class="form-group">
+                            <label class="col-md-7 control-label">Selection Mode (selection-mode)</label>
+                            <div class="col-md-5">
+                                <select class="form-control" ng-model="mySelectionMode" ng-options="modeName for modeName in ['None', 'SingleRow', 'MultiRow', 'MultiRowWithKeyModifiers']"></select>
                             </div>
                         </div>
+                        <!--<div class="form-group">
+            <label class="col-md-7 control-label">Selection Enabled (enable-selections)</label>
+            <div class="col-md-5">
+                <span class="checkbox">
+                    <input type="checkbox" ng-model="myEnableSelections"/>
+                    <label class="text-danger">DEPRECATED!</label>
+                </span>
+            </div>
+        </div>
+        <div class="form-group" ng-show="myEnableSelections">
+            <label class="col-md-7 control-label">Multi-row Selections (enable-multi-row-selections)</label>
+            <div class="col-md-5">
+                <span class="checkbox">
+                    <input type="checkbox" ng-model="myEnableMultiRowSelections"/>
+                    <label class="text-danger">DEPRECATED!</label>
+                </span>
+            </div>
+        </div>-->
                         <div class="form-group" ng-show="myEnableSelections">
-                            <label class="col-md-5 control-label">Selected Items (selected-items)</label>
-                            <div class="col-md-7">
+                            <label class="col-md-7 control-label">Selected Items (selected-items)</label>
+                            <div class="col-md-5">
                                 <p class="form-control-static">{{mySelectedItems.length}}</p>
                             </div>
                         </div>
                         <div class="form-group" ng-show="myEnableSelections && mySelectedItems.length">
-                            <div class="col-md-7 col-md-offset-5">
+                            <div class="col-md-7">
                                 <button type="button" class="btn btn-default" ng-click="mySelectedItems.splice(Math.random(mySelectedItems.length),1)">Remove a random selection through script</button>
                             </div>
                         </div>
@@ -97,17 +123,20 @@
         </div>
     </div>
     <div class="col-md-7" project-markup-to="#trNgGrid_Sample_Full">
-        <table tr-ng-grid
-               items="myItems"
-               enable-filtering="myEnableFiltering"
-               enable-sorting="myEnableSorting"
-               filter-by="myGlobalFilter"
-               order-by="myOrderBy"
-               order-by-reverse="myOrderByReversed"
-               page-items="myPageItemsCount"
-               selected-items="mySelectedItems"
-               enable-selections="myEnableSelections"
-               enable-multi-row-selections="myEnableMultiRowSelections">
-        </table>
+<table tr-ng-grid
+       items="myItems"
+       fields="myFields"
+       enable-filtering="myEnableFiltering"
+       enable-sorting="myEnableSorting"
+       filter-by="myGlobalFilter"
+       order-by="myOrderBy"
+       order-by-reverse="myOrderByReversed"
+       page-items="myPageItemsCount"
+       selected-items="mySelectedItems"
+       current-page="myCurrentPage"
+       selection-mode="{{mySelectionMode}}">
+    <!--deprecated: enable-selections="myEnableSelections"-->
+    <!--deprecated: enable-multi-row-selections="myEnableMultiRowSelections"-->
+</table>
     </div>
 </div>

@@ -24,21 +24,30 @@
     <Content Include="demo\css\tests\test_fixed_header_footer.css" />
     <Content Include="demo\html\columns.html" />
     <Content Include="demo\html\common.html" />
+    <Content Include="demo\html\tests\test_hybrid_mode.html" />
+    <Content Include="demo\html\tests\test_template_pager.html" />
     <Content Include="demo\html\default.html" />
     <Content Include="demo\html\globaloptions.html" />
     <Content Include="demo\html\localization.html" />
+    <Content Include="demo\html\selections.html" />
     <Content Include="demo\html\paging.html" />
     <Content Include="demo\html\serverside.html" />
-    <Content Include="demo\html\templates.html" />
+    <Content Include="demo\html\customizations.html" />
+    <Content Include="demo\html\tests\test_benchmark.html" />
+    <Content Include="demo\html\tests\test_fixed_header_footer.html" />
+    <Content Include="demo\html\tests\test_items_update.html" />
+    <Content Include="demo\html\tests\test_ng_switch.html" />
+    <TypeScriptCompile Include="demo\js\benchmark.ts" />
     <TypeScriptCompile Include="demo\js\index.ts" />
-    <Content Include="demo\html\test_items_update.html" />
-    <Content Include="demo\html\test_ng_switch.html" />
+    <Content Include="demo\js\benchmark.js" />
     <Content Include="demo\js\index.js">
       <DependentUpon>index.ts</DependentUpon>
     </Content>
     <Content Include="demo\js\index.min.js">
       <DependentUpon>index.js</DependentUpon>
     </Content>
+    <Content Include="demo\js\ocLazyLoad.js" />
+    <Content Include="demo\js\test_hybrid_mode.js" />
     <Content Include="index.html" />
     <Content Include="src\css\trNgGrid.css" />
     <Content Include="src\css\trNgGrid.min.css">
@@ -52,6 +61,7 @@
     <Content Include="src\external\typings\angularjs\angular-sanitize.d.ts" />
     <Content Include="src\external\typings\angularjs\angular-scenario.d.ts" />
     <Content Include="src\external\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="demo\js\test_hybrid_mode.ts" />
     <TypeScriptCompile Include="src\js\trNgGrid.ts" />
     <Content Include="src\js\trNgGrid.js">
       <DependentUpon>trNgGrid.ts</DependentUpon>

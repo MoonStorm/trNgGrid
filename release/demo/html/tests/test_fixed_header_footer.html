@@ -1,0 +1,28 @@
+﻿<div class="container-fluid" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(60)">
+    <!--<link rel="stylesheet" href="demo/css/tests/test_fixed_header_footer.css" />-->
+
+    <div class="col-md-5">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Fixed Header and Footer
+            </div>
+            <div class="panel-body">
+                <p>
+                    <a href="https://github.com/MoonStorm/trNgGrid/issues/22" target="_blank">GitHub Case</a>                    
+                </p>
+                <p>
+                    This is an example of how to achieve fixed header and footer.
+                </p>
+                <pre id="trNgGrid_fixed_header_footer">
+                </pre>
+            </div>
+        </div>
+    </div>        
+    <div class="col-md-7" project-markup-to="#trNgGrid_fixed_header_footer">
+        <div class="fixed_grid_container">
+            <table tr-ng-grid items="myItems" fixed-header-footer="300px">
+            </table>
+        </div>
+    </div>
+</div>
+
