@@ -289,10 +289,11 @@ module TrNgGridDemo{
         setupThemeUrl() {
             var themeUrl;
             if (this.$scope.ui.themeVersion == "latest") {
+                // CROSS ORIGIN problem in FF, don't use
                 themeUrl = "//thomaspark.github.io/bootswatch/" + this.$scope.ui.theme + "/bootstrap.css";
             }
             else {
-                themeUrl = "//netdna.bootstrapcdn.com/bootswatch/" + this.$scope.ui.themeVersion + "/" + this.$scope.ui.theme + "/bootstrap.min.css";
+                themeUrl = "//maxcdn.bootstrapcdn.com/bootswatch/" + this.$scope.ui.themeVersion + "/" + this.$scope.ui.theme + "/bootstrap.min.css";
             }
             this.$scope.ui.themeUrl = this.$sce.trustAsResourceUrl(themeUrl);
         }
