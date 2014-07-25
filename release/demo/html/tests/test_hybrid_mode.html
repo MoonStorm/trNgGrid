@@ -10,13 +10,15 @@
                         <a href="https://github.com/MoonStorm/trNgGrid/issues/28" target="_blank">GitHub Case</a>
                     </p>
                     <p>
-                        The grid is switched into server-side querying, but with the current page already known.
+                        The grid is switched into server-side querying, but the data is served without performing an XHR request.
+                        This is useful for data items that are filtered outside of the scope of the grid, for restoring the state of the grid on a page load, etc. 
                     </p>
                     <pre>
 function HybridModeTestController($scope) {
     $scope.myPageItemsCount = 5;
     $scope.myCurrentPage = 2;
     $scope.onServerSideItemsRequested = function (currentPage, filterBy, filterByFields, orderBy, orderByReverse) {
+        // test to see whether the grid has acknowledged the initial page number
         $scope.requestedPageNumber = currentPage;
         generateItems();
         $scope.myItemsTotalCount = 200;
