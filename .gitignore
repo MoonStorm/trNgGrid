@@ -1,5 +1,6 @@
 /**
 !/.gitignore
+!/package.json
 !/bower.json
 !/README.md
 !/LICENSE
@@ -9,5 +10,3 @@
 !/release/trNgGrid.min.css
 !/release/trNgGrid.min.js
 !/release/src/
-
-
