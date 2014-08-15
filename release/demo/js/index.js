@@ -1,6 +1,4 @@
-﻿/// <reference path="../../src/external/typings/jquery/jquery.d.ts" />
-/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
-var TrNgGridDemo;
+﻿var TrNgGridDemo;
 (function (TrNgGridDemo) {
     (function (RndGenOptions) {
         RndGenOptions[RndGenOptions["Numbers"] = 0] = "Numbers";
@@ -61,7 +59,7 @@ var TrNgGridDemo;
             $scope.myColumnFilter = {};
             $scope.mySelectedItems = [];
             $scope.myItemsTotalCount = 0;
-            $scope.myItems = [];
+            $scope.myItems;
             $scope.myEnableFieldAutoDetection = true, $scope.availableFields = ["id", "name", "address"];
             $scope.myFields = null;
             $scope.myItemsCurrentPageIndex = 0;
@@ -81,15 +79,6 @@ var TrNgGridDemo;
                 });
             };
 
-            /*$scope.toogleFieldEnforcement = (fieldName: string) => {
-            var fieldIndex = $scope.myFields.indexOf(fieldName);
-            if (fieldIndex < 0) {
-            $scope.myFields.push(fieldName);
-            }
-            else {
-            $scope.myFields.splice(fieldIndex, 1);
-            }
-            };*/
             $scope.removeSelectedElements = function () {
                 angular.forEach($scope.mySelectedItems, function (selectedItem) {
                     $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
@@ -98,11 +87,9 @@ var TrNgGridDemo;
             $scope.generateItems = function (pageItems, totalItems, generateComplexItems) {
                 $scope.myItems = [];
 
-                //$scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
                 $scope.myItemsTotalCount = totalItems ? totalItems : $scope.myPageItemsCount;
                 _this.generateItems($scope.myItems, $scope.myPageItemsCount, generateComplexItems);
-                //$scope.mySelectedItems=$scope.myItems.slice(0);
             };
 
             $scope.addDateToItems = function () {
@@ -131,15 +118,6 @@ var TrNgGridDemo;
                 }, 3000, true);
             };
 
-            /*
-            $scope.simulateServerSideQueries=(pageItems:number, totalItems?:number)=>{
-            //$window.alert(pageItems.toString()+"/"+totalItems);
-            $scope.myPageItemsCount = pageItems;
-            $scope.$watchCollection("[myGlobalFilter, myOrderBy, myOrderByReversed, myColumnFilter, myColumnFilter.id, myColumnFilter.name, myColumnFilter.address, myItemsCurrentPageIndex]",()=>{
-            $scope.generateItems(pageItems, totalItems);
-            });
-            };
-            */
             $scope.SelectionMode = TrNgGrid.SelectionMode;
 
             $scope.addNew = function () {
@@ -238,14 +216,9 @@ var TrNgGridDemo;
                 $scope.setThemeVersion();
             });
         }
-        /*setupLocaleUrl() {
-        var localeUrl = "https://code.angularjs.org/1.2.9/i18n/angular-locale_" + this.$scope.locale + ".js";
-        this.$scope.localeUrl = this.$sce.trustAsResourceUrl(localeUrl);
-        }*/
         MainController.prototype.setupThemeUrl = function () {
             var themeUrl;
             if (this.$scope.ui.themeVersion == "latest") {
-                // CROSS ORIGIN problem in FF, don't use
                 themeUrl = "//thomaspark.github.io/bootswatch/" + this.$scope.ui.theme + "/bootstrap.css";
             } else {
                 themeUrl = "//maxcdn.bootstrapcdn.com/bootswatch/" + this.$scope.ui.themeVersion + "/" + this.$scope.ui.theme + "/bootstrap.min.css";
@@ -256,13 +229,8 @@ var TrNgGridDemo;
     })();
     TrNgGridDemo.MainController = MainController;
 
-    // https://github.com/ocombe/ocLazyLoad
     angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap", "oc.lazyLoad"]).config([
         "$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
-            // html5 is not working
-            //$locationProvider
-            //    .html5Mode(true)
-            //    .hashPrefix('!');
             $routeProvider.when('/Common', {
                 templateUrl: 'demo/html/common.html'
             }).when('/Columns', {
@@ -294,7 +262,6 @@ var TrNgGridDemo;
                 resolve: {
                     loadMyCtrl: [
                         '$ocLazyLoad', function ($ocLazyLoad) {
-                            // you can lazy load files for an existing module
                             return $ocLazyLoad.load({
                                 name: 'ngGrid',
                                 files: [
@@ -317,15 +284,8 @@ var TrNgGridDemo;
                     var projectionElementId = tAttr["projectMarkupTo"];
                     var currentElementContents = element.html().replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
 
-                    //.replace(/</g, "&lt;")
-                    //.replace(/>/g, "&gt;")
-                    //.replace(/"/g, "&quot;");
                     currentElementContents = prettyPrintOne(currentElementContents, null, false);
 
-                    //.replace(/</g, "&lt;")
-                    //.replace(/>/g, "&gt;")
-                    //.replace(/"/g, "&quot;");
-                    //.replace(/  /g, "&nbsp;&nbsp;");
                     angular.element(document.querySelector(projectionElementId)).html(currentElementContents).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
                 }
             };
@@ -341,7 +301,6 @@ var TrNgGridDemo;
 
         var enGbTranslation = angular.extend({}, enTranslation);
 
-        // more date formats here: http://en.wikipedia.org/wiki/Date_format_by_country
         enGbTranslation[TrNgGrid.translationDateFormat] = "dd/MM/yyyy";
         TrNgGrid.translations["en-gb"] = enGbTranslation;
 
@@ -365,4 +324,3 @@ var TrNgGridDemo;
         TrNgGrid.translations["de-ch"] = deChTranslation;
     });
 })(TrNgGridDemo || (TrNgGridDemo = {}));
-//# sourceMappingURL=index.js.map

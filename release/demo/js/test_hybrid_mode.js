@@ -1,5 +1,4 @@
-﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
-var __extends = this.__extends || function (d, b) {
+﻿var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -24,4 +23,3 @@ var TrNgGridDemo;
     })(TrNgGridDemo.TestController);
     TrNgGridDemo.HybridModeTestController = HybridModeTestController;
 })(TrNgGridDemo || (TrNgGridDemo = {}));
-//# sourceMappingURL=test_hybrid_mode.js.map

@@ -94,7 +94,7 @@ module TrNgGridDemo{
             $scope.myColumnFilter={};
             $scope.mySelectedItems=[];
             $scope.myItemsTotalCount = 0;
-            $scope.myItems = [];
+            $scope.myItems;
             $scope.myEnableFieldAutoDetection = true,
             $scope.availableFields = ["id", "name", "address"];
             $scope.myFields = null;
@@ -126,9 +126,9 @@ module TrNgGridDemo{
             $scope.removeSelectedElements = () => {
                 angular.forEach($scope.mySelectedItems, (selectedItem) => {
                     $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
-                });
+                }); 
             };
-            $scope.generateItems = (pageItems: number, totalItems?: number, generateComplexItems?:boolean) => {
+            $scope.generateItems = (pageItems: number, totalItems?: number, generateComplexItems?: boolean) => {
                 $scope.myItems = [];
                 //$scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
