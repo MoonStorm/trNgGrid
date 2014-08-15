@@ -11,10 +11,10 @@
     "table",
     "grid"
   ],
-  "main": "./release/trNgGrid.min.js",
+  "main": "release/trNgGrid.min.js",
   "files": [
-    "./release/trNgGrid.min.js",
-    "./release/trNgGrid.min.css"
+    "release/trNgGrid.min.js",
+    "release/trNgGrid.min.css"
   ],
   "repository": {
     "type": "git",
