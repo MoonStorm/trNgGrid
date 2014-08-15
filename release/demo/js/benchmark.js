@@ -1,4 +1,6 @@
-﻿var TrNgGridDemo;
+﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+/// <reference path="index.ts" />
+var TrNgGridDemo;
 (function (TrNgGridDemo) {
     function applyMeasureTime(scope, fct) {
         var startTime = new Date().getTime();
@@ -30,6 +32,7 @@
     function switchGrid(element, gridType) {
         var scope = angular.element(element).scope();
 
+        // reset the display to something neutral
         scope.$apply(function () {
             scope.benchmarkGridType = "";
         });
@@ -66,3 +69,4 @@
     TrNgGridDemo.generateBenchmarkItems = generateBenchmarkItems;
     ;
 })(TrNgGridDemo || (TrNgGridDemo = {}));
+//# sourceMappingURL=benchmark.js.map

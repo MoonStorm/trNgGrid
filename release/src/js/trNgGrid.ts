@@ -945,16 +945,16 @@ module TrNgGrid{
 
             var target = internalScope[scopeTargetIdentifier];
 
-            for(var propName in target){
+            for (var propName in target) {
                 var attributeExists = typeof (attrs[propName]) != "undefined" && attrs[propName] != null;
 
-                if(attributeExists){
+                if (attributeExists) {
                     var isArray = false;
 
                     // initialise from the scope first
-                    if (typeof (externalScope[propName]) != "undefined" && externalScope[propName]!=null){
+                    if (typeof (externalScope[propName]) != "undefined" && externalScope[propName] != null) {
                         target[propName] = externalScope[propName];
-                        isArray=target[propName] instanceof Array;
+                        isArray = target[propName] instanceof Array;
                     }
 
                     //allow arrays to be changed: if(!isArray){
@@ -962,27 +962,37 @@ module TrNgGrid{
                     try {
                         compiledAttrGetter = this.$parse(attrs[propName]);
                     }
-                    catch(ex)
-                    {
+                    catch (ex) {
                         // angular fails to parse literal bindings '@', thanks angular team
                     }
                     ((propName: string, compiledAttrGetter: ng.ICompiledExpression) => {
                         if (!compiledAttrGetter || !compiledAttrGetter.constant) {
                             // watch for a change in value and set it on our internal scope
                             externalScope.$watch(propName, (newValue: any, oldValue: any) => {
-                                //console.log("Detecting changes in " + propName + " newValue:" + newValue);
+                                // debugMode && this.log("Property '" + propName + "' changed on the external scope from " + oldValue + " to " + newValue + ". Mirroring the parameter's value on the grid's internal scope.");
                                 target[propName] = newValue;
                             });
                         }
 
-                        var compiledAttrSetter:(context: any, value: any)=> any = (compiledAttrGetter && compiledAttrGetter.assign) ? compiledAttrGetter.assign : null;
+                        var compiledAttrSetter: (context: any, value: any) => any = (compiledAttrGetter && compiledAttrGetter.assign) ? compiledAttrGetter.assign : null;
                         if (compiledAttrSetter) {
-                            // a setter exists on the scope, make sure we watch our internals and copy them over
+                            // a setter exists for the property, which means it's safe to mirror the internal prop on the external scope
                             internalScope.$watch(scopeTargetIdentifier + "." + propName, (newValue: any, oldValue: any) => {
-                                compiledAttrSetter(externalScope, newValue);
+                                try {
+                                    // debugMode && this.log("Property '" + propName + "' changed on the internal scope from " + oldValue + " to " + newValue + ". Mirroring the parameter's value on the external scope.");
+                                    externalScope[propName] = newValue;
+                                    // Update: Don't do this, as you'll never hit the real scope the property was defined on
+                                    // compiledAttrSetter(externalScope, newValue);
+                                }
+                                catch (ex) {
+                                    if (debugMode) {
+                                        this.log("Mirroring the property on the external scope failed with " + ex);
+                                        throw ex;
+                                    }
+                                }
                             });
                         }
-                    })(propName,compiledAttrGetter);
+                    })(propName, compiledAttrGetter);
                 }
             }
         }
