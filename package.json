@@ -1,6 +1,6 @@
 {
   "name": "trNgGrid",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "trNgGrid is a feature rich declarative data grid based on the popular AngularJs framework and making use of plain table HTML elements.",
   "homepage": "https://github.com/MoonStorm/trNgGrid",
   "author": "MoonStorm <MoonStorm@gmail.com>",
