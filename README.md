@@ -1,6 +1,6 @@
 ### trNgGrid is a feature rich data grid based on the popular AngularJs framework and making use of plain HTML table elements.
 
-#### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/)
+#### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/release)
 
 #### Why another one?
 
@@ -25,7 +25,12 @@ You can download the grid from the `release` folder in the master branch. Make s
 - dev: broken in a million pieces
 
 ##### Change Log
-###### 3.0
+###### 3.0.1
+- Fixed a bug where the grid would error if the bound items array was not initialized.
+- Fixed the direction of the sorting chevrons.
+- Selection with the SHIFT key when sorting was applied is now working correctly.
+
+###### 3.0.0
 - Multiple types of selection.
 - Ability to override the default CSS and templates.
 - Better handling of various elements in the header: user experience improved and better monitoring of various column settings.
