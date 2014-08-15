@@ -2,7 +2,6 @@
 !/.gitignore
 !/bower.json
 !/package.json
-!/Gruntfile.js
 !/README.md
 !/LICENSE
 !/beta/trNgGrid.min.css
