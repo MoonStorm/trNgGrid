@@ -12,10 +12,6 @@
     "grid"
   ],
   "main": "release/trNgGrid.min.js",
-  "files": [
-    "release/trNgGrid.min.js",
-    "release/trNgGrid.min.css"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/MoonStorm/trNgGrid"
