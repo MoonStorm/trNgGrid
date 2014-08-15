@@ -135,6 +135,10 @@ module TrNgGrid{
         displayFieldName?: string;
     }
 
+    interface IGridDisplayItem {
+        $$_gridItem: any;
+    }
+
     interface IGridOptions{
         items: Array<any>;
         fields: Array<string>;
@@ -154,10 +158,6 @@ module TrNgGrid{
         gridColumnDefs: Array<IGridColumnOptions>;
         locale: string;
         immediateDataRetrieval: boolean;
-    }
-
-    interface IGridDisplayItem {
-        $$_gridItem: any;
     }
 
     interface IGridScope extends ng.IScope{
@@ -324,11 +324,6 @@ module TrNgGrid{
         }
 
         public configureSection(gridElement: JQuery, columnDefs: Array<IGridColumnOptions>):JQuery {
-            // remove the old section element
-            //var sectionElement = this.getSectionElement(gridElement, false);
-            //if (sectionElement) {
-            //    sectionElement.remove();
-            //}
             var sectionElement = this.getSectionElement(gridElement, true);
             sectionElement.empty();
             sectionElement.removeAttr("ng-non-bindable");
@@ -592,7 +587,7 @@ module TrNgGrid{
             this.gridOptions.filterByFields = angular.extend({}, this.gridOptions.filterByFields);
         }
 
-        toggleItemSelection(item: any, $event: ng.IAngularEvent) {
+        toggleItemSelection(filteredItems: Array<IGridDisplayItem>, item: any, $event: ng.IAngularEvent) {
             if (this.gridOptions.selectionMode === SelectionMode[SelectionMode.None])
                 return;
 
@@ -627,15 +622,16 @@ module TrNgGrid{
                             }
 
                             // the shift key will always select items from the last selected item
-                            var firstItemIndex = -1;
-                            if (this.gridOptions.selectedItems.length > 0) {
-                                firstItemIndex = this.gridOptions.items.indexOf(this.gridOptions.selectedItems[this.gridOptions.selectedItems.length - 1]);
-                            }
-                            if (firstItemIndex < 0) {
+                            var firstItemIndex:number;
+                            var lastSelectedItem = this.gridOptions.selectedItems[this.gridOptions.selectedItems.length - 1];
+                            for (firstItemIndex = 0; firstItemIndex < filteredItems.length && filteredItems[firstItemIndex].$$_gridItem !== lastSelectedItem; firstItemIndex++);
+                            if (firstItemIndex >= filteredItems.length) {
                                 firstItemIndex = 0;
                             }
-                            var lastItemIndex = this.gridOptions.items.indexOf(item);
-                            if (lastItemIndex < 0) {
+
+                            var lastItemIndex: number;
+                            for (lastItemIndex = 0; lastItemIndex < filteredItems.length && filteredItems[lastItemIndex].$$_gridItem !== item; lastItemIndex++);
+                            if (lastItemIndex >= filteredItems.length) {
                                 // this is an error
                                 throw "Invalid selection on a key modifier selection mode";
                             }
@@ -647,7 +643,7 @@ module TrNgGrid{
 
                             // now select everything in between. remember that a shift modifier can never be used for de-selecting items
                             for (var currentItemIndex = firstItemIndex; currentItemIndex <= lastItemIndex; currentItemIndex++) {
-                                var currentItem = this.gridOptions.items[currentItemIndex];
+                                var currentItem = filteredItems[currentItemIndex].$$_gridItem;
                                 if(this.gridOptions.selectedItems.indexOf(currentItem) < 0){
                                     this.gridOptions.selectedItems.push(currentItem);
                                 }
@@ -807,8 +803,8 @@ module TrNgGrid{
         }
 
         computeFormattedItems(scope: IGridScope) {
-            debugMode && this.log("formatting items of length " + (scope.gridOptions.items ? scope.gridOptions.items.length : 0));
-            var input = scope.gridOptions.items;
+            var input = scope.gridOptions.items || <Array<any>>[];
+            debugMode && this.log("formatting items of length " + input.length);
             var formattedItems: Array<IGridDisplayItem> = scope.formattedItems = (scope.formattedItems || <Array<IGridDisplayItem>>[]);
             if (scope.gridOptions.onDataRequired) {
                 scope.filteredItems = formattedItems;
@@ -1133,7 +1129,7 @@ module TrNgGrid{
                         return {
                             pre: function (scope: IGridBodyScope, compiledInstanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController) {
                                 scope.toggleItemSelection = (item: any, $event: ng.IAngularEvent) => {
-                                    controller.toggleItemSelection(item, $event);
+                                    controller.toggleItemSelection(scope.filteredItems, item, $event);
                                 };
                             }
                         }
@@ -1429,9 +1425,9 @@ module TrNgGrid{
             TrNgGrid.columnFilterCssClass = "tr-ng-column-filter";
             TrNgGrid.columnFilterInputWrapperCssClass = "";
             TrNgGrid.columnSortActiveCssClass = "tr-ng-sort-active text-info";
-            TrNgGrid.columnSortInactiveCssClass = "tr-ng-sort-inactive text-muted";
-            TrNgGrid.columnSortReverseOrderCssClass = "tr-ng-sort-order-reverse glyphicon glyphicon-chevron-up";
-            TrNgGrid.columnSortNormalOrderCssClass = "tr-ng-sort-order-normal glyphicon glyphicon-chevron-down";
+            TrNgGrid.columnSortInactiveCssClass = "tr-ng-sort-inactive text-muted glyphicon glyphicon-chevron-down";
+            TrNgGrid.columnSortReverseOrderCssClass = "tr-ng-sort-order-reverse glyphicon glyphicon-chevron-down";
+            TrNgGrid.columnSortNormalOrderCssClass = "tr-ng-sort-order-normal glyphicon glyphicon-chevron-up";
             TrNgGrid.rowSelectedCssClass = "active";
             TrNgGrid.footerCssClass = "tr-ng-grid-footer form-inline";
         })
@@ -1485,7 +1481,7 @@ module TrNgGrid{
                 + '  <div ng-class="{\''
                 + TrNgGrid.columnSortActiveCssClass + '\':gridOptions.orderBy==columnOptions.fieldName,\''
                 + TrNgGrid.columnSortInactiveCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName,\''
-                + TrNgGrid.columnSortNormalOrderCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName||!gridOptions.orderByReverse,\''
+                + TrNgGrid.columnSortNormalOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&!gridOptions.orderByReverse,\''
                 + TrNgGrid.columnSortReverseOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&gridOptions.orderByReverse}" >'
                 + '  </div>'
                 + '</div>');
