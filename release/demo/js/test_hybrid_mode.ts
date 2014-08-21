@@ -11,9 +11,9 @@ module TrNgGridDemo {
             $scope.myPageItemsCount = 5
             $scope.myCurrentPage = 2;            
             
-            this.$scope.onServerSideItemsRequested = (currentPage: number, filterBy: string, filterByFields: Object, orderBy: string, orderByReverse: boolean) => {
+            this.$scope.onServerSideItemsRequested = (currentPage: number, pageItems:number, filterBy: string, filterByFields: Object, orderBy: string, orderByReverse: boolean) => {
                 $scope.requestedPageNumber = currentPage;
-                $scope.generateItems($scope.myPageItemsCount, $scope.myItemsTotalCount);
+                $scope.generateItems(pageItems, $scope.myItemsTotalCount);
                 $scope.myItemsTotalCount = 200; 
             };
         }

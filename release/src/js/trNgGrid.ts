@@ -494,6 +494,7 @@ module TrNgGrid{
                     "gridOptions.filterByFields, " +
                     "gridOptions.orderBy, " +
                     "gridOptions.orderByReverse, " +
+                    "gridOptions.pageItems, " +
                     "gridOptions.currentPage]",()=>{
 
                         if(this.dataRequestPromise){
@@ -902,7 +903,7 @@ module TrNgGrid{
 
             if (!scope.gridOptions.onDataRequired) {
                 watchExpression = "["
-                    + "requiresReFilteringTrigger, gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage"
+                    + "requiresReFilteringTrigger, gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage, gridOptions.pageItems"
                     + "]"; 
                 scope.$watch(watchExpression, (newValue: Array<any>, oldValue: Array<any>) => {
                     this.computeFilteredItems(scope);

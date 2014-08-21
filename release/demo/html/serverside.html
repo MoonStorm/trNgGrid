@@ -32,6 +32,13 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label class="col-md-5 control-label">Number of items per page (pageItems)</label>
+                                    <div class="col-md-7">
+                                        <p class="form-control-static">{{requestedItemsGridOptions.pageItems}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
                                     <label class="col-md-5 control-label">Global Filter (filterBy)</label>
                                     <div class="col-md-7">
                                         <p class="form-control-static">{{requestedItemsGridOptions.filterBy}}</p>
@@ -70,13 +77,14 @@
             </div>
         </div>
         <div class="col-md-7">
+            Items per page: <input type="number" ng-model="myPageItemsCount" min="5" /><br/>
             <div project-markup-to="#trNgGrid_Sample_Server_Side">
 <table 
     tr-ng-grid 
     items="myItems" 
     page-items="myPageItemsCount" 
     total-items="myItemsTotalCount" 
-    on-data-required="onServerSideItemsRequested(currentPage, filterBy, filterByFields, orderBy, orderByReverse)">
+    on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)">
         <thead>
             <tr>
                 <th field-name="id" cell-width="4em" display-align="right"/>

@@ -336,7 +336,7 @@ var TrNgGrid;
                     _this.gridOptions.onDataRequired(_this.gridOptions);
                 };
 
-                gridScope.$watchCollection("[gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.currentPage]", function () {
+                gridScope.$watchCollection("[gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.pageItems, " + "gridOptions.currentPage]", function () {
                     if (_this.dataRequestPromise) {
                         _this.$timeout.cancel(_this.dataRequestPromise);
                         _this.dataRequestPromise = null;
@@ -733,7 +733,7 @@ var TrNgGrid;
             }, true);
 
             if (!scope.gridOptions.onDataRequired) {
-                watchExpression = "[" + "requiresReFilteringTrigger, gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage" + "]";
+                watchExpression = "[" + "requiresReFilteringTrigger, gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage, gridOptions.pageItems" + "]";
                 scope.$watch(watchExpression, function (newValue, oldValue) {
                     _this.computeFilteredItems(scope);
                 }, true);

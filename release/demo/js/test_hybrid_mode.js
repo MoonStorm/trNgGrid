@@ -14,9 +14,9 @@ var TrNgGridDemo;
             $scope.myPageItemsCount = 5;
             $scope.myCurrentPage = 2;
 
-            this.$scope.onServerSideItemsRequested = function (currentPage, filterBy, filterByFields, orderBy, orderByReverse) {
+            this.$scope.onServerSideItemsRequested = function (currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse) {
                 $scope.requestedPageNumber = currentPage;
-                $scope.generateItems($scope.myPageItemsCount, $scope.myItemsTotalCount);
+                $scope.generateItems(pageItems, $scope.myItemsTotalCount);
                 $scope.myItemsTotalCount = 200;
             };
         }

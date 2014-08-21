@@ -32,7 +32,7 @@ module TrNgGridDemo{
         alert: (message: string) => void;
         alertOnSelectionChange: () => void;
         addNew: () => void;
-        onServerSideItemsRequested: (currentPage: number, filterBy: string, filterByFields: Object, orderBy: string, orderByReverse: boolean) => void;
+        onServerSideItemsRequested: (currentPage: number, pageItems:number, filterBy: string, filterByFields: Object, orderBy: string, orderByReverse: boolean) => void;
         generateItems: (pageItems: number, totalItems?: number, generateComplexItems?:boolean) => void;
         addDateToItems: () => void;
         showMessage: (event: ng.IAngularEvent, msg: string) => void;
@@ -140,12 +140,13 @@ module TrNgGridDemo{
             $scope.addDateToItems = () => { this.addDateToItems(); };
 
             var prevServerItemsRequestedCallbackPromise:ng.IPromise<any>;
-            $scope.onServerSideItemsRequested = (currentPage:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>{
+            $scope.onServerSideItemsRequested = (currentPage:number, pageItems:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>{
                 if(prevServerItemsRequestedCallbackPromise){
                     $timeout.cancel(prevServerItemsRequestedCallbackPromise);
                     prevServerItemsRequestedCallbackPromise = null;
                 }
                 $scope.requestedItemsGridOptions = {
+                    pageItems:pageItems,
                     currentPage:currentPage,
                     filterBy:filterBy,
                     filterByFields: angular.toJson(filterByFields),
@@ -154,7 +155,7 @@ module TrNgGridDemo{
                     requestTrapped:true
                 };
 
-                $scope.generateItems(10,100, true);
+                $scope.generateItems(pageItems,100, true);
                 prevServerItemsRequestedCallbackPromise = $timeout(()=>{
                     $scope.requestedItemsGridOptions["requestTrapped"] = false;
                     prevServerItemsRequestedCallbackPromise = null;
