@@ -25,7 +25,11 @@ You can download the grid from the `release` folder in the master branch. Make s
 - dev: broken in a million pieces
 
 ##### Change Log
-###### 3.0.1
+###### 3.0.3
+- The number of items per page are being properly monitored.
+
+###### 3.0.2
+- Fixed a major data binding issue. External scope wasn't getting synchronized with any changes inside the grid's internal scope.
 - Fixed a bug where the grid would error if the bound items array was not initialized.
 - Fixed the direction of the sorting chevrons.
 - Selection with the SHIFT key when sorting was applied is now working correctly.
