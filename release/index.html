@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <title>trNgGrid - A feature rich declarative Angular grid using simple HTML table elements</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<meta name="fragment" content="!">-->
     <link rel="stylesheet" ng-href="{{ui.themeUrl}}" media="screen" />
     <link rel="stylesheet" href="demo/css/index.css" />
     <link href="//google-code-prettify.googlecode.com/svn/loader/prettify.css" type="text/css" rel="stylesheet"/>
-    <!--<link href="//google-code-prettify.googlecode.com/svn/loader/skins/sons-of-obsidian.css" type="text/css" rel="stylesheet" />-->
 
     <!--Debug-->
     <link rel="stylesheet" href="src/css/trNgGrid.css" />
@@ -16,13 +16,8 @@
     <!--<link rel="stylesheet" href="trNgGrid.min.css" />-->
 
     <link rel="stylesheet" href="demo/css/index.css" />
-    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
-    <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>-->
-    <!--<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=false"></script>-->
     <script src="//google-code-prettify.googlecode.com/svn/loader/prettify.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
-    <!--<script src="//code.angularjs.org/1.2.9/i18n/angular-locale_en-gb.js"></script>-->
-    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>-->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-route.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.11.0/ui-bootstrap.min.js"></script>
     <script src="demo/js/ocLazyLoad.js"></script>
@@ -35,6 +30,17 @@
     <script src="demo/js/index.js"></script>
     <script src="demo/js/benchmark.js"></script>
     <script src="demo/js/test_hybrid_mode.js"></script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-47475030-1', 'auto');
+        ga('send', 'pageview');
+    </script>
 </head>
 
 <body class="row">
@@ -103,18 +109,5 @@
     </nav>
 
     <div ng-view class="col-md-12"></div>
-
-    <script>
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-            (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date(); a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', 'UA-47475030-1', 'auto');
-    ga('send', 'pageview');
-
-    </script>
 </body>
 </html>

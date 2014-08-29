@@ -1,5 +1,5 @@
-﻿/// <reference path="../../src/external/typings/jquery/jquery.d.ts" />
-/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+/// <reference path="../../src/external/typings/angularjs/angular-route.d.ts" />
 
 module TrNgGridDemo{
     declare var prettyPrintOne: (unformattedText:string, language?:string, generateLineNumbers?:boolean) => string;
@@ -302,13 +302,12 @@ module TrNgGridDemo{
 
     // https://github.com/ocombe/ocLazyLoad
     angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap", "oc.lazyLoad"])
-        .config(["$routeProvider", "$locationProvider", ($routeProvider: any, $locationProvider: any) => {
-            // html5 is not working
-            //$locationProvider
-            //    .html5Mode(true)
-            //    .hashPrefix('!');
-
-            $routeProvider
+        .config(["$routeProvider", "$locationProvider", ($route: ng.route.IRouteProvider, $location: ng.ILocationProvider) => {
+            // html5 is not working without server-side changes
+            //$location
+            //    .hashPrefix('!')
+            //    .html5Mode(true);
+            $route
                 .when('/Common', {
                     templateUrl: 'demo/html/common.html'
                 })

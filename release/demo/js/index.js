@@ -1,5 +1,5 @@
-﻿/// <reference path="../../src/external/typings/jquery/jquery.d.ts" />
-/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+﻿/// <reference path="../../src/external/typings/angularjs/angular.d.ts" />
+/// <reference path="../../src/external/typings/angularjs/angular-route.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     (function (RndGenOptions) {
@@ -259,12 +259,12 @@ var TrNgGridDemo;
 
     // https://github.com/ocombe/ocLazyLoad
     angular.module("trNgGridDemo", ["ngRoute", "trNgGrid", "ui.bootstrap", "oc.lazyLoad"]).config([
-        "$routeProvider", "$locationProvider", function ($routeProvider, $locationProvider) {
-            // html5 is not working
-            //$locationProvider
-            //    .html5Mode(true)
-            //    .hashPrefix('!');
-            $routeProvider.when('/Common', {
+        "$routeProvider", "$locationProvider", function ($route, $location) {
+            // html5 is not working without server-side changes
+            //$location
+            //    .hashPrefix('!')
+            //    .html5Mode(true);
+            $route.when('/Common', {
                 templateUrl: 'demo/html/common.html'
             }).when('/Columns', {
                 templateUrl: 'demo/html/columns.html'
