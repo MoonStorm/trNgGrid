@@ -11,13 +11,13 @@ var TrNgGridDemo;
         __extends(HybridModeTestController, _super);
         function HybridModeTestController($scope, $window, $timeout) {
             _super.call(this, $scope, $window, $timeout);
-            $scope.myPageItemsCount = 5;
             $scope.myCurrentPage = 2;
+            $scope.myPageItemsCount = 5;
 
             this.$scope.onServerSideItemsRequested = function (currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse) {
                 $scope.requestedPageNumber = currentPage;
-                $scope.generateItems(pageItems, $scope.myItemsTotalCount);
                 $scope.myItemsTotalCount = 200;
+                $scope.generateItems(pageItems, $scope.myItemsTotalCount);
             };
         }
         return HybridModeTestController;
