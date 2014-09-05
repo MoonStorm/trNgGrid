@@ -364,6 +364,10 @@ var TrNgGridDemo;
         var deChTranslation = angular.extend({}, deTranslation);
         deChTranslation[TrNgGrid.translationDateFormat] = "dd.MM.yyyy";
         TrNgGrid.translations["de-ch"] = deChTranslation;
+    }).filter("testComputedField", function () {
+        return function (combinedFieldValueUnused, item) {
+            return item.id + " / " + item.name;
+        };
     });
 })(TrNgGridDemo || (TrNgGridDemo = {}));
 //# sourceMappingURL=index.js.map

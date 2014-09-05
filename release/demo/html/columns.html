@@ -47,7 +47,7 @@
                                 Specify the display format (<em>display-format</em>)
                                 <ul>
                                     <li>By default the format is interpreted as an angular filter (e.g. display-format="number:2") </li>
-                                    <li>You may also specify a method to be called (e.g display-format=".toShortDateTime()") </li>
+                                    <li>You may also specify a method to be called (e.g display-format=".toShortDateTime()"). The function must be present on the field type.</li>
                                 </ul>
                             </li>
                             <li>
@@ -76,6 +76,47 @@
             </div>
         </div>
     </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Computed Fields
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-7">
+                    <p>
+                        There is an easy way of adding computed fields into the displayed items, without polluting the original data items, and without losing the filtering and sorting features.
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Columns_Computed_Field">
+                    </pre>
+                    <p>
+                        Essentially we're using a custom angular js filter, but we're asking the grid to pass the <em>gridItem</em> as a parameter (This is the item bound to the row). Do keep in mind that the first parameter will always be the value that gets filtered, but because the field doesn't exist on the entity, its value is <em>undefined</em> hence it needs to be ignored.
+                        <pre>
+angular.module(...)
+.filter("testComputedField", function () {
+    return function (fieldValueUnused, item) {
+        return item.id + " / " + item.name;
+    };
+});
+                        </pre>
+                    </p>
+                </div>
+                <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Computed_Field" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(8)">
+<table tr-ng-grid items="myItems">
+    <thead>
+        <tr>
+            <th field-name="id"/>
+            <th field-name="name"/>
+            <th field-name="computedField" display-name="Computed Field" display-format="testComputedField:gridItem" />
+        </tr>
+    </thead>
+</table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="panel panel-primary">
         <div class="panel-heading">
             Custom Columns

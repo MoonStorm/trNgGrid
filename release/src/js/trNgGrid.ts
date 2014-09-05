@@ -170,6 +170,10 @@ module TrNgGrid{
         speedUpAsyncDataRetrieval: ($event?: ng.IAngularEvent) => void;
     }
 
+    interface IGridDataComputationScope extends IGridScope {
+        gridItem: any;
+    }
+
     interface IGridColumnScope extends IGridScope{
         columnOptions: IGridColumnOptions;
         isCustomized?: boolean;
@@ -184,10 +188,9 @@ module TrNgGrid{
         toggleItemSelection: (item: any, $event: ng.IAngularEvent) => void;
     }
 
-    interface IGridBodyColumnScope extends IGridColumnScope{
+    interface IGridBodyColumnScope extends IGridColumnScope, IGridDataComputationScope{
         isCustomized?: boolean;
         columnDefinitionIndex: number;
-        gridItem:any;
         gridDisplayItem: IGridDisplayItem;
     }
 
@@ -814,55 +817,64 @@ module TrNgGrid{
                 scope.requiresReFilteringTrigger = !scope.requiresReFilteringTrigger;
             }
             var gridColumnDefs = scope.gridOptions.gridColumnDefs;
-            for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
-                var inputItem = input[inputIndex];
-                var outputItem: IGridDisplayItem;
 
-                // check for removed items, try to keep the item instances intact
-                while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== inputItem) {
-                    formattedItems.splice(inputIndex, 1);
-                }
+            // crate a temporary scope for holding a gridItem as we enumerate through the items
+            var computingScope = <IGridDataComputationScope>scope.$new();
+            try {
+                for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
+                    var gridItem = input[inputIndex];
+                    computingScope.gridItem = gridItem;
+                    var outputItem: IGridDisplayItem;
 
-                if (inputIndex < formattedItems.length) {
-                    outputItem = formattedItems[inputIndex];
-                    if (outputItem.$$_gridItem !== inputItem) {
-                        outputItem = { $$_gridItem: inputItem };
-                        formattedItems[inputIndex] = outputItem;
+                    // check for removed items, try to keep the item instances intact
+                    while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== gridItem) {
+                        formattedItems.splice(inputIndex, 1);
                     }
-                }
-                else {
-                    outputItem = { $$_gridItem: inputItem };
-                    formattedItems.push(outputItem);
-                }
-                for (var gridColumnDefIndex = 0; gridColumnDefIndex < gridColumnDefs.length; gridColumnDefIndex++) {
-                    try {
-                        var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
-                        var fieldName = gridColumnDef.fieldName;
-                        if (fieldName) {
-                            var displayFormat = gridColumnDef.displayFormat;
-                            if (displayFormat) {
-                                if (displayFormat[0] != "." && displayFormat[0] != "|") {
-                                    // angular filter
-                                    displayFormat = " | " + displayFormat;
-                                }
 
-                                // apply the format
-                                outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridOptions.items[" + inputIndex + "]." + fieldName + displayFormat);
-                            }
-                            else {
-                                outputItem[gridColumnDef.displayFieldName] = eval("inputItem." + fieldName);
-                            }
+                    if (inputIndex < formattedItems.length) {
+                        outputItem = formattedItems[inputIndex];
+                        if (outputItem.$$_gridItem !== gridItem) {
+                            outputItem = { $$_gridItem: gridItem };
+                            formattedItems[inputIndex] = outputItem;
                         }
                     }
-                    catch (ex) {
-                        debugMode && this.log("Field evaluation failed for <" + fieldName + "> with error " + ex);
+                    else {
+                        outputItem = { $$_gridItem: gridItem };
+                        formattedItems.push(outputItem);
+                    }
+                    for (var gridColumnDefIndex = 0; gridColumnDefIndex < gridColumnDefs.length; gridColumnDefIndex++) {
+                        try {
+                            var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
+                            var fieldName = gridColumnDef.fieldName;
+                            if (fieldName) {
+                                var displayFormat = gridColumnDef.displayFormat;
+                                if (displayFormat) {
+                                    if (displayFormat[0] != "." && displayFormat[0] != "|") {
+                                        // angular filter
+                                        displayFormat = " | " + displayFormat;
+                                    }
+
+                                    // apply the format
+                                    outputItem[gridColumnDef.displayFieldName] = computingScope.$eval("gridItem." + fieldName + displayFormat);
+                                }
+                                else {
+                                    outputItem[gridColumnDef.displayFieldName] = eval("gridItem." + fieldName);
+                                }
+                            }
+                        }
+                        catch (ex) {
+                            debugMode && this.log("Field evaluation failed for <" + fieldName + "> with error " + ex);
+                        }
                     }
                 }
-            }
 
-            // remove any extra elements from the formatted list
-            if (formattedItems.length > input.length) {
-                formattedItems.splice(input.length, formattedItems.length - input.length);
+                // remove any extra elements from the formatted list
+                if (formattedItems.length > input.length) {
+                    formattedItems.splice(input.length, formattedItems.length - input.length);
+                }
+            }
+            finally {
+                computingScope.$destroy();
             }
         }
 
@@ -888,7 +900,7 @@ module TrNgGrid{
                         if (displayFilterParams.length > 1) {
                             angular.forEach(displayFilterParams.slice(1), (displayFilterParam: string) => {
                                 displayFilterParam = displayFilterParam.trim();
-                                if (displayFilterParam) {
+                                if (displayFilterParam && displayFilterParam!=="gridItem" && displayFilterParam!=="gridDisplayItem") {
                                     watchExpression += "," + displayFilterParam;
                                 }
                             });

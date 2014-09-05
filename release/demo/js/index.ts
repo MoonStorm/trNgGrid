@@ -434,6 +434,11 @@ module TrNgGridDemo{
             var deChTranslation = angular.extend({}, deTranslation);
             deChTranslation[TrNgGrid.translationDateFormat] = "dd.MM.yyyy";
             TrNgGrid.translations["de-ch"] = deChTranslation;
+        })
+        .filter("testComputedField", function () {
+            return function (combinedFieldValueUnused: any, item: any) {
+                return item.id + " / " + item.name;
+            };
         });
         //.directive("fixedHeaderFooter", [
         //    () => {
