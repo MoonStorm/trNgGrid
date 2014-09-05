@@ -168,6 +168,7 @@ module TrNgGrid{
         requiresReFilteringTrigger: boolean;
         formattedItems: Array<IGridDisplayItem>;
         speedUpAsyncDataRetrieval: ($event?: ng.IAngularEvent) => void;
+        orderByValueExtractor: (fieldName: string) => any;
     }
 
     interface IGridDataComputationScope extends IGridScope {
@@ -181,7 +182,7 @@ module TrNgGrid{
 
     interface IGridHeaderColumnScope extends IGridColumnScope {
         columnTitle: string;
-        toggleSorting: (propertyName: string) => void;
+        toggleSorting: (fieldName: string) => void;
     }
 
     interface IGridBodyScope extends IGridScope {
@@ -886,7 +887,7 @@ module TrNgGrid{
                 }
             }
             debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | orderBy:'$$_gridItem.'+gridOptions.orderBy:gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
+            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | orderBy:orderByValueExtractor(gridOptions.orderBy):gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
         }
 
         setupDisplayItemsArray(scope: IGridScope) {
@@ -1058,6 +1059,38 @@ module TrNgGrid{
                             post: (isolatedScope: ng.IScope, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
                                 var gridScope = controller.setupScope(isolatedScope, instanceElement, tAttrs);
                                 gridScope.speedUpAsyncDataRetrieval = ($event) => controller.speedUpAsyncDataRetrieval($event);
+                                gridScope.orderByValueExtractor = (fieldName: string) => {
+                                    if (!fieldName || !gridScope.gridOptions.gridColumnDefs)
+                                        return undefined;
+
+                                    // we'll need the column options
+                                    var columnOptions: IGridColumnOptions = null;
+                                    for (var columnOptionsIndex = 0; (columnOptionsIndex < gridScope.gridOptions.gridColumnDefs.length) && ((columnOptions = gridScope.gridOptions.gridColumnDefs[columnOptionsIndex]).fieldName !== fieldName); columnOptions = null, columnOptionsIndex++);
+
+                                    return (item: any) => {
+                                        if (!columnOptions) {
+                                            return undefined;
+                                        }
+
+                                        var fieldValue: any = undefined;
+                                        try {
+                                            // get the value associated with the original grid item
+                                            fieldValue = eval("item.$$_gridItem." + columnOptions.fieldName);
+                                        }
+                                        catch(ex) {
+                                        }
+                                        if (fieldValue === undefined) {
+                                            try {
+                                                // next try the field on the display item, in case of computed fields
+                                                fieldValue = eval("item." + columnOptions.displayFieldName);
+                                            }
+                                            catch (ex) {
+                                            }
+                                        }
+
+                                        return fieldValue;
+                                    };
+                                };
                                 controller.configureTableStructure(gridScope, instanceElement);
                                 controller.setupDisplayItemsArray(gridScope);
                             }

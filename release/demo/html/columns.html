@@ -19,7 +19,7 @@
                 </pre>
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Manual_Fields" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(3, null, true)">
-<table tr-ng-grid items="myItems" fields="['id','address.last']" /></table>
+                    <table tr-ng-grid items="myItems" fields="['id','address.last']" /></table>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 <div class="col-md-7">
                     <p>
                         Column options can be provided by setting up the <em>field-name</em> attribute on the <em>&lt;TH&gt;</em> elements that you'll have to include in the markup of a single <em>&lt;TR&gt;</em> element, part of <em>&lt;THEAD&gt;</em>.<br />
-                        When the <em>fields</em> property is not present, the field-bound <em>TH</em> elements will act as the selection of fields that will be displayed. 
+                        When the <em>fields</em> property is not present, the field-bound <em>TH</em> elements will act as the selection of fields that will be displayed.
                     </p>
                     <p>
                         Once the <em>field-name</em> was set, a range of options can tweak the behavior and appearance of the column. You can
@@ -61,16 +61,16 @@
                 </div>
                 <div class="col-md-5">
                     <div project-markup-to="#trNgGrid_Sample_Columns_Simple_Definition" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10, null, true);">
-<table tr-ng-grid items="myItems">
-    <thead>
-        <tr>
-            <th field-name="id" display-name="Employee No" enable-filtering="false" enable-sorting="false" cell-width="10em" display-align="right" />
-            <th field-name="address.last" display-name="Last Addr" display-format="uppercase" />
-            <th field-name="address.prev[0].address" display-name="First Addr" display-format="uppercase" />
-            <th field-name="address.prev.length" display-name="Known Addr Count" display-align="center" />
-        </tr>
-    </thead>
-</table>
+                        <table tr-ng-grid items="myItems">
+                            <thead>
+                                <tr>
+                                    <th field-name="id" display-name="Employee No" enable-filtering="false" enable-sorting="false" cell-width="10em" display-align="right" />
+                                    <th field-name="address.last" display-name="Last Addr" display-format="uppercase" />
+                                    <th field-name="address.prev[0].address" display-name="First Addr" display-format="uppercase" />
+                                    <th field-name="address.prev.length" display-name="Known Addr Count" display-align="center" />
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,9 @@
                     <pre id="trNgGrid_Sample_Columns_Computed_Field">
                     </pre>
                     <p>
-                        Essentially we're using a custom angular js filter, but we're asking the grid to pass the <em>gridItem</em> as a parameter (This is the item bound to the row). Do keep in mind that the first parameter will always be the value that gets filtered, but because the field doesn't exist on the entity, its value is <em>undefined</em> hence it needs to be ignored.
+                        Essentially we're using a custom angular js filter, but we're asking the grid to pass the <em>gridItem</em> as a parameter (This is the item bound to the row).
+                        Do keep in mind that the first parameter will always be the value that gets filtered, but because the field doesn't exist on the entity, its value is <em>undefined</em> hence it needs to be ignored.
+
                         <pre>
 angular.module(...)
 .filter("testComputedField", function () {
@@ -101,17 +103,19 @@ angular.module(...)
 });
                         </pre>
                     </p>
+                    <p class="text-warning">Ensure the <em>field-name</em> you use in the column definition for computed fields doesn't exist as a field on the data items, otherwise you'll confuse the sorting algorithm.</p>
+
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Computed_Field" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(8)">
-<table tr-ng-grid items="myItems">
-    <thead>
-        <tr>
-            <th field-name="id"/>
-            <th field-name="name"/>
-            <th field-name="computedField" display-name="Computed Field" display-format="testComputedField:gridItem" />
-        </tr>
-    </thead>
-</table>
+                    <table tr-ng-grid items="myItems">
+                        <thead>
+                            <tr>
+                                <th field-name="id" />
+                                <th field-name="name" />
+                                <th field-name="computedField" display-name="Computed Field" display-format="testComputedField:gridItem" />
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
@@ -134,17 +138,17 @@ angular.module(...)
                             </pre>
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Columns_Extra" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(4)">
-<table tr-ng-grid items="myItems">
-    <tbody>
-        <tr>
-            <td>
-                <button class="btn btn-default" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
-                    Remove {{gridDisplayItem.id}}
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+                    <table tr-ng-grid items="myItems">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <button class="btn btn-default" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
+                                        Remove {{gridDisplayItem.id}}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -164,32 +168,32 @@ angular.module(...)
                     </pre>
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_fields_custom_columns_bug_1" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(5)">
-Selected Items: {{mySelectedItems.length}}
-<table tr-ng-grid
-        selected-items="mySelectedItems"
-        items="myItems"
-        fields="['id','name']"
-        selection-mode="SingleRow">
-    <thead>
-      <tr>
-        <th field-name="id" enable-sorting="false"></th>
-        <th field-name="address" display-align="right"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <div>
-            <!--You can stop the click event to bubble up and mess up the selection set by calling $event.stopPropagation() -->
-            <!--alert is a method on the scope which calls $window.alert-->
-            <button class="btn btn-default" ng-click="alert('You clicked on ' + gridItem.id);$event.stopPropagation();">
-              Display {{gridDisplayItem.name}}
-            </button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-</table>
+                    Selected Items: {{mySelectedItems.length}}
+                    <table tr-ng-grid
+                           selected-items="mySelectedItems"
+                           items="myItems"
+                           fields="['id','name']"
+                           selection-mode="SingleRow">
+                        <thead>
+                            <tr>
+                                <th field-name="id" enable-sorting="false"></th>
+                                <th field-name="address" display-align="right"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <!--You can stop the click event to bubble up and mess up the selection set by calling $event.stopPropagation() -->
+                                        <!--alert is a method on the scope which calls $window.alert-->
+                                        <button class="btn btn-default" ng-click="alert('You clicked on ' + gridItem.id);$event.stopPropagation();">
+                                            Display {{gridDisplayItem.name}}
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <hr />
@@ -215,31 +219,31 @@ $scope.alertOnSelectionChange = function(){
                     </pre>
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_fields_custom_columns_bug_2" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(15);">
-<div ng-init="alertOnSelectionChange();">
-    <table tr-ng-grid
-            items="myItems"
-            selected-items="mySelectedItems"
-            fields="['id','name']">
-        <thead>
-            <tr>
-                <th>
-                    <div class="tr-ng-title">
-                        Header
+                    <div ng-init="alertOnSelectionChange();">
+                        <table tr-ng-grid
+                               items="myItems"
+                               selected-items="mySelectedItems"
+                               fields="['id','name']">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div class="tr-ng-title">
+                                            Header
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            Item {{gridDisplayItem.id}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <div>
-                        Item {{gridDisplayItem.id}}
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
                 </div>
             </div>
             <hr />
@@ -254,34 +258,34 @@ $scope.alertOnSelectionChange = function(){
                     </pre>
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_fields_custom_columns_bug_3" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10)">
-<table tr-ng-grid
-        items="myItems"
-        fields="['name', 'id']">
-    <thead>
-        <tr>
-            <th field-name="id">
-            </th>
-            <th>
-                <div class="tr-ng-title">
-                    Header
-                </div>
-            </th>
-            <th field-name="name">
-            </th>
-            <th field-name="address">
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                <div>
-                    Item {{gridDisplayItem.id}}
-                </div>
-            </td>
-        </tr>
-    </tbody>
-</table>
+                    <table tr-ng-grid
+                           items="myItems"
+                           fields="['name', 'id']">
+                        <thead>
+                            <tr>
+                                <th field-name="id">
+                                </th>
+                                <th>
+                                    <div class="tr-ng-title">
+                                        Header
+                                    </div>
+                                </th>
+                                <th field-name="name">
+                                </th>
+                                <th field-name="address">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        Item {{gridDisplayItem.id}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

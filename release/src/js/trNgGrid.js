@@ -710,7 +710,7 @@ var TrNgGrid;
                 }
             }
             TrNgGrid.debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | orderBy:'$$_gridItem.'+gridOptions.orderBy:gridOptions.orderByReverse | " + TrNgGrid.dataPagingFilter + ":gridOptions");
+            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | orderBy:orderByValueExtractor(gridOptions.orderBy):gridOptions.orderByReverse | " + TrNgGrid.dataPagingFilter + ":gridOptions");
         };
 
         GridController.prototype.setupDisplayItemsArray = function (scope) {
@@ -882,6 +882,37 @@ var TrNgGrid;
                             var gridScope = controller.setupScope(isolatedScope, instanceElement, tAttrs);
                             gridScope.speedUpAsyncDataRetrieval = function ($event) {
                                 return controller.speedUpAsyncDataRetrieval($event);
+                            };
+                            gridScope.orderByValueExtractor = function (fieldName) {
+                                if (!fieldName || !gridScope.gridOptions.gridColumnDefs)
+                                    return undefined;
+
+                                // we'll need the column options
+                                var columnOptions = null;
+                                for (var columnOptionsIndex = 0; (columnOptionsIndex < gridScope.gridOptions.gridColumnDefs.length) && ((columnOptions = gridScope.gridOptions.gridColumnDefs[columnOptionsIndex]).fieldName !== fieldName); columnOptions = null, columnOptionsIndex++)
+                                    ;
+
+                                return function (item) {
+                                    if (!columnOptions) {
+                                        return undefined;
+                                    }
+
+                                    var fieldValue = undefined;
+                                    try  {
+                                        // get the value associated with the original grid item
+                                        fieldValue = eval("item.$$_gridItem." + columnOptions.fieldName);
+                                    } catch (ex) {
+                                    }
+                                    if (fieldValue === undefined) {
+                                        try  {
+                                            // next try the field on the display item, in case of computed fields
+                                            fieldValue = eval("item." + columnOptions.displayFieldName);
+                                        } catch (ex) {
+                                        }
+                                    }
+
+                                    return fieldValue;
+                                };
                             };
                             controller.configureTableStructure(gridScope, instanceElement);
                             controller.setupDisplayItemsArray(gridScope);
