@@ -73,6 +73,9 @@
     <Content Include="demo\js\index.min.js.map">
       <DependentUpon>index.js</DependentUpon>
     </Content>
+    <Content Include="src\js\trNgGrid.min.js.map">
+      <DependentUpon>trNgGrid.min.js</DependentUpon>
+    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -123,6 +126,7 @@
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(ProjectDir)\src\css\trNgGrid.min.css" "$(ProjectDir)"
 copy /Y "$(ProjectDir)\src\js\trNgGrid.min.js" "$(ProjectDir)"
+copy /Y "$(ProjectDir)\src\js\trNgGrid.js.map" "$(ProjectDir)"
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
