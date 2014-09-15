@@ -819,13 +819,11 @@ module TrNgGrid{
             }
             var gridColumnDefs = scope.gridOptions.gridColumnDefs;
 
-            // crate a temporary scope for holding a gridItem as we enumerate through the items
-            var computingScope = <IGridDataComputationScope>scope.$new();
-            try {
-                for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
+            for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
                     var gridItem = input[inputIndex];
-                    computingScope.gridItem = gridItem;
                     var outputItem: IGridDisplayItem;
+                    // crate a temporary scope for holding a gridItem as we enumerate through the items
+                    var localEvalVars = { gridItem: gridItem };
 
                     // check for removed items, try to keep the item instances intact
                     while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== gridItem) {
@@ -856,10 +854,10 @@ module TrNgGrid{
                                     }
 
                                     // apply the format
-                                    outputItem[gridColumnDef.displayFieldName] = computingScope.$eval("gridItem." + fieldName + displayFormat);
+                                    outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridItem." + fieldName + displayFormat, localEvalVars);
                                 }
                                 else {
-                                    outputItem[gridColumnDef.displayFieldName] = eval("gridItem." + fieldName);
+                                    outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridItem." + fieldName, localEvalVars);
                                 }
                             }
                         }
@@ -867,15 +865,11 @@ module TrNgGrid{
                             debugMode && this.log("Field evaluation failed for <" + fieldName + "> with error " + ex);
                         }
                     }
-                }
-
-                // remove any extra elements from the formatted list
-                if (formattedItems.length > input.length) {
-                    formattedItems.splice(input.length, formattedItems.length - input.length);
-                }
             }
-            finally {
-                computingScope.$destroy();
+
+            // remove any extra elements from the formatted list
+            if (formattedItems.length > input.length) {
+                formattedItems.splice(input.length, formattedItems.length - input.length);
             }
         }
 
@@ -1059,6 +1053,7 @@ module TrNgGrid{
                             post: (isolatedScope: ng.IScope, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
                                 var gridScope = controller.setupScope(isolatedScope, instanceElement, tAttrs);
                                 gridScope.speedUpAsyncDataRetrieval = ($event) => controller.speedUpAsyncDataRetrieval($event);
+
                                 gridScope.orderByValueExtractor = (fieldName: string) => {
                                     if (!fieldName || !gridScope.gridOptions.gridColumnDefs)
                                         return undefined;
@@ -1075,14 +1070,14 @@ module TrNgGrid{
                                         var fieldValue: any = undefined;
                                         try {
                                             // get the value associated with the original grid item
-                                            fieldValue = eval("item.$$_gridItem." + columnOptions.fieldName);
+                                            fieldValue = gridScope.$eval("item.$$_gridItem." + columnOptions.fieldName, {item:item});
                                         }
                                         catch(ex) {
                                         }
                                         if (fieldValue === undefined) {
                                             try {
                                                 // next try the field on the display item, in case of computed fields
-                                                fieldValue = eval("item." + columnOptions.displayFieldName);
+                                                fieldValue = gridScope.$eval("item." + columnOptions.displayFieldName, {item:item});
                                             }
                                             catch (ex) {
                                             }
@@ -1396,11 +1391,6 @@ module TrNgGrid{
                 };
             }
         ])
-    /*.filter("testFilter", () => {
-        return (input: Array<any>) => {
-            debugger;
-        };
-    })*/
         .filter(dataPagingFilter, () => {
             // when server-side logic is enabled, this directive should not be used!
             return (input: Array<any>, gridOptions: IGridOptions) => {
