@@ -24,6 +24,13 @@ You can download the grid from the `release` folder in the master branch. Make s
 - gh-pages: DEMO site
 - dev: broken in a million pieces
 
+
+##### Issues
+ Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
+ 
+*Update: I'm in the process of moving house across an ocean so please excuse my silence for a short while. Many people are using this grid, so I'm sure you'll find the help you need.*
+
+
 ##### Change Log
 ###### 3.0.3
 - The number of items per page are being properly monitored.
