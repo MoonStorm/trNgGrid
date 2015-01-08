@@ -647,58 +647,54 @@ var TrNgGrid;
             }
             var gridColumnDefs = scope.gridOptions.gridColumnDefs;
 
-            // crate a temporary scope for holding a gridItem as we enumerate through the items
-            var computingScope = scope.$new();
-            try  {
-                for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
-                    var gridItem = input[inputIndex];
-                    computingScope.gridItem = gridItem;
-                    var outputItem;
+            for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
+                var gridItem = input[inputIndex];
+                var outputItem;
 
-                    while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== gridItem) {
-                        formattedItems.splice(inputIndex, 1);
-                    }
+                // crate a temporary scope for holding a gridItem as we enumerate through the items
+                var localEvalVars = { gridItem: gridItem };
 
-                    if (inputIndex < formattedItems.length) {
-                        outputItem = formattedItems[inputIndex];
-                        if (outputItem.$$_gridItem !== gridItem) {
-                            outputItem = { $$_gridItem: gridItem };
-                            formattedItems[inputIndex] = outputItem;
-                        }
-                    } else {
+                while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== gridItem) {
+                    formattedItems.splice(inputIndex, 1);
+                }
+
+                if (inputIndex < formattedItems.length) {
+                    outputItem = formattedItems[inputIndex];
+                    if (outputItem.$$_gridItem !== gridItem) {
                         outputItem = { $$_gridItem: gridItem };
-                        formattedItems.push(outputItem);
+                        formattedItems[inputIndex] = outputItem;
                     }
-                    for (var gridColumnDefIndex = 0; gridColumnDefIndex < gridColumnDefs.length; gridColumnDefIndex++) {
-                        try  {
-                            var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
-                            var fieldName = gridColumnDef.fieldName;
-                            if (fieldName) {
-                                var displayFormat = gridColumnDef.displayFormat;
-                                if (displayFormat) {
-                                    if (displayFormat[0] != "." && displayFormat[0] != "|") {
-                                        // angular filter
-                                        displayFormat = " | " + displayFormat;
-                                    }
-
-                                    // apply the format
-                                    outputItem[gridColumnDef.displayFieldName] = computingScope.$eval("gridItem." + fieldName + displayFormat);
-                                } else {
-                                    outputItem[gridColumnDef.displayFieldName] = eval("gridItem." + fieldName);
+                } else {
+                    outputItem = { $$_gridItem: gridItem };
+                    formattedItems.push(outputItem);
+                }
+                for (var gridColumnDefIndex = 0; gridColumnDefIndex < gridColumnDefs.length; gridColumnDefIndex++) {
+                    try  {
+                        var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
+                        var fieldName = gridColumnDef.fieldName;
+                        if (fieldName) {
+                            var displayFormat = gridColumnDef.displayFormat;
+                            if (displayFormat) {
+                                if (displayFormat[0] != "." && displayFormat[0] != "|") {
+                                    // angular filter
+                                    displayFormat = " | " + displayFormat;
                                 }
+
+                                // apply the format
+                                outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridItem." + fieldName + displayFormat, localEvalVars);
+                            } else {
+                                outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridItem." + fieldName, localEvalVars);
                             }
-                        } catch (ex) {
-                            TrNgGrid.debugMode && this.log("Field evaluation failed for <" + fieldName + "> with error " + ex);
                         }
+                    } catch (ex) {
+                        TrNgGrid.debugMode && this.log("Field evaluation failed for <" + fieldName + "> with error " + ex);
                     }
                 }
+            }
 
-                // remove any extra elements from the formatted list
-                if (formattedItems.length > input.length) {
-                    formattedItems.splice(input.length, formattedItems.length - input.length);
-                }
-            } finally {
-                computingScope.$destroy();
+            // remove any extra elements from the formatted list
+            if (formattedItems.length > input.length) {
+                formattedItems.splice(input.length, formattedItems.length - input.length);
             }
         };
 
@@ -883,6 +879,7 @@ var TrNgGrid;
                             gridScope.speedUpAsyncDataRetrieval = function ($event) {
                                 return controller.speedUpAsyncDataRetrieval($event);
                             };
+
                             gridScope.orderByValueExtractor = function (fieldName) {
                                 if (!fieldName || !gridScope.gridOptions.gridColumnDefs)
                                     return undefined;
@@ -900,13 +897,13 @@ var TrNgGrid;
                                     var fieldValue = undefined;
                                     try  {
                                         // get the value associated with the original grid item
-                                        fieldValue = eval("item.$$_gridItem." + columnOptions.fieldName);
+                                        fieldValue = gridScope.$eval("item.$$_gridItem." + columnOptions.fieldName, { item: item });
                                     } catch (ex) {
                                     }
                                     if (fieldValue === undefined) {
                                         try  {
                                             // next try the field on the display item, in case of computed fields
-                                            fieldValue = eval("item." + columnOptions.displayFieldName);
+                                            fieldValue = gridScope.$eval("item." + columnOptions.displayFieldName, { item: item });
                                         } catch (ex) {
                                         }
                                     }
