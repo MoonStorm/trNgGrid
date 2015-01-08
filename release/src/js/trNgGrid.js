@@ -317,7 +317,8 @@ var TrNgGrid;
                 enableFiltering: true,
                 enableSorting: true,
                 selectionMode: SelectionMode[2 /* MultiRow */],
-                onDataRequiredDelay: 1000
+                onDataRequiredDelay: 1000,
+                noDeselection: false
             };
             this.gridOptions.onDataRequired = $attrs["onDataRequired"] ? $isolatedScope["onDataRequired"] : null;
             this.gridOptions.gridColumnDefs = [];
@@ -434,7 +435,7 @@ var TrNgGrid;
                         // if neither key modifiers are pressed, clear the selection and start fresh
                         var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                         this.gridOptions.selectedItems.splice(0);
-                        if (itemIndex < 0) {
+                        if (this.gridOptions.noDeselection || itemIndex < 0) {
                             this.gridOptions.selectedItems.push(item);
                         }
                     } else {
@@ -488,7 +489,7 @@ var TrNgGrid;
                 case SelectionMode[1 /* SingleRow */]:
                     var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                     this.gridOptions.selectedItems.splice(0);
-                    if (itemIndex < 0) {
+                    if (this.gridOptions.noDeselection || itemIndex < 0) {
                         this.gridOptions.selectedItems.push(item);
                     }
                     break;
@@ -855,6 +856,7 @@ var TrNgGrid;
                     enableMultiRowSelections: '=?',
                     selectionMode: '@',
                     locale: '@',
+                    noDeselection: '=?',
                     onDataRequired: '&',
                     onDataRequiredDelay: '=?',
                     fields: '=?'
@@ -1305,4 +1307,3 @@ var TrNgGrid;
         }
     }
 })(TrNgGrid || (TrNgGrid = {}));
-//# sourceMappingURL=trNgGrid.js.map

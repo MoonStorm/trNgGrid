@@ -33,10 +33,10 @@ module TrNgGrid{
     export declare var columnFilterCssClass: string;
     export declare var columnFilterInputWrapperCssClass: string;
     export declare var columnSortActiveCssClass: string;
-    export declare var columnSortInactiveCssClass: string; 
+    export declare var columnSortInactiveCssClass: string;
     export declare var columnSortReverseOrderCssClass: string;
     export declare var columnSortNormalOrderCssClass: string;
-    export declare var rowSelectedCssClass: string; 
+    export declare var rowSelectedCssClass: string;
     export declare var footerCssClass: string;
 
     export declare var cellHeaderTemplateId:string;
@@ -158,6 +158,9 @@ module TrNgGrid{
         gridColumnDefs: Array<IGridColumnOptions>;
         locale: string;
         immediateDataRetrieval: boolean;
+
+        // If true, clicking a selected row does not unselect it
+        noDeselection: boolean;
     }
 
     interface IGridScope extends ng.IScope{
@@ -473,7 +476,8 @@ module TrNgGrid{
                 enableFiltering:true,
                 enableSorting:true,
                 selectionMode:SelectionMode[SelectionMode.MultiRow],
-                onDataRequiredDelay:1000
+                onDataRequiredDelay:1000,
+                noDeselection: false
             };
             this.gridOptions.onDataRequired = $attrs["onDataRequired"]?$isolatedScope["onDataRequired"]:null;
             this.gridOptions.gridColumnDefs = [];
@@ -559,8 +563,8 @@ module TrNgGrid{
             // copy a couple of options onto the incoming set of options
             columnOptions = angular.extend(columnOptions, originalOptions);
 
-            // replace the original options 
-            this.gridOptions.gridColumnDefs[columnIndex] = columnOptions;            
+            // replace the original options
+            this.gridOptions.gridColumnDefs[columnIndex] = columnOptions;
         }
 
         toggleSorting(propertyName: string) {
@@ -602,7 +606,7 @@ module TrNgGrid{
                         // if neither key modifiers are pressed, clear the selection and start fresh
                         var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                         this.gridOptions.selectedItems.splice(0);
-                        if (itemIndex < 0) {
+                        if (this.gridOptions.noDeselection || itemIndex < 0) {
                             this.gridOptions.selectedItems.push(item);
                         }
                     }
@@ -659,7 +663,7 @@ module TrNgGrid{
                 case SelectionMode[SelectionMode.SingleRow]:
                     var itemIndex = this.gridOptions.selectedItems.indexOf(item);
                     this.gridOptions.selectedItems.splice(0);
-                    if (itemIndex < 0) {
+                    if (this.gridOptions.noDeselection || itemIndex < 0) {
                         this.gridOptions.selectedItems.push(item);
                     }
                     break;
@@ -686,7 +690,7 @@ module TrNgGrid{
         }
 
         configureTableStructure(parentScope: ng.IScope, gridElement: ng.IAugmentedJQuery, oldScope?:ng.IScope) {
-            var scope = parentScope.$new();  
+            var scope = parentScope.$new();
             gridElement.empty();
 
             // make sure we're no longer watching for column defs
@@ -779,8 +783,8 @@ module TrNgGrid{
             this.gridOptions.gridColumnDefs = finalPartialGridColumnDefs;
             var headerElement = this.templatedHeader.configureSection(gridElement, finalPartialGridColumnDefs);
             var footerElement = this.templatedFooter.configureSection(gridElement, templatedFooterPartialGridColumnDefs);
-            var bodyElement = this.templatedBody.configureSection(gridElement, finalPartialGridColumnDefs);             
-            
+            var bodyElement = this.templatedBody.configureSection(gridElement, finalPartialGridColumnDefs);
+
             var templatedBodyRowElement = this.templatedBody.getTemplatedRowElement(bodyElement);
             var templatedHeaderRowElement = this.templatedHeader.getTemplatedRowElement(headerElement);
 
@@ -793,11 +797,11 @@ module TrNgGrid{
             else {
                 templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
             }*/
-            templatedBodyRowElement.attr("ng-repeat", "gridDisplayItem in filteredItems");            
+            templatedBodyRowElement.attr("ng-repeat", "gridDisplayItem in filteredItems");
             templatedBodyRowElement.attr("ng-init", "gridItem=gridDisplayItem.$$_gridItem");
             templatedBodyRowElement.attr("ng-class", "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem)>=0}");
 
-            headerElement.replaceWith(this.$compile(headerElement)(scope)); 
+            headerElement.replaceWith(this.$compile(headerElement)(scope));
             footerElement.replaceWith(this.$compile(footerElement)(scope));
             bodyElement.replaceWith(this.$compile(bodyElement)(scope));
 
@@ -911,7 +915,7 @@ module TrNgGrid{
             if (!scope.gridOptions.onDataRequired) {
                 watchExpression = "["
                     + "requiresReFilteringTrigger, gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage, gridOptions.pageItems"
-                    + "]"; 
+                    + "]";
                 scope.$watch(watchExpression, (newValue: Array<any>, oldValue: Array<any>) => {
                     this.computeFilteredItems(scope);
                 }, true);
@@ -919,7 +923,7 @@ module TrNgGrid{
         }
 
         linkAttrs(tAttrs: ng.IAttributes, localStorage: any) {
-            var propSetter = (propName: string, propValue: any) => {                
+            var propSetter = (propName: string, propValue: any) => {
                 if (typeof (propValue) === "undefined")
                     return;
 
@@ -1031,6 +1035,7 @@ module TrNgGrid{
                         enableMultiRowSelections: '=?', // deprecated
                         selectionMode: '@',
                         locale: '@',
+                        noDeselection: '=?',
                         onDataRequired: '&',
                         onDataRequiredDelay: '=?',
                         fields: '=?'
@@ -1090,7 +1095,7 @@ module TrNgGrid{
                                 controller.setupDisplayItemsArray(gridScope);
                             }
                         }
-                    } 
+                    }
                 };
             }])
         .directive(cellHeaderDirective, [
@@ -1368,7 +1373,7 @@ module TrNgGrid{
                     }
                 };
 
-                //ng - model = "gridOptions.currentPage" 
+                //ng - model = "gridOptions.currentPage"
 
                 return {
                     restrict: 'A',
@@ -1556,14 +1561,14 @@ module TrNgGrid{
                 + ' <ul class="pagination">'
                 + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="extendedControlsActive">'
                 + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
-                //+ '         <span class="glyphicon glyphicon-fast-backward"></span>' 
-                + '         <span>&laquo;</span>' 
+                //+ '         <span class="glyphicon glyphicon-fast-backward"></span>'
+                + '         <span>&laquo;</span>'
                 + '     </a>'
                 + '   </li>'
                 + '   <li ng-class="{disabled:!pageCanGoBack}" ng-if="extendedControlsActive">'
                 + '     <a href="" ng-click="pageCanGoBack&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
-                //+ '         <span class="glyphicon glyphicon-step-backward"></span>' 
-                + '         <span>&lsaquo;</span>' 
+                //+ '         <span class="glyphicon glyphicon-step-backward"></span>'
+                + '         <span>&lsaquo;</span>'
                 + '     </a>'
                 + '   </li>'
                 + '   <li ng-if="pageSelectionActive" ng-repeat="pageIndex in pageIndexes track by $index" ng-class="{disabled:pageIndex===null, active:pageIndex===gridOptions.currentPage}">'
@@ -1572,14 +1577,14 @@ module TrNgGrid{
                 + '   </li>'
                 + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="extendedControlsActive">'
                 + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
-                //+ '         <span class="glyphicon glyphicon-step-forward"></span>' 
-                + '         <span>&rsaquo;</span>' 
+                //+ '         <span class="glyphicon glyphicon-step-forward"></span>'
+                + '         <span>&rsaquo;</span>'
                 + '     </a>'
                 + '   </li>'
                 + '   <li ng-class="{disabled:!pageCanGoForward}" ng-if="extendedControlsActive">'
                 + '     <a href="" ng-click="pageCanGoForward&&navigateToPage(lastPageIndex)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
-                //+ '         <span class="glyphicon glyphicon-fast-forward"></span>' 
-                + '         <span>&raquo;</span>' 
+                //+ '         <span class="glyphicon glyphicon-fast-forward"></span>'
+                + '         <span>&raquo;</span>'
                 + '     </a>'
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
