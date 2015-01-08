@@ -55,7 +55,7 @@
                     </p>
                     <pre>
 $scope.mySelectedItems = [];
-$scope.watch("mySelectedItems.length", function(newLength){
+$scope.$watch("mySelectedItems.length", function(newLength){
   // your logic goes here
 });
                     </pre>
