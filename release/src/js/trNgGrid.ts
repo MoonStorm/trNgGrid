@@ -140,14 +140,16 @@ module TrNgGrid{
     }
 
     interface IGridOptions{
+        immediateDataRetrieval: boolean;
         items: Array<any>;
         fields: Array<string>;
+        locale: string;
         selectedItems: Array<any>;
         filterBy: string;
         filterByFields: Object;
         orderBy: string;
         orderByReverse: boolean;
-        pageItems: number;
+        pageItems?: number;
         currentPage: number;
         totalItems: number;
         enableFiltering: boolean;
@@ -156,8 +158,6 @@ module TrNgGrid{
         onDataRequired: (gridOptions: IGridOptions) => void;
         onDataRequiredDelay: number;
         gridColumnDefs: Array<IGridColumnOptions>;
-        locale: string;
-        immediateDataRetrieval: boolean;
     }
 
     interface IGridScope extends ng.IScope{
@@ -473,11 +473,10 @@ module TrNgGrid{
                 enableFiltering:true,
                 enableSorting:true,
                 selectionMode:SelectionMode[SelectionMode.MultiRow],
-                onDataRequiredDelay:1000
+                onDataRequiredDelay: 1000,
+                onDataRequired: $attrs["onDataRequired"] ? $isolatedScope["onDataRequired"] : null,
+                gridColumnDefs: []
             };
-            this.gridOptions.onDataRequired = $attrs["onDataRequired"]?$isolatedScope["onDataRequired"]:null;
-            this.gridOptions.gridColumnDefs = [];
-            //internalScope[scopeOptionsIdentifier] = this.gridOptions;
 
 
             //link the outer scope with the internal one
@@ -1584,7 +1583,7 @@ module TrNgGrid{
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
                 + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
-                + '     <span ng-show="totalItemsCount" ng-attr-title="{{\'Select Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+                + '     <span ng-show="totalItemsCount">'
                 + '       {{startItemIndex+1}} - {{endItemIndex+1}} {{\'displayed\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}'
                 + '       <span>, {{totalItemsCount}} {{\'in total\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
                 + '     </span > '
