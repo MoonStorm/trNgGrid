@@ -96,6 +96,7 @@
                 <div class="panel-body" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(21)">
                     <p>
                         You can override the style of the generated data cells, but do remember to match by <em>field-name</em> the TD element with a TH element present in the header. <br/>
+                        The data cell template must be placed inside an HTML child element, otherwise the content will be ignored and treated as a placeholder for the default cell template. <br/> 
                         Keep in mind that you have access to both the <em>gridItem</em> scoped variable, which points to the actual data item, and <em>gridDisplayItem</em>, which points to the formatted item and should only be used for presentation purposes.                    
                     </p>
                     <pre id="trNgGrid_Customize_Data_Cells"></pre>
