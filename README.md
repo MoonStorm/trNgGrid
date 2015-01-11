@@ -32,6 +32,13 @@ You can download the grid from the `release` folder in the master branch. Make s
 
 
 ##### Change Log
+
+###### 3.0.3
+- The initial order of items is now maintained
+- An initial order-by is now working even if it was set prior to binding the list of items 
+- Sorting now works even when the text inside the column header is clicked in IE9
+- The page index now resets in case one of the column filters, the general filter, or the sort column is changed in server-side mode
+
 ###### 3.0.3
 - The number of items per page are being properly monitored.
 

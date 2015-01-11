@@ -21,6 +21,7 @@ module TrNgGrid{
     export declare var dataPagingFilter: string;
     export declare var dataFormattingFilter: string;
     export declare var translateFilter: string;
+    export declare var sortFilter: string;
 
     export declare var debugMode: boolean;
 
@@ -65,6 +66,7 @@ module TrNgGrid{
 
     var templatesConfigured = false;
     var tableDirective = "trNgGrid";
+    sortFilter = tableDirective + "SortFilter";
     dataPagingFilter = tableDirective + "DataPagingFilter";
     translateFilter = tableDirective + "TranslateFilter";
     translationDateFormat = tableDirective + "DateFormat";
@@ -140,14 +142,16 @@ module TrNgGrid{
     }
 
     interface IGridOptions{
+        immediateDataRetrieval: boolean;
         items: Array<any>;
         fields: Array<string>;
+        locale: string;
         selectedItems: Array<any>;
         filterBy: string;
         filterByFields: Object;
         orderBy: string;
         orderByReverse: boolean;
-        pageItems: number;
+        pageItems?: number;
         currentPage: number;
         totalItems: number;
         enableFiltering: boolean;
@@ -156,8 +160,6 @@ module TrNgGrid{
         onDataRequired: (gridOptions: IGridOptions) => void;
         onDataRequiredDelay: number;
         gridColumnDefs: Array<IGridColumnOptions>;
-        locale: string;
-        immediateDataRetrieval: boolean;
     }
 
     interface IGridScope extends ng.IScope{
@@ -168,7 +170,6 @@ module TrNgGrid{
         requiresReFilteringTrigger: boolean;
         formattedItems: Array<IGridDisplayItem>;
         speedUpAsyncDataRetrieval: ($event?: ng.IAngularEvent) => void;
-        orderByValueExtractor: (fieldName: string) => any;
     }
 
     interface IGridDataComputationScope extends IGridScope {
@@ -473,11 +474,10 @@ module TrNgGrid{
                 enableFiltering:true,
                 enableSorting:true,
                 selectionMode:SelectionMode[SelectionMode.MultiRow],
-                onDataRequiredDelay:1000
+                onDataRequiredDelay: 1000,
+                onDataRequired: $attrs["onDataRequired"] ? $isolatedScope["onDataRequired"] : null,
+                gridColumnDefs: []
             };
-            this.gridOptions.onDataRequired = $attrs["onDataRequired"]?$isolatedScope["onDataRequired"]:null;
-            this.gridOptions.gridColumnDefs = [];
-            //internalScope[scopeOptionsIdentifier] = this.gridOptions;
 
 
             //link the outer scope with the internal one
@@ -486,7 +486,6 @@ module TrNgGrid{
             this.linkScope(gridScope, $isolatedScope, "gridOptions", $attrs);
 
             //set up watchers for some of the special attributes we support
-
             if (this.gridOptions.onDataRequired) {
                 var retrieveDataCallback = () => {
                     this.dataRequestPromise = null;
@@ -494,26 +493,44 @@ module TrNgGrid{
                     this.gridOptions.onDataRequired(this.gridOptions);
                 };
 
-                gridScope.$watchCollection("[gridOptions.filterBy, " +
+                var scheduleDataRetrieval = () => {
+                    if (this.dataRequestPromise) {
+                        this.$timeout.cancel(this.dataRequestPromise);
+                        this.dataRequestPromise = null;
+                    }
+
+                    if (this.gridOptions.immediateDataRetrieval) {
+                        retrieveDataCallback();
+                    }
+                    else {
+                        this.dataRequestPromise = this.$timeout(() => {
+                            retrieveDataCallback();
+                        }, this.gridOptions.onDataRequiredDelay, true);
+                    }
+                };
+
+
+                gridScope.$watch("gridOptions.currentPage", (newValue: number, oldValue: number) => {
+                    if (newValue !== oldValue) {
+                        scheduleDataRetrieval();
+                    }
+                });
+
+                gridScope.$watchCollection("[" +
+                    "gridOptions.filterBy, " +
                     "gridOptions.filterByFields, " +
                     "gridOptions.orderBy, " +
                     "gridOptions.orderByReverse, " +
                     "gridOptions.pageItems, " +
-                    "gridOptions.currentPage]",()=>{
-
-                        if(this.dataRequestPromise){
-                            this.$timeout.cancel(this.dataRequestPromise);
-                            this.dataRequestPromise = null;
+                    "]", (newValues: Array<any>, oldValues: Array<any>) => {
+                        // everything will reset the page index, with the exception of a page index change
+                        if (this.gridOptions.currentPage !== 0) {
+                            this.gridOptions.currentPage = 0;
+                            // the page index watch will activate, exit for now to avoid duplicate data requests
+                            return;
                         }
 
-                        if (this.gridOptions.immediateDataRetrieval) {
-                            retrieveDataCallback();
-                        }
-                        else {
-                            this.dataRequestPromise = this.$timeout(() => {
-                                retrieveDataCallback();
-                            }, this.gridOptions.onDataRequiredDelay, true);
-                        }
+                        scheduleDataRetrieval();
                 });
 
                 gridScope.$watch("gridOptions.immediateDataRetrieval", (newValue: boolean) => {
@@ -881,7 +898,8 @@ module TrNgGrid{
                 }
             }
             debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | orderBy:orderByValueExtractor(gridOptions.orderBy):gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
+            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | "+sortFilter+":gridOptions | " + dataPagingFilter + ":gridOptions");
+            //debugger;
         }
 
         setupDisplayItemsArray(scope: IGridScope) {
@@ -1054,38 +1072,6 @@ module TrNgGrid{
                                 var gridScope = controller.setupScope(isolatedScope, instanceElement, tAttrs);
                                 gridScope.speedUpAsyncDataRetrieval = ($event) => controller.speedUpAsyncDataRetrieval($event);
 
-                                gridScope.orderByValueExtractor = (fieldName: string) => {
-                                    if (!fieldName || !gridScope.gridOptions.gridColumnDefs)
-                                        return undefined;
-
-                                    // we'll need the column options
-                                    var columnOptions: IGridColumnOptions = null;
-                                    for (var columnOptionsIndex = 0; (columnOptionsIndex < gridScope.gridOptions.gridColumnDefs.length) && ((columnOptions = gridScope.gridOptions.gridColumnDefs[columnOptionsIndex]).fieldName !== fieldName); columnOptions = null, columnOptionsIndex++);
-
-                                    return (item: any) => {
-                                        if (!columnOptions) {
-                                            return undefined;
-                                        }
-
-                                        var fieldValue: any = undefined;
-                                        try {
-                                            // get the value associated with the original grid item
-                                            fieldValue = gridScope.$eval("item.$$_gridItem." + columnOptions.fieldName, {item:item});
-                                        }
-                                        catch(ex) {
-                                        }
-                                        if (fieldValue === undefined) {
-                                            try {
-                                                // next try the field on the display item, in case of computed fields
-                                                fieldValue = gridScope.$eval("item." + columnOptions.displayFieldName, {item:item});
-                                            }
-                                            catch (ex) {
-                                            }
-                                        }
-
-                                        return fieldValue;
-                                    };
-                                };
                                 controller.configureTableStructure(gridScope, instanceElement);
                                 controller.setupDisplayItemsArray(gridScope);
                             }
@@ -1282,11 +1268,18 @@ module TrNgGrid{
 
                     // do not set scope.gridOptions.totalItems, it might be set from the outside
                     scope.totalItemsCount = (typeof (scope.gridOptions.totalItems) != "undefined" && scope.gridOptions.totalItems != null)
-                    ? scope.gridOptions.totalItems
-                    : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
+                        ? scope.gridOptions.totalItems
+                        : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
 
                     scope.isPaged = (!!scope.gridOptions.pageItems) && (scope.gridOptions.pageItems < scope.totalItemsCount);
                     scope.extendedControlsActive = false;
+                    scope.lastPageIndex = (!scope.totalItemsCount || !scope.isPaged)
+                        ? 0
+                        : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
+                    if (scope.gridOptions.currentPage > scope.lastPageIndex) {
+                        // this will unfortunately trigger another query if in server side data query mode
+                        scope.gridOptions.currentPage = scope.lastPageIndex;
+                    }
 
                     scope.startItemIndex = scope.isPaged ? (scope.gridOptions.pageItems * scope.gridOptions.currentPage) : 0;
                     scope.endItemIndex = scope.isPaged ? (scope.startItemIndex + scope.gridOptions.pageItems - 1) : scope.totalItemsCount - 1;
@@ -1296,10 +1289,7 @@ module TrNgGrid{
                     if (scope.endItemIndex < scope.startItemIndex) {
                         scope.endItemIndex = scope.startItemIndex;
                     }
-                    scope.lastPageIndex = (!scope.totalItemsCount || !scope.isPaged)
-                    ? 0
-                    : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
-
+ 
                     scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage > 0;
                     scope.pageCanGoForward = scope.isPaged && scope.gridOptions.currentPage < scope.lastPageIndex;
 
@@ -1391,6 +1381,49 @@ module TrNgGrid{
                 };
             }
         ])
+        .filter(sortFilter, ["$filter", "$parse", ($filter: ng.IFilterService, $parse:ng.IParseService) => {
+            return (input: Array<any>, gridOptions: IGridOptions) => {
+
+                if (!gridOptions.orderBy || !gridOptions.gridColumnDefs) {
+                    // not ready to sort, return the input array
+                    return input;
+                }
+
+                // we'll need the column options
+                var columnOptions: IGridColumnOptions = null;
+                for (var columnOptionsIndex = 0; (columnOptionsIndex < gridOptions.gridColumnDefs.length) && ((columnOptions = gridOptions.gridColumnDefs[columnOptionsIndex]).fieldName !== gridOptions.orderBy); columnOptions = null, columnOptionsIndex++);
+
+                if (!columnOptions) {
+                    // unable to find any info about the selected field
+                    return input;
+                }
+
+                var sortedInput = $filter("orderBy")(
+                    input, 
+                    (item: any) => {
+                        var fieldValue: any = undefined;
+                        try {
+                            // get the value associated with the original grid item
+                            fieldValue = $parse("item.$$_gridItem." + columnOptions.fieldName)({ item: item });
+                        }
+                        catch (ex) {
+                        }
+                        if (fieldValue === undefined) {
+                            try {
+                                // next try the field on the display item, in case of computed fields
+                                fieldValue = $parse("item." + columnOptions.displayFieldName)({ item: item });
+                            }
+                            catch (ex) {
+                            }
+                        }
+
+                        return fieldValue;
+                    },
+                    gridOptions.orderByReverse);
+
+                return sortedInput;
+            }
+        }])
         .filter(dataPagingFilter, () => {
             // when server-side logic is enabled, this directive should not be used!
             return (input: Array<any>, gridOptions: IGridOptions) => {
@@ -1584,7 +1617,7 @@ module TrNgGrid{
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
                 + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
-                + '     <span ng-show="totalItemsCount" ng-attr-title="{{\'Select Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+                + '     <span ng-show="totalItemsCount">'
                 + '       {{startItemIndex+1}} - {{endItemIndex+1}} {{\'displayed\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}'
                 + '       <span>, {{totalItemsCount}} {{\'in total\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
                 + '     </span > '
