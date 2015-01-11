@@ -1,6 +1,3 @@
-.tr-ng-grid {
-}
-
 .tr-ng-grid .tr-ng-grid-footer .pagination {
   margin: 0; 
 }
@@ -25,9 +22,6 @@
 
 .tr-ng-grid > tbody > tr > td > .tr-ng-cell {
   overflow: visible;
-}
-
-.tr-ng-grid .tr-ng-column-header {
 }
 
 .tr-ng-grid .tr-ng-sort {
@@ -55,4 +49,13 @@
 .tr-ng-grid .tr-ng-column-header .tr-ng-column-filter {
   margin-top: 0.5em;
   margin-bottom: 0.1em;
+}
+
+/*Additional media blocks for IE*/
+/* http://keithclark.co.uk/articles/moving-ie-specific-css-into-media-blocks/media-tests/ */
+@media screen\0 {
+    .tr-ng-grid .tr-ng-sort {
+        background:white;
+        filter: alpha(opacity=1);
+    }
 }

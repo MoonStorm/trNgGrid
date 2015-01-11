@@ -28,6 +28,7 @@ module TrNgGridDemo{
         availableFields: Array<string>;
 
         requestedItemsGridOptions: Object;
+        myNextItemsTotalCount:number;
 
         alert: (message: string) => void;
         alertOnSelectionChange: () => void;
@@ -104,6 +105,8 @@ module TrNgGridDemo{
             $scope.myEnableSorting = true;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
+            $scope.myNextItemsTotalCount = 100;
+
             $scope.alert = (message) => {
                 $window.alert(message);
             };
@@ -132,20 +135,22 @@ module TrNgGridDemo{
                 $scope.myItems = [];
                 //$scope.myItems.splice(0);
                 $scope.myPageItemsCount = pageItems;
-                $scope.myItemsTotalCount = totalItems?totalItems:$scope.myPageItemsCount;
+                $scope.myItemsTotalCount = totalItems ? totalItems : $scope.myPageItemsCount;
                 this.generateItems($scope.myItems, $scope.myPageItemsCount, generateComplexItems);
                 //$scope.mySelectedItems=$scope.myItems.slice(0);
             };
 
             $scope.addDateToItems = () => { this.addDateToItems(); };
 
-            var prevServerItemsRequestedCallbackPromise:ng.IPromise<any>;
+            var prevServerItemsRequestedCallbackPromise: ng.IPromise<any>;
+            var serverSideRequestCount = 0;
             $scope.onServerSideItemsRequested = (currentPage:number, pageItems:number, filterBy:string, filterByFields:Object, orderBy:string, orderByReverse:boolean)=>{
                 if(prevServerItemsRequestedCallbackPromise){
                     $timeout.cancel(prevServerItemsRequestedCallbackPromise);
                     prevServerItemsRequestedCallbackPromise = null;
                 }
                 $scope.requestedItemsGridOptions = {
+                    serverSideRequestCount:++serverSideRequestCount,
                     pageItems:pageItems,
                     currentPage:currentPage,
                     filterBy:filterBy,
@@ -155,7 +160,7 @@ module TrNgGridDemo{
                     requestTrapped:true
                 };
 
-                $scope.generateItems(pageItems,100, true);
+                $scope.generateItems(pageItems,$scope.myNextItemsTotalCount, true);
                 prevServerItemsRequestedCallbackPromise = $timeout(()=>{
                     $scope.requestedItemsGridOptions["requestTrapped"] = false;
                     prevServerItemsRequestedCallbackPromise = null;
@@ -229,7 +234,7 @@ module TrNgGridDemo{
                 itemAddress = this.generateAddress();
             }
             items.push({
-                id: parseInt(randomString(Math.random() * 2 + 1, RndGenOptions.Numbers) + idColumnFilter),
+                id: parseInt(idColumnFilter + randomString(Math.random() * 2 + 1, RndGenOptions.Numbers)), //items.length), 
                 name: randomUpercase() + randomString(Math.random() * 5 + 1, RndGenOptions.Lowercase) + this.$scope.myGlobalFilter + nameColumnFilter,
                 address: itemAddress,
             });

@@ -70,6 +70,8 @@ var TrNgGridDemo;
             $scope.myEnableSorting = true;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
+            $scope.myNextItemsTotalCount = 100;
+
             $scope.alert = function (message) {
                 $window.alert(message);
             };
@@ -110,12 +112,14 @@ var TrNgGridDemo;
             };
 
             var prevServerItemsRequestedCallbackPromise;
+            var serverSideRequestCount = 0;
             $scope.onServerSideItemsRequested = function (currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse) {
                 if (prevServerItemsRequestedCallbackPromise) {
                     $timeout.cancel(prevServerItemsRequestedCallbackPromise);
                     prevServerItemsRequestedCallbackPromise = null;
                 }
                 $scope.requestedItemsGridOptions = {
+                    serverSideRequestCount: ++serverSideRequestCount,
                     pageItems: pageItems,
                     currentPage: currentPage,
                     filterBy: filterBy,
@@ -125,7 +129,7 @@ var TrNgGridDemo;
                     requestTrapped: true
                 };
 
-                $scope.generateItems(pageItems, 100, true);
+                $scope.generateItems(pageItems, $scope.myNextItemsTotalCount, true);
                 prevServerItemsRequestedCallbackPromise = $timeout(function () {
                     $scope.requestedItemsGridOptions["requestTrapped"] = false;
                     prevServerItemsRequestedCallbackPromise = null;
@@ -194,7 +198,7 @@ var TrNgGridDemo;
                 itemAddress = this.generateAddress();
             }
             items.push({
-                id: parseInt(TrNgGridDemo.randomString(Math.random() * 2 + 1, 0 /* Numbers */) + idColumnFilter),
+                id: parseInt(idColumnFilter + TrNgGridDemo.randomString(Math.random() * 2 + 1, 0 /* Numbers */)),
                 name: randomUpercase() + TrNgGridDemo.randomString(Math.random() * 5 + 1, 1 /* Lowercase */) + this.$scope.myGlobalFilter + nameColumnFilter,
                 address: itemAddress
             });

@@ -13,7 +13,7 @@
                         This is a test for checking whether the items array is properly monitored by the grid, even if the instance of the array gets replaced inside the scope.
                     </p>
                     <pre id="trNgGrid_items_update_bug">
-                        </pre>
+                    </pre>
                 </div>
                 <div class="col-md-7" project-markup-to="#trNgGrid_items_update_bug">
 <p>
@@ -23,10 +23,11 @@
     Page: <input type="number" min="0" max="3" ng-model="myItemsCurrentPageIndex"></input>
 </p>
 <table 
-        tr-ng-grid 
-        items="myItems" 
-        page-items="5" 
-        current-page="myItemsCurrentPageIndex">
+    tr-ng-grid 
+    items="myItems"
+    page-items="5"
+    order-by="'name'"    
+    current-page="myItemsCurrentPageIndex">
 </table>
                 </div>
             </div>
