@@ -33,7 +33,7 @@ You can download the grid from the `release` folder in the master branch. Make s
 
 ##### Change Log
 
-###### 3.0.3
+###### 3.0.4
 - The initial order of items is now maintained
 - An initial order-by is now working even if it was set prior to binding the list of items 
 - Sorting now works even when the text inside the column header is clicked in IE9
