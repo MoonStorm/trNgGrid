@@ -155,6 +155,7 @@ module TrNgGrid{
         currentPage: number;
         totalItems: number;
         enableFiltering: boolean;
+        enableColumnFiltering: boolean;
         enableSorting: boolean;
         selectionMode: string;
         onDataRequired: (gridOptions: IGridOptions) => void;
@@ -472,6 +473,7 @@ module TrNgGrid{
                 currentPage:0,
                 totalItems:null,
                 enableFiltering:true,
+                enableColumnFiltering:true,
                 enableSorting:true,
                 selectionMode:SelectionMode[SelectionMode.MultiRow],
                 onDataRequiredDelay: 1000,
@@ -1044,6 +1046,7 @@ module TrNgGrid{
                         currentPage: '=?',
                         totalItems: '=?',
                         enableFiltering: '=?',
+                        enableColumnFiltering: '=?',
                         enableSorting: '=?',
                         enableSelections: '=?', // deprecated
                         enableMultiRowSelections: '=?', // deprecated
@@ -1545,7 +1548,7 @@ module TrNgGrid{
         }
         if (!$templateCache.get(TrNgGrid.columnFilterTemplateId)) {
             $templateCache.put(TrNgGrid.columnFilterTemplateId,
-                '<div ng-show="(gridOptions.enableFiltering&&columnOptions.enableFiltering!==false)||columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">'
+                '<div ng-show="(gridOptions.enableFiltering&&gridOptions.enableColumnFiltering!==false&&columnOptions.enableFiltering!==false)||columnOptions.enableFiltering" class="' + TrNgGrid.columnFilterCssClass + '">'
                 + ' <div class="' + TrNgGrid.columnFilterInputWrapperCssClass + '">'
                 + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter" ng-keypress="speedUpAsyncDataRetrieval($event)"></input>'
                 + ' </div>'
