@@ -1,4 +1,0 @@
-[submodule "beta"]
-	path = beta
-	url = https://github.com/MoonStorm/trNgGrid/tree/beta#
-	branch = beta
