@@ -81,6 +81,12 @@
     </Content>
     <Content Include="release\index.html" />
     <Content Include="release\relnotes.html" />
+    <Content Include="release\src\js\trNgGrid.js">
+      <DependentUpon>trNgGrid.ts</DependentUpon>
+    </Content>
+    <Content Include="release\src\js\trNgGrid.min.js">
+      <DependentUpon>trNgGrid.js</DependentUpon>
+    </Content>
     <TypeScriptCompile Include="demo\js\benchmark.ts" />
     <TypeScriptCompile Include="demo\js\demo.ts" />
     <TypeScriptCompile Include="demo\js\routes.ts" />
@@ -102,19 +108,12 @@
     <Content Include="release\src\css\trNgGrid.min.css">
       <DependentUpon>trNgGrid.css</DependentUpon>
     </Content>
-    <Content Include="release\src\js\trNgGrid.js">
-      <DependentUpon>trNgGrid.ts</DependentUpon>
-    </Content>
-    <Content Include="release\src\js\trNgGrid.min.js">
-      <DependentUpon>trNgGrid.js</DependentUpon>
-    </Content>
     <Content Include="release\trNgGrid.min.css" />
     <Content Include="release\trNgGrid.min.js" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="release\src\js\trNgGrid.js.map">
       <DependentUpon>trNgGrid.js</DependentUpon>
-    </Content>
-    <Content Include="release\src\js\trNgGrid.min.js.map">
-      <DependentUpon>trNgGrid.min.js</DependentUpon>
     </Content>
   </ItemGroup>
   <PropertyGroup>
