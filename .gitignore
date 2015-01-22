@@ -1,5 +1,4 @@
-d.ts
 *.suo
-/TrNgGrid.csproj.user
 bin
 obj
+*.user

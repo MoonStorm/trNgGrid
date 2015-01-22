@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Paging
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        By default, all the items in the data array are displayed on a single page in the grid. Scrollbars can be manually added through CSS.<br />
+                        If you wish to activate paging, you must set the <em>page-items</em> attribute. Paging is applied after the data was filtered through the global search filter, the column search filters, and finally after applying sorting.
+                    </p>
+
+                    <pre id="trNgGrid_Sample_Paging"></pre>
+                </div>
+                <div class="col-md-8">
+                    <div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(15)" project-markup-to="#trNgGrid_Sample_Paging">
+<table tr-ng-grid="" items="myItems" page-items="5"></table>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        If the number of pages falls under a certain threshold (which by default is 3), they will all get displayed in the paging section.
+                        Above the threshold however, ellipsis will be displayed instead.
+                        You can override the value of the threshold. More information can be found in the <em>Customizations</em> section.
+                    </p>
+                </div>
+                <div class="col-md-8">
+<div ng-controller="TrNgGridDemo.TestController" class="row" ng-init="generateItems(100)" project-markup-to="#trNgGrid_Sample_Paging">
+    <table tr-ng-grid="" items="myItems" page-items="5"></table>
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

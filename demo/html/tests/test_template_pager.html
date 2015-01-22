@@ -1,0 +1,26 @@
+﻿<div>
+    <div project-markup-to="#trNgGrid_Template_Pager" style="display:none">
+<script type="text/ng-template" id="trNgGridPager.html">
+    <span class="pull-right form-group">
+        <ul class="pagination">
+            <li>
+                <span>
+                    Page:
+                    <select ng-model="gridOptions.currentPage" ng-options="pageIndex as (pageIndex+1) for pageIndex in pageIndexes"></select>
+                </span>
+            </li>
+        </ul>
+    </span>
+</script>
+    </div>
+    <p>
+        A more elegant approach is to access the angular template cache through a ng-template script element included straight into the markup:
+        <pre id="trNgGrid_Template_Pager"></pre>
+    </p>
+    <div ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(10)">
+        <table tr-ng-grid items="myItems" page-items="5"></table>
+    </div>
+    <p>
+        This sample runs in an iframe, otherwise all the grids would use the overriden template.
+    </p>
+</div>

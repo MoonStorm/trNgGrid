@@ -28,29 +28,3 @@ You can download the grid from the `release` folder in the master branch. Make s
 ##### Issues
  Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
  
-
-##### Change Log
-
-###### 3.0.4
-- The initial order of items is now maintained
-- An initial order-by is now working even if it was set prior to binding the list of items 
-- Sorting now works even when the text inside the column header is clicked in IE9
-- The page index now resets in case one of the column filters, the general filter, or the sort column is changed in server-side mode
-
-###### 3.0.3
-- The number of items per page are being properly monitored.
-
-###### 3.0.2
-- Fixed a major data binding issue. External scope wasn't getting synchronized with any changes inside the grid's internal scope.
-- Fixed a bug where the grid would error if the bound items array was not initialized.
-- Fixed the direction of the sorting chevrons.
-- Selection with the SHIFT key when sorting was applied is now working correctly.
-
-###### 3.0.0
-- Multiple types of selection.
-- Ability to override the default CSS and templates.
-- Better handling of various elements in the header: user experience improved and better monitoring of various column settings.
-- Localization support. This doesn't mean though that the grid will provide localized text out of the box.
-- jQuery no longer a dependency.
-- Filtering uses the display format rather than the original field value.
-- Improved pagination.

@@ -1,0 +1,100 @@
+﻿<div class="row">
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-47475030-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <nav class="navbar navbar-default demo-menu" role="navigation" ng-if="!isFrame">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="navbar-brand" dropdown="">
+                <a href="" dropdown-toggle="" class="text-success">
+                    <span ng-class="currentConfiguration.titleCssClass">{{currentConfiguration.fullName}}</span> <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="configuration in configurations">
+                        <a ng-href="/trNgGrid/{{configuration.name}}/index.html">
+                            <span ng-class="configuration.cssClass">{{configuration.fullName}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!--<a class="navbar-brand" ui-sref="demo.default">
+                <span class="text-success">trNgGrid 3.x</span><br/>
+            </a>-->
+        </div>
+
+        <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed=true">
+            <ul class="nav navbar-nav">
+                <li><a ui-sref="demo.common">Plug & Play</a></li>
+                <li><a ui-sref="demo.columns">Column Definition</a></li>
+                <li><a ui-sref="demo.paging">Paging</a></li>
+                <li><a ui-sref="demo.selections">Selections</a></li>
+                <li><a ui-sref="demo.globaloptions">Grid Options</a></li>
+                <li><a ui-sref="demo.serverside">Server Side Queries</a></li>
+                <li><a ui-sref="demo.localization">Localization</a></li>
+                <li><a ui-sref="demo.customizations">Customizations</a></li>
+                <li dropdown="">
+                    <a class="dropdown-toggle" href="" dropdown-toggle="">Test Cases<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a ui-sref="demo.tests.ngswitch">Case #9 (ng-switch)</a></li>
+                        <li><a ui-sref="demo.tests.itemsupdate">Case #6 (replacing the 'items' array) </a></li>
+                        <li><a ui-sref="demo.tests.hybridmode">Case #28 (hybrid mode) </a></li>
+                        <!--<li><a href="#/Benchmark">Benchmarks </a></li>-->
+                        <!--<li><a href="#/TestFixedHeaderFooter">Case #22 (fixed header and footer) </a></li> -->
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="//github.com/MoonStorm/trNgGrid" target="_blank">Source & Download</a></li>
+                <li dropdown="">
+                    <!--onclick="$(this).toggleClass('open'); return false;"-->
+                    <a class="dropdown-toggle" href="" dropdown-toggle="">Bootswatch theme<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">{{theme | capitalize}} (ver. {{themeVersion}})</li>
+                        <li class="divider"></li>
+                        <li><a href="" ng-click="changeTheme('amelia')">Amelia</a></li>
+                        <li><a href="" ng-click="changeTheme('cerulean')">Cerulean</a></li>
+                        <li><a href="" ng-click="changeTheme('cosmo')">Cosmo</a></li>
+                        <li><a href="" ng-click="changeTheme('cyborg')">Cyborg</a></li>
+                        <li><a href="" ng-click="changeTheme('flatly')">Flatly</a></li>
+                        <li><a href="" ng-click="changeTheme('journal')">Journal</a></li>
+                        <li><a href="" ng-click="changeTheme('readable')">Readable</a></li>
+                        <li><a href="" ng-click="changeTheme('simplex')">Simplex</a></li>
+                        <li><a href="" ng-click="changeTheme('slate')">Slate</a></li>
+                        <li><a href="" ng-click="changeTheme('spacelab')">Spacelab</a></li>
+                        <li><a href="" ng-click="changeTheme('united')">United</a></li>
+                        <li><a href="" ng-click="changeTheme('yeti')">Yeti</a></li>
+                        <li ng-if="themeVersion!='3.0.3'"><a href="" ng-click="changeTheme('superhero')">Superhero</a></li>
+                        <li ng-if="themeVersion!='3.0.3'"><a href="" ng-click="changeTheme('lumen')">Lumen</a></li>
+                        <li class="divider"></li>
+                        <li><a href="" ng-repeat="availableVersion in ['3.0.3','3.2.0']" ng-click="changeThemeVersion(availableVersion)">{{availableVersion}}</a></li>
+                        <li class="divider"></li>
+                        <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
+                    </ul>
+                </li>
+                <!--<li><a href="../release/index.html"><span class="text-success">Switch to Release</span></a></li>-->
+            </ul>
+        </div>
+    </nav>
+
+    <div class="col-md-12" ui-view=""></div>
+</div>
