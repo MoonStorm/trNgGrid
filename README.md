@@ -20,8 +20,8 @@ Simply because everything else you're gonna find out there:
 You can download the grid from the `release` folder in the master branch. Make sure you also include Angular and a Boostrap theme of your choice. Themes can be found on the Bootswatch website. Of course you can craft your own, as the grid layout is quite easy to style.
 
 ##### Legend
-Release: master, gh-pages/release
-Beta: beta, gh-pages/beta
+- Release: master, gh-pages/release
+- Beta: beta, gh-pages/beta
 
 ##### Issues
  Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
