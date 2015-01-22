@@ -1,0 +1,13 @@
+*
+!*/
+!/.gitignore
+!/bower.json
+!/package.json
+!/README.md
+!/LICENSE
+!/beta/trNgGrid.min.css
+!/beta/trNgGrid.min.js
+!/beta/src/
+!/release/trNgGrid.min.css
+!/release/trNgGrid.min.js
+!/release/src/
