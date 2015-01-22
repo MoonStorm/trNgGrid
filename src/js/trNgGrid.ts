@@ -1,4 +1,4 @@
-/// <reference path="../external/typings/angularjs/angular.d.ts"/>
+/// <reference path="../../../typings/angularjs/angular.d.ts"/>
 "use strict";
 module TrNgGrid{
     export enum SelectionMode {
