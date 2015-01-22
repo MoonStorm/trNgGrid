@@ -1200,4 +1200,4 @@ var TrNgGrid;
         }
     }
 })(TrNgGrid || (TrNgGrid = {}));
-//# sourceMappingURL=trnggrid.js.map
+//# sourceMappingURL=trNgGrid.js.map
