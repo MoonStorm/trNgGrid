@@ -17,7 +17,11 @@ Simply because everything else you're gonna find out there:
 - easy to maintain, as its code was written under the type safe TypeScript. The repository also has the pure JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend this one).
 
 #### Convinced?
-You can download the grid from the `release` folder in the master branch. Make sure you also include Angular and a Boostrap theme of your choice. Themes can be found on the Bootswatch website. Of course you can craft your own, as the grid layout is quite easy to style.
+You can download the grid from the master branch, which contains the latest release. 
+The files you're interested in are `trNgGrid.min.css` and `trNgGrid.min.js`. 
+Make sure you first include Angular and a Boostrap theme of your choice. 
+Themes can be found on the Bootswatch website. 
+Of course you can craft your own, as the grid layout is quite easy to style.
 
 ##### Legend
 - Release: master, gh-pages/release
@@ -25,4 +29,7 @@ You can download the grid from the `release` folder in the master branch. Make s
 
 ##### Issues
  Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
+
+##### Pull Requests
+ I accept pull requests that contain bug fixes or features that follow the direction of this project. Please target the `beta` branch for this purpose.  
  

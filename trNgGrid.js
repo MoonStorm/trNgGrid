@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/angularjs/angular.d.ts"/>
+﻿/// <reference path="../../../typings/angularjs/angular.d.ts"/>
 "use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
@@ -1200,3 +1200,4 @@ var TrNgGrid;
         }
     }
 })(TrNgGrid || (TrNgGrid = {}));
+
