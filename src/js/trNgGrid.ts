@@ -1450,7 +1450,7 @@ module TrNgGrid {
                 if (input)
                     gridOptions.totalItems = input.length;
 
-                if (!gridOptions.pageItems || !input || input.length == 0)
+                if (!gridOptions.pageItems || !input || input.length === 0)
                     return input;
 
                 if (!gridOptions.currentPage) {
