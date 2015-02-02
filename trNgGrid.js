@@ -1160,7 +1160,7 @@ var TrNgGrid;
                 // dates require special attention
                 if (input instanceof Date) {
                     // we're dealing with a date object, see if we have a localized format for it
-                    var dateFormat = getTranslation(languageId, function (localeTranslations) { return localeTranslations.dateFormat; });
+                    var dateFormat = getTranslation(languageId, function (localeTranslations) { return localeTranslations.localeDateFormat; });
                     // call the date filter
                     translatedText = $filter("date")(input, dateFormat);
                     return translatedText;
