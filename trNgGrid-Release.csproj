@@ -35,13 +35,14 @@
     <Content Include="demo\demo.html" />
     <Content Include="demo\html\columns.html" />
     <Content Include="demo\html\common.html" />
-    <Content Include="demo\html\customizations.html" />
+    <Content Include="demo\html\customizations_instance.html" />
     <Content Include="demo\html\default.html" />
     <Content Include="demo\html\globaloptions.html" />
     <Content Include="demo\html\localization.html" />
     <Content Include="demo\html\paging.html" />
     <Content Include="demo\html\selections.html" />
     <Content Include="demo\html\serverside.html" />
+    <Content Include="demo\html\customizations_global.html" />
     <Content Include="demo\html\tests\test_benchmark.html" />
     <Content Include="demo\html\tests\test_fixed_header_footer.html" />
     <Content Include="demo\html\tests\test_hybrid_mode.html" />
@@ -84,7 +85,16 @@
     <Content Include="release\src\js\trNgGrid.js">
       <DependentUpon>trNgGrid.ts</DependentUpon>
     </Content>
-    <Content Include="release\src\js\trNgGrid.min.js">
+    <Content Include="release\trNgGrid.css">
+      <DependentUpon>trNgGrid.css.bundle</DependentUpon>
+    </Content>
+    <Content Include="release\trNgGrid.js">
+      <DependentUpon>trNgGrid.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="release\trNgGrid.min.css">
+      <DependentUpon>trNgGrid.css</DependentUpon>
+    </Content>
+    <Content Include="release\trNgGrid.min.js">
       <DependentUpon>trNgGrid.js</DependentUpon>
     </Content>
     <TypeScriptCompile Include="demo\js\benchmark.ts" />
@@ -105,22 +115,22 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <TypeScriptCompile Include="release\src\js\trNgGrid.ts" />
     <Content Include="release\src\css\trNgGrid.css" />
-    <Content Include="release\src\css\trNgGrid.min.css">
-      <DependentUpon>trNgGrid.css</DependentUpon>
-    </Content>
-    <Content Include="release\trNgGrid.min.css" />
-    <Content Include="release\trNgGrid.min.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="release\src\js\trNgGrid.js.map">
-      <DependentUpon>trNgGrid.js</DependentUpon>
-    </Content>
+    <Content Include="release\trNgGrid.css.bundle" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="release\trNgGrid.js.bundle" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
@@ -143,9 +153,8 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(ProjectDir)release\src\js\trNgGrid.min.js" "$(ProjectDir)release" 
-copy /y "$(ProjectDir)release\src\css\trNgGrid.min.css" "$(ProjectDir)release"
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

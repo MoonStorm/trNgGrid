@@ -26,4 +26,3 @@ angular.module("trNgGridDemoLocalization", ["trNgGrid"]).config(function () {
     deChTranslation[TrNgGrid.translationDateFormat] = "dd.MM.yyyy";
     TrNgGrid.translations["de-ch"] = deChTranslation;
 });
-//# sourceMappingURL=translations.js.map

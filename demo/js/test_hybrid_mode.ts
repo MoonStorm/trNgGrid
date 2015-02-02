@@ -1,7 +1,4 @@
-﻿/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="demo.ts" />
-
-module TrNgGridDemo {
+﻿module TrNgGridDemo {
     export interface IHybridTestControllerScope extends ITestControllerScope {
         requestedPageNumber: number;
     }
@@ -19,4 +16,7 @@ module TrNgGridDemo {
             };
         }
     }
+
+    angular.module("trNgGridDemo")
+        .controller("TrNgGridDemo.HybridModeTestController", ["$scope", "$window", "$timeout", HybridModeTestController]);
 } 

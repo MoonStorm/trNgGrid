@@ -1,5 +1,3 @@
-/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="demo.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -23,5 +21,5 @@ var TrNgGridDemo;
         return HybridModeTestController;
     })(TrNgGridDemo.TestController);
     TrNgGridDemo.HybridModeTestController = HybridModeTestController;
+    angular.module("trNgGridDemo").controller("TrNgGridDemo.HybridModeTestController", ["$scope", "$window", "$timeout", HybridModeTestController]);
 })(TrNgGridDemo || (TrNgGridDemo = {}));
-//# sourceMappingURL=test_hybrid_mode.js.map

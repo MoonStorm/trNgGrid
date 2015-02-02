@@ -1,7 +1,4 @@
-﻿/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="../../typings/angularjs/angular-route.d.ts" />
-
-module TrNgGridDemo{
+﻿module TrNgGridDemo{
     declare var prettyPrintOne: (unformattedText:string, language?:string, generateLineNumbers?:boolean) => string;
 
     export interface ITestControllerScope extends ng.IScope{
@@ -249,34 +246,52 @@ module TrNgGridDemo{
         }
     }
 
+    function populateSample(dstElement: any, rawText: string) {
+        var formattedText = rawText
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+            //.replace(/\n/g, '<br/>');
+            //.replace(/</g, "&lt;")
+            //.replace(/>/g, "&gt;")
+            //.replace(/"/g, "&quot;");
+        formattedText = prettyPrintOne(formattedText, null, false);
+
+        //.replace(/</g, "&lt;")
+        //.replace(/>/g, "&gt;")
+        //.replace(/"/g, "&quot;");
+        //.replace(/  /g, "&nbsp;&nbsp;");
+        angular.element(dstElement)
+            .html(formattedText)
+            .addClass('prettyprint prettyprinted')
+            .attr("ng-non-bindable", "");        
+    }
+
     angular.module("trNgGridDemo")
-        .directive("projectMarkupTo", [
-            () => {
+        .controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout",  TestController])
+        .directive("projectMarkupTo", [ "$document",
+            ($document:ng.IDocumentService) => { 
                 return {
                     restrict: "EA",
-                    template: (element: JQuery, tAttr: ng.IAttributes) => {
-                        var projectionElementId = tAttr["projectMarkupTo"];
-                        var currentElementContents = element
-                            .html()
-                            .replace(/&/g, '&amp;')
-                            .replace(/"/g, '&quot;')
-                            .replace(/'/g, '&#39;')
-                            .replace(/</g, '&lt;')
-                            .replace(/>/g, '&gt;')
-                            .replace(/\n/g, '<br/>');
-                        //.replace(/</g, "&lt;")
-                        //.replace(/>/g, "&gt;")
-                        //.replace(/"/g, "&quot;");
-                        currentElementContents = prettyPrintOne(currentElementContents, null, false);
-
-                        //.replace(/</g, "&lt;")
-                        //.replace(/>/g, "&gt;")
-                        //.replace(/"/g, "&quot;");
-                        //.replace(/  /g, "&nbsp;&nbsp;");
-                        angular.element(document.querySelector(projectionElementId))
-                            .html(currentElementContents)
-                            .addClass('prettyprint prettyprinted')
-                            .attr("ng-non-bindable", "");
+                    template: (element: JQuery, tAttrs: ng.IAttributes) => {
+                        var projectionElementId = tAttrs["projectMarkupTo"];
+                        populateSample(document.querySelector(projectionElementId), element.html());
+                    }
+                };
+            }
+        ])
+        .directive("projectMarkupFromStateView", [ "$http", "$state",
+            ($http:ng.IHttpService, $state:ng.ui.IStateService) => {
+                return {
+                    restrict: "EA",
+                    compile: (element: JQuery, tAttrs: Object) => {
+                        var stateView = tAttrs["projectMarkupFromStateView"];
+                        var currentStateView = $state.current.views[stateView];
+                        $http.get(currentStateView.template).success((data: string) => {
+                            populateSample(element, data);
+                        });
                     }
                 };
             }

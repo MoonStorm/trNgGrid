@@ -1,4 +1,3 @@
-/// <reference path="../../typings/angularjs/angular.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     function applyMeasureTime(scope, fct) {
@@ -21,7 +20,7 @@ var TrNgGridDemo;
                 showColumnMenu: true,
                 enableSorting: true
             };
-            TrNgGrid.debugMode = false;
+            // TrNgGrid.debugMode = false;
         }
         return BenchmarkController;
     })();
@@ -62,4 +61,3 @@ var TrNgGridDemo;
     TrNgGridDemo.generateBenchmarkItems = generateBenchmarkItems;
     ;
 })(TrNgGridDemo || (TrNgGridDemo = {}));
-//# sourceMappingURL=benchmark.js.map

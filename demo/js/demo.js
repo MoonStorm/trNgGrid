@@ -1,5 +1,3 @@
-/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="../../typings/angularjs/angular-route.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     (function (RndGenOptions) {
@@ -195,26 +193,39 @@ var TrNgGridDemo;
         return TestController;
     })();
     TrNgGridDemo.TestController = TestController;
-    angular.module("trNgGridDemo").directive("projectMarkupTo", [
-        function () {
-            return {
-                restrict: "EA",
-                template: function (element, tAttr) {
-                    var projectionElementId = tAttr["projectMarkupTo"];
-                    var currentElementContents = element.html().replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>');
-                    //.replace(/</g, "&lt;")
-                    //.replace(/>/g, "&gt;")
-                    //.replace(/"/g, "&quot;");
-                    currentElementContents = prettyPrintOne(currentElementContents, null, false);
-                    //.replace(/</g, "&lt;")
-                    //.replace(/>/g, "&gt;")
-                    //.replace(/"/g, "&quot;");
-                    //.replace(/  /g, "&nbsp;&nbsp;");
-                    angular.element(document.querySelector(projectionElementId)).html(currentElementContents).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
-                }
-            };
-        }
-    ]).filter("testComputedField", function () {
+    function populateSample(dstElement, rawText) {
+        var formattedText = rawText.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        //.replace(/\n/g, '<br/>');
+        //.replace(/</g, "&lt;")
+        //.replace(/>/g, "&gt;")
+        //.replace(/"/g, "&quot;");
+        formattedText = prettyPrintOne(formattedText, null, false);
+        //.replace(/</g, "&lt;")
+        //.replace(/>/g, "&gt;")
+        //.replace(/"/g, "&quot;");
+        //.replace(/  /g, "&nbsp;&nbsp;");
+        angular.element(dstElement).html(formattedText).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
+    }
+    angular.module("trNgGridDemo").controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).directive("projectMarkupTo", ["$document", function ($document) {
+        return {
+            restrict: "EA",
+            template: function (element, tAttrs) {
+                var projectionElementId = tAttrs["projectMarkupTo"];
+                populateSample(document.querySelector(projectionElementId), element.html());
+            }
+        };
+    }]).directive("projectMarkupFromStateView", ["$http", "$state", function ($http, $state) {
+        return {
+            restrict: "EA",
+            compile: function (element, tAttrs) {
+                var stateView = tAttrs["projectMarkupFromStateView"];
+                var currentStateView = $state.current.views[stateView];
+                $http.get(currentStateView.template).success(function (data) {
+                    populateSample(element, data);
+                });
+            }
+        };
+    }]).filter("testComputedField", function () {
         return function (combinedFieldValueUnused, item) {
             return item.id + " / " + item.name;
         };
@@ -226,4 +237,3 @@ var TrNgGridDemo;
         };
     });
 })(TrNgGridDemo || (TrNgGridDemo = {}));
-//# sourceMappingURL=demo.js.map

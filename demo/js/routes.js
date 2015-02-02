@@ -1,16 +1,14 @@
-/// <reference path="../../typings/angularjs/angular.d.ts" />
-/// <reference path="../../typings/uirouter/angular-ui-router.d.ts" />
 var TrNgGridDemo;
 (function (TrNgGridDemo) {
     var allConfigurations = {
         "release": {
             name: "release",
-            fullName: "trNgGrid 3.0.4",
+            fullName: "trNgGrid v3.0.4",
             titleCssClass: "text-success"
         },
         "beta": {
             name: "beta",
-            fullName: "trNgGrid beta",
+            fullName: "trNgGrid vNext (BETA)",
             titleCssClass: "text-warning"
         }
     };
@@ -43,8 +41,8 @@ var TrNgGridDemo;
                                 {
                                     name: 'trNgGrid',
                                     files: [
-                                        '../' + configuration + '/src/js/trNgGrid.js',
-                                        '../' + configuration + '/src/css/trNgGrid.css'
+                                        '../' + configuration + '/trNgGrid.js',
+                                        '../' + configuration + '/trNgGrid.css'
                                     ],
                                     cache: false
                                 },
@@ -134,8 +132,15 @@ var TrNgGridDemo;
                 url: '/ServerSide',
                 templateUrl: '../demo/html/serverside.html'
             }).state('demo.customizations', {
-                url: '/Customizations',
-                templateUrl: '../demo/html/customizations.html'
+                url: '',
+                template: '<ui-view/>',
+                abstract: true
+            }).state('demo.customizations.global', {
+                url: '/Customizations_Global',
+                templateUrl: '../demo/html/customizations_global.html'
+            }).state('demo.customizations.instance', {
+                url: '/Customizations_Instance',
+                templateUrl: '../demo/html/customizations_instance.html'
             }).state('demo.globaloptions', {
                 url: '/GlobalOptions',
                 templateUrl: '../demo/html/globaloptions.html'
@@ -145,16 +150,35 @@ var TrNgGridDemo;
                 resolve: {
                     loadMyCtrl: [
                         '$ocLazyLoad',
-                        function ($ocLazyLoad) {
-                            // you can lazy load files for an existing module
-                            return $ocLazyLoad.load({
-                                name: 'trNgGridDemoLocalization',
-                                files: [
-                                    '../demo/js/translations.js'
-                                ],
-                                cache: false
-                            });
-                        }
+                        function ($ocLazyLoad) { return $ocLazyLoad.load({
+                            name: 'trNgGridDemoLocalization',
+                            files: [
+                                '../demo/js/translations.js'
+                            ],
+                            cache: false
+                        }); }
+                    ]
+                }
+            }).state('demo.localization_beta', {
+                url: '/Localization_Beta',
+                views: {
+                    '': {
+                        templateUrl: '../demo/html/localization_beta.html'
+                    },
+                    'source': {
+                        template: '../demo/js/translations_beta.ts'
+                    }
+                },
+                resolve: {
+                    loadMyCtrl: [
+                        '$ocLazyLoad',
+                        function ($ocLazyLoad) { return $ocLazyLoad.load({
+                            name: 'trNgGridDemoLocalization',
+                            files: [
+                                '../demo/js/translations_beta.js'
+                            ],
+                            cache: false
+                        }); }
                     ]
                 }
             }).state('demo.templatepager', {
@@ -198,9 +222,8 @@ var TrNgGridDemo;
                 url: '/TestFixedHeaderFooter',
                 templateUrl: '../demo/html/tests/test_fixed_header_footer.html'
             });
-            // html5 is not working without server-side changes
+            // html5 is not working without server-side support
             //$location.html5Mode(true);
         }
     ]);
 })(TrNgGridDemo || (TrNgGridDemo = {}));
-//# sourceMappingURL=routes.js.map

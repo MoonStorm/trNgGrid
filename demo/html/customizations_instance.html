@@ -39,15 +39,26 @@
                 <input type="checkbox" ng-model="areAllSelected" 
                        ng-change="!areAllSelected?mySelectedItems.splice(0, mySelectedItems.length):mySelectedItems.push.apply(mySelectedItems, myItems)"/>
             </th>
-            <th field-name="id"></th>
+            <th field-name="id">
+                
+            </th>
             <th field-name="name"></th>
             <th field-name="address"></th>
+            <th>
+                <div class="tr-ng-title">Custom Col Summary</div>
+            </th>
         </tr>
     </thead>
     <tbody>
     <tr>
         <td>
             <input type="checkbox" ng-model="isSelected" ng-checked="mySelectedItems.indexOf(gridItem)>=0" ng-change="isSelected?mySelectedItems.push(gridItem):mySelectedItems.splice(mySelectedItems.indexOf(gridItem),1)"/>
+        </td>
+        <td>
+            <div>
+                Custom Summary for
+                {{gridDisplayItem.name}}
+            </div>
         </td>
         <td>
             <button class="btn btn-default btn-sm" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
@@ -124,104 +135,4 @@
 
         </div>
     </div>
-
-    <hr/>
-
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            Permanent Customizations
-        </div>
-        <div class="panel-body">
-            <p>
-                When you've configured your own app, you have the option of tweaking the default look and feel of all the trNgGrid instances.
-            </p>
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Styles
-                        </div>
-                        <div class="panel-body">
-                            <p>
-                                Various variable are used by the grid when rendering and some of them are CSS classes that will get applied to various elements on the grids.
-                                You can customize these the moment you configure your app:
-                            </p>
-                            <pre>
-.run(function () {
-    TrNgGrid.tableCssClass = "tr-ng-grid table table-bordered table-hover";
-    TrNgGrid.cellCssClass = "tr-ng-cell";
-    TrNgGrid.headerCellCssClass = "tr-ng-column-header " + TrNgGrid.cellCssClass;
-    TrNgGrid.bodyCellCssClass = cellCssClass;
-    TrNgGrid.columnTitleCssClass = "tr-ng-title";
-    TrNgGrid.columnSortCssClass = "tr-ng-sort";
-    TrNgGrid.columnFilterCssClass = "tr-ng-column-filter";
-    TrNgGrid.columnFilterInputWrapperCssClass = "";
-    TrNgGrid.columnSortActiveCssClass = "tr-ng-sort-active text-info";
-    TrNgGrid.columnSortInactiveCssClass = "tr-ng-sort-inactive text-muted";
-    TrNgGrid.columnSortReverseOrderCssClass = "tr-ng-sort-order-reverse glyphicon glyphicon-chevron-up";
-    TrNgGrid.columnSortNormalOrderCssClass = "tr-ng-sort-order-normal glyphicon glyphicon-chevron-down";
-    TrNgGrid.rowSelectedCssClass = "active";
-    TrNgGrid.footerCssClass = "tr-ng-grid-footer form-inline";
-})
-                        </pre>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Default options
-                        </div>
-                        <div class="panel-body">
-                            <p>
-                                A number of default options can also be changed. These are defaults for all the instances of trNgGrid present on your site.
-                            </p>
-                            <pre>
-.run(function () {
-    TrNggrid.defaultColumnOptions.displayAlign="center";
-    TrNggrid.defaultPagerMinifiedPageCountThreshold = 10;
-})
-                       </pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Templates
-                        </div>
-                        <div class="panel-body">
-                            <p>
-                                Most of the templates used throughout the construction of the grid can be customized.
-                                You can override them in your app config.
-                                Browse through the code of the <em>trNgGrid.ts</em> to find the default templates and their identifiers.
-                            </p>
-                            <h4 class="text-warning">
-                                As you'll be marrying your templates with the inner guts of the component,
-                                you'll have to check and adjust your custom templates whenever you upgrade.
-                            </h4>
-                            <p>
-                                The example below shows how to override the default pager template.
-                            </p>
-
-                            <pre>
-.run(["$templateCache", function ($templateCache){
-   $templateCache.put(
-        TrNgGrid.footerPagerTemplateId, 
-        'Copy & paste the content of the template from the trNgGrid.ts file. Adjust it to your needs here.'
-   );
-}])
-                                </pre>
-                            <iframe id="eframe" name="eframe" src="#/TemplatePager?isFrame" style="height:55em;">
-                                <p>Your browser does not support iframes.</p>
-                            </iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>

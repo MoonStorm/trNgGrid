@@ -1,4 +1,5 @@
-﻿angular.module("trNgGridDemoLocalization", ["trNgGrid"])
+﻿angular
+    .module("trNgGridDemoLocalization", ["trNgGrid"])
     .config(() => {
         TrNgGrid.debugMode = true;
 

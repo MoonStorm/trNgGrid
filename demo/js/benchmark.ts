@@ -1,6 +1,4 @@
-﻿/// <reference path="../../typings/angularjs/angular.d.ts" />
-
-module TrNgGridDemo {
+﻿module TrNgGridDemo {
     declare var ngGridFlexibleHeightPlugin;
 
     export interface IBenchmarkScope extends ITestControllerScope{
@@ -31,7 +29,7 @@ module TrNgGridDemo {
                 enableSorting:true
 
             };
-            TrNgGrid.debugMode = false;
+            // TrNgGrid.debugMode = false;
         }
     }
 

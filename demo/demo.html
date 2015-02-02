@@ -50,8 +50,16 @@
                 <li><a ui-sref="demo.selections">Selections</a></li>
                 <li><a ui-sref="demo.globaloptions">Grid Options</a></li>
                 <li><a ui-sref="demo.serverside">Server Side Queries</a></li>
-                <li><a ui-sref="demo.localization">Localization</a></li>
-                <li><a ui-sref="demo.customizations">Customizations</a></li>
+                <!--<li><a ui-sref="demo.customizations">Customizations</a></li>-->
+                <li dropdown="">
+                    <a class="dropdown-toggle" href="" dropdown-toggle="">Customizations<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a ui-sref="demo.customizations.instance">Per Instance</a></li>
+                        <li ng-if="currentConfiguration.name=='release'"><a ui-sref="demo.customizations.global">Global</a></li>
+                        <li ng-if="currentConfiguration.name=='release'"><a ui-sref="demo.localization">Localization</a></li>
+                        <li ng-if="currentConfiguration.name=='beta'"><a ui-sref="demo.localization_beta">Localization (breaking changes)</a></li>
+                    </ul>
+                </li>
                 <li dropdown="">
                     <a class="dropdown-toggle" href="" dropdown-toggle="">Test Cases<b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">

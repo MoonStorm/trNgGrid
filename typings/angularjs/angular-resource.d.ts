@@ -146,13 +146,13 @@ declare module ng.resource {
 }
 
 /** extensions to base ng based on using angular-resource */
-declare module ng {
+//declare module ng {
 
-    interface IModule {
-        /** creating a resource service factory */
-        factory(name: string, resourceServiceFactoryFunction: ng.resource.IResourceServiceFactoryFunction<any>): IModule;
-    }
-}
+//    interface IModule {
+//        /** creating a resource service factory */
+//        factory(name: string, resourceServiceFactoryFunction: ng.resource.IResourceServiceFactoryFunction<any>): IModule;
+//    }
+//}
 
 interface Array<T>
 {
