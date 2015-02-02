@@ -6,12 +6,15 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-7">
+                    <p class="text-danger">
+                        WARNING: This version contains breaking changes from an earlier version. Localized texts are no longer accepted on the global object.
+                    </p>
                     <p>
                         The grid sports a basic translation filter, which is automatically used for all the static labels and field names.
                         You are required to provide the translations for different languages you'd like to support, and also make sure the language is properly set inside the <em>locale</em> attribute.
                     </p>
                     <p>
-                        You can set the translation mappings in the app configuration section.<br />
+                        You can set the translation mappings in the app configuration section.<br/>
                         A special mapping is <em>dateFormat</em>, which can be used to localize date fields.
                     </p>
                     <pre project-markup-from-state-view="source">
