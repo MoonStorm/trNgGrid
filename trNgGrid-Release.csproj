@@ -122,6 +122,12 @@
   <ItemGroup>
     <Content Include="release\trNgGrid.js.bundle" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="release\bower.json" />
+    <Content Include="release\LICENSE" />
+    <Content Include="release\package.json" />
+    <Content Include="release\README.md" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
