@@ -1,7 +1,7 @@
 angular.module("trNgGridDemoLocalization", ["trNgGrid"]).config(["trNgGridConfigurationProvider", function (gridConfiguration) {
     // default
     gridConfiguration.defaultTranslations({
-        localedateFormat: "yyyy-MM-dd"
+        localeDateFormat: "yyyy-MM-dd"
     });
     // 'en-gb'
     gridConfiguration.translations("en-gb", {

@@ -3,7 +3,7 @@
     .config(["trNgGridConfigurationProvider", function(gridConfiguration: TrNgGrid.GridConfigurationProvider) {
         // default
         gridConfiguration.defaultTranslations({
-            localedateFormat: "yyyy-MM-dd"
+            localeDateFormat: "yyyy-MM-dd"
         });
 
         // 'en-gb'
