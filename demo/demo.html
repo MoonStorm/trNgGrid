@@ -44,23 +44,24 @@
 
         <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed=true">
             <ul class="nav navbar-nav">
-                <li><a ui-sref="demo.common">Plug & Play</a></li>
-                <li><a ui-sref="demo.columns">Column Definition</a></li>
-                <li><a ui-sref="demo.paging">Paging</a></li>
-                <li><a ui-sref="demo.selections">Selections</a></li>
-                <li><a ui-sref="demo.globaloptions">Grid Options</a></li>
-                <li><a ui-sref="demo.serverside">Server Side Queries</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.common">Plug & Play</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.columns">Column Definition</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.paging">Paging</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.selections">Selections</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.globaloptions">Grid Options</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.serverside">Server Side Queries</a></li>
                 <!--<li><a ui-sref="demo.customizations">Customizations</a></li>-->
-                <li dropdown="">
+                <li ui-sref-active="active" dropdown="">
                     <a class="dropdown-toggle" href="" dropdown-toggle="">Customizations<b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="demo.customizations.instance">Per Instance</a></li>
                         <li ng-if="currentConfiguration.name=='release'"><a ui-sref="demo.customizations.global">Global</a></li>
+                        <li ng-if="currentConfiguration.name=='beta'"><a ui-sref="demo.customizations.global_beta">Global (breaking changes)</a></li>
                         <li ng-if="currentConfiguration.name=='release'"><a ui-sref="demo.localization">Localization</a></li>
                         <li ng-if="currentConfiguration.name=='beta'"><a ui-sref="demo.localization_beta">Localization (breaking changes)</a></li>
                     </ul>
                 </li>
-                <li dropdown="">
+                <li ui-sref-active="active" dropdown="">
                     <a class="dropdown-toggle" href="" dropdown-toggle="">Test Cases<b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="demo.tests.ngswitch">Case #9 (ng-switch)</a></li>
@@ -91,11 +92,11 @@
                         <li><a href="" ng-click="changeTheme('spacelab')">Spacelab</a></li>
                         <li><a href="" ng-click="changeTheme('united')">United</a></li>
                         <li><a href="" ng-click="changeTheme('yeti')">Yeti</a></li>
-                        <li ng-if="themeVersion!='3.0.3'"><a href="" ng-click="changeTheme('superhero')">Superhero</a></li>
-                        <li ng-if="themeVersion!='3.0.3'"><a href="" ng-click="changeTheme('lumen')">Lumen</a></li>
+                        <li><a href="" ng-click="changeTheme('superhero')">Superhero</a></li>
+                        <li><a href="" ng-click="changeTheme('lumen')">Lumen</a></li> <!--ng-if="themeVersion!='3.0.3'"-->
                         <li class="divider"></li>
-                        <li><a href="" ng-repeat="availableVersion in ['3.0.3','3.2.0']" ng-click="changeThemeVersion(availableVersion)">{{availableVersion}}</a></li>
-                        <li class="divider"></li>
+                        <!--<li><a href="" ng-repeat="availableVersion in ['3.0.3','3.2.0']" ng-click="changeThemeVersion(availableVersion)">{{availableVersion}}</a></li>-->
+                        <!--<li class="divider"></li>-->
                         <li><a href="//bootswatch.com/" target="_blank">Bootswatch Home Page</a></li>
                     </ul>
                 </li>

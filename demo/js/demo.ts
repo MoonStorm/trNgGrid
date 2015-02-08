@@ -83,7 +83,7 @@
     };
 
     export class TestController{ 
-        constructor(public $scope:ITestControllerScope, $window:ng.IWindowService, $timeout:ng.ITimeoutService){
+        constructor(public $scope: ITestControllerScope, $window: ng.IWindowService, $timeout: ng.ITimeoutService) {
             $scope.externalTestProp = "Externals should be visible";
             $scope.myLocale = "en";
             $scope.myGlobalFilter="";

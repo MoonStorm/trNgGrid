@@ -1,0 +1,29 @@
+﻿<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Global Customizations
+        </div>
+        <div class="panel-body">
+            <p>
+                When you've configured your own app, you have the option of tweaking the default look and feel of all the trNgGrid instances.
+            </p>
+            <div ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(100)">
+                <table tr-ng-grid items="myItems" page-items="5" order-by="'id'"></table>
+            </div>
+            <p>
+                Almost all the templates and the CSS classes, together with other global options, can be configured at start time.
+                You can customize these the moment you configure your app:
+            </p>
+            <pre project-markup-from-state-view="source">
+            </pre>
+            <p>
+                You can find all the templates in <em>beta/src/js/trNgGridConfiguration.ts</em>.
+                Find your inspiration there when you wish to override the default look and feel of the grid.
+            </p>
+            <h4 class="text-warning">
+                As you'll be marrying your templates with the inner guts of the component,
+                you'll have to check and adjust your custom templates whenever you upgrade.
+            </h4>
+        </div>
+    </div>
+</div>

@@ -90,6 +90,7 @@
     <Content Include="demo\html\selections.html" />
     <Content Include="demo\html\serverside.html" />
     <Content Include="demo\html\localization_beta.html" />
+    <Content Include="demo\html\customizations_global_beta.html" />
     <Content Include="demo\html\tests\test_benchmark.html" />
     <Content Include="demo\html\tests\test_fixed_header_footer.html" />
     <Content Include="demo\html\tests\test_hybrid_mode.html" />
@@ -98,6 +99,9 @@
     <Content Include="demo\html\tests\test_template_pager.html" />
     <Content Include="demo\js\benchmark.js">
       <DependentUpon>benchmark.ts</DependentUpon>
+    </Content>
+    <Content Include="demo\js\customizations_global_beta.js">
+      <DependentUpon>customizations_global_beta.ts</DependentUpon>
     </Content>
     <Content Include="demo\js\demo.js">
       <DependentUpon>demo.ts</DependentUpon>
@@ -117,6 +121,7 @@
     <TypeScriptCompile Include="beta\src\js\trNgGrid.ts" />
     <TypeScriptCompile Include="beta\src\js\trNgGridConfiguration.ts" />
     <TypeScriptCompile Include="demo\js\benchmark.ts" />
+    <TypeScriptCompile Include="demo\js\customizations_global_beta.ts" />
     <TypeScriptCompile Include="demo\js\demo.ts" />
     <TypeScriptCompile Include="demo\js\routes.ts" />
     <TypeScriptCompile Include="demo\js\test_hybrid_mode.ts" />

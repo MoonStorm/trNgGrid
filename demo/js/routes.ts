@@ -46,7 +46,7 @@
                                 '$ocLazyLoad', '$stateParams', '$location', ($ocLazyLoad, $stateParams: ng.ui.IStateParams, $location: ng.ILocationService) => {
                                     var configuration = $location.absUrl().indexOf("/release/") >= 0 ? "release" : "beta";
                                     var theme = $stateParams["theme"] || "slate";
-                                    var themeVersion = $stateParams["themeVersion"] || "3.0.3";
+                                    var themeVersion = $stateParams["themeVersion"] || "3.3.0";
                                     $stateParams["theme"] = theme;
                                     $stateParams["themeVersion"] = themeVersion;
                                     $stateParams["configuration"] = configuration;
@@ -77,6 +77,7 @@
                                             name: 'ui.bootstrap',
                                             files:
                                             [
+                                                '//necolas.github.io/normalize.css/latest/normalize.css',
                                                 '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.js',
                                                 '//google-code-prettify.googlecode.com/svn/loader/prettify.js',
                                                 '//google-code-prettify.googlecode.com/svn/loader/prettify.css',
@@ -92,8 +93,24 @@
                             ]
                         },
                         controller: [
-                            '$scope', '$stateParams', '$state', '$window',
-                            ($scope: IMainControllerScope, $stateParams: ng.ui.IStateParams, $state: ng.ui.IStateService, $window: ng.IWindowService) => {
+                            '$scope', '$stateParams', '$state', '$window', '$timeout',
+                            ($scope: IMainControllerScope, $stateParams: ng.ui.IStateParams, $state: ng.ui.IStateService, $window: ng.IWindowService, $timeout:ng.ITimeoutService) => {
+                                var stateChangeDereg = $scope.$on('$stateChangeSuccess', (event: ng.IAngularEvent, toState: ng.ui.IState, toParams: ng.ui.IStateParams, fromState: ng.ui.IState, fromParams: ng.ui.IStateParams) => {
+                                    var templateStateRegex = /^demo\.customizations\.global.*/gi;
+                                    if ((fromState.name != toState.name && fromState.name != "" && (fromState.name.match(templateStateRegex) || toState.name.match(templateStateRegex)))
+                                        || (fromParams["theme"] && fromParams["theme"] != toParams["theme"])
+                                        || (fromParams["themeVersion"] && fromParams["themeVersion"] != toParams["themeVersion"])
+                                        || (fromParams["configuration"] && fromParams["configuration"] != toParams["configuration"])) {
+
+                                        //event.preventDefault();
+                                        //stateChangeDereg();
+                                        $window.location.reload();
+
+                                        //$timeout(() => {
+                                        //    $state.transitionTo(toState.name, toParams, { location:true, inherit:true, reload: true });
+                                        //});
+                                    }
+                                });
                                 $scope.isFrame = !!$stateParams["isFrame"];
                                 $scope.configurations = allConfigurations;
                                 $scope.currentConfiguration = $scope.configurations[$stateParams["configuration"]];
@@ -173,7 +190,28 @@
                     }).state('demo.customizations.global', {
                         url: '/Customizations_Global',
                         templateUrl: '../demo/html/customizations_global.html'
-                    }).state('demo.customizations.instance', {
+                    }).state('demo.customizations.global_beta', {
+                        url: '/Customizations_Global_Beta',
+                        views: {
+                            '': {
+                                templateUrl: '../demo/html/customizations_global_beta.html'
+                            },
+                            'source': {
+                                template: '../demo/js/customizations_global_beta.ts'
+                            },
+                        },
+                        resolve: {
+                                loadMyCtrl: [
+                                    '$ocLazyLoad', $ocLazyLoad => $ocLazyLoad.load({
+                                        name: 'trNgGridDemoGlobalCustomizations',
+                                        files: [
+                                            '../demo/js/customizations_global_beta.js'
+                                        ],
+                                        cache: false
+                                    })
+                                ]
+                        }
+                }).state('demo.customizations.instance', {
                         url: '/Customizations_Instance',
                         templateUrl: '../demo/html/customizations_instance.html'
                     }).state('demo.globaloptions', {
