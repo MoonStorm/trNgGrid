@@ -208,16 +208,20 @@ module TrNgGrid {
     interface IGridFooterScope extends IGridScope {
         isCustomized?: boolean;
         isPaged: boolean;
-        extendedControlsActive: boolean;
         totalItemsCount: number;
-        startItemIndex: number;
-        lastPageIndex: number;
-        pageIndexes: Array<number>;
-        endItemIndex: number;
-        pageCanGoBack: boolean;
-        pageCanGoForward: boolean;
-        pageSelectionActive: boolean;
-        switchPageSelection: ($event: ng.IAngularEvent, pageSelectionActive: boolean) => void;
+        visibleStartItemIndex: number;
+        visibleEndItemIndex: number;
+        visiblePageRange: Array<number>;
+        pageRangeFullCoverage: boolean;
+        lastPage: number;
+
+        //extendedControlsActive: boolean;
+        //pageSelectionActive: boolean;
+        //pageIndexes: Array<number>;
+        //endItemIndex: number;
+        //pageCanGoBack: boolean;
+        //pageCanGoForward: boolean;
+        //switchPageSelection: ($event: ng.IAngularEvent, pageSelectionActive: boolean) => void;
         navigateToPage: (pageIndex: number) => void;
     }
 
@@ -1289,75 +1293,56 @@ module TrNgGrid {
                                                 : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
 
                     scope.isPaged = (!!scope.gridOptions.pageItems) && (scope.gridOptions.pageItems < scope.totalItemsCount);
-                    scope.extendedControlsActive = false;
-                    scope.lastPageIndex = (!scope.totalItemsCount || !scope.isPaged)
+                    scope.lastPage = (!scope.totalItemsCount || !scope.isPaged)
                                               ? 0
                                               : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
-                    if (scope.gridOptions.currentPage > scope.lastPageIndex) {
+                    if (scope.gridOptions.currentPage > scope.lastPage) {
                         // this will unfortunately trigger another query if in server side data query mode
-                        scope.gridOptions.currentPage = scope.lastPageIndex;
+                        scope.gridOptions.currentPage = scope.lastPage;
                     }
 
-                    scope.startItemIndex = scope.isPaged ? (scope.gridOptions.pageItems * scope.gridOptions.currentPage) : 0;
-                    scope.endItemIndex = scope.isPaged ? (scope.startItemIndex + scope.gridOptions.pageItems - 1) : scope.totalItemsCount - 1;
-                    if (scope.endItemIndex >= scope.totalItemsCount) {
-                        scope.endItemIndex = scope.totalItemsCount - 1;
+                    scope.visibleStartItemIndex = scope.isPaged ? (scope.gridOptions.pageItems * scope.gridOptions.currentPage) : 0;
+                    scope.visibleEndItemIndex = scope.isPaged ? (scope.visibleStartItemIndex + scope.gridOptions.pageItems - 1) : scope.totalItemsCount - 1;
+                    if (scope.visibleEndItemIndex >= scope.totalItemsCount) {
+                        scope.visibleEndItemIndex = scope.totalItemsCount - 1;
                     }
-                    if (scope.endItemIndex < scope.startItemIndex) {
-                        scope.endItemIndex = scope.startItemIndex;
+                    if (scope.visibleEndItemIndex < scope.visibleStartItemIndex) {
+                        scope.visibleEndItemIndex = scope.visibleStartItemIndex;
                     }
 
-                    scope.pageCanGoBack = scope.isPaged && scope.gridOptions.currentPage > 0;
-                    scope.pageCanGoForward = scope.isPaged && scope.gridOptions.currentPage < scope.lastPageIndex;
+                    var pageIndexHalfRange = Math.floor(gridConfiguration.pagerOptions.minifiedPageCountThreshold / 2);
+                    var lowPageIndex = scope.gridOptions.currentPage - pageIndexHalfRange;
+                    var highPageIndex = scope.gridOptions.currentPage + pageIndexHalfRange;
 
-                    scope.pageIndexes = scope.pageIndexes || [];
-                    scope.pageIndexes.splice(0);
-                    if (scope.isPaged) {
-                        if (scope.lastPageIndex + 1 > gridConfiguration.pagerOptions.minifiedPageCountThreshold) {
-                            scope.extendedControlsActive = true;
-
-                            var pageIndexHalfRange = Math.floor(gridConfiguration.pagerOptions.minifiedPageCountThreshold / 2);
-                            var lowPageIndex = scope.gridOptions.currentPage - pageIndexHalfRange;
-                            var highPageIndex = scope.gridOptions.currentPage + pageIndexHalfRange;
-
-                            // compute the high and low
-                            if (lowPageIndex < 0) {
-                                highPageIndex += -lowPageIndex;
-                                lowPageIndex = 0;
-                            }
-                            else if (highPageIndex > scope.lastPageIndex) {
-                                lowPageIndex -= highPageIndex - scope.lastPageIndex;
-                                highPageIndex = scope.lastPageIndex;
-                            }
-
-                            // add the extra controls where needed
-                            if (lowPageIndex > 0) {
-                                scope.pageIndexes.push(null);
-                                lowPageIndex++;
-                            }
-                            var highPageEllipsed = false;
-                            if (highPageIndex < scope.lastPageIndex) {
-                                highPageEllipsed = true;
-                                highPageIndex--;
-                            }
-
-                            for (var pageIndex = lowPageIndex; pageIndex <= highPageIndex; pageIndex++) {
-                                scope.pageIndexes.push(pageIndex);
-                            }
-
-                            if (highPageEllipsed) {
-                                scope.pageIndexes.push(null);
-                            }
-                        }
-                        else {
-                            scope.extendedControlsActive = false;
-                            // we can display all of them
-                            for (var pageIndex = 0; pageIndex <= scope.lastPageIndex; pageIndex++) {
-                                scope.pageIndexes.push(pageIndex);
-                            }
-                        }
+                    // stick the range to either the low end or high end
+                    if (lowPageIndex < 0) {
+                        highPageIndex += -lowPageIndex;
+                        lowPageIndex = 0;
                     }
-                    scope.pageSelectionActive = scope.pageIndexes.length > 1;
+                    else if (highPageIndex > scope.lastPage) {
+                        lowPageIndex -= highPageIndex - scope.lastPage;
+                        highPageIndex = scope.lastPage;
+                    }
+
+                    // final fix for the range
+                    if (lowPageIndex < 0)
+                        lowPageIndex = 0;
+                    if (highPageIndex > scope.lastPage)
+                        highPageIndex = scope.lastPage; 
+
+                    // give the bindings a bit of help by providing the list of page indexes
+                    if (!scope.visiblePageRange
+                        || scope.visiblePageRange.length !== (highPageIndex - lowPageIndex + 1)
+                        || scope.visiblePageRange[0] !== lowPageIndex
+                        || scope.visiblePageRange[scope.visiblePageRange.length - 1] !== highPageIndex) {
+
+                        scope.visiblePageRange = [];
+                        for (var currentPageIndex = lowPageIndex; currentPageIndex <= highPageIndex; currentPageIndex++) {
+                            scope.visiblePageRange.push(currentPageIndex);
+                        }                        
+                    }
+
+                    scope.pageRangeFullCoverage = scope.visiblePageRange.length > scope.lastPage;
 
                     scope.navigateToPage = (pageIndex) => {
                         scope.gridOptions.currentPage = pageIndex;
@@ -1366,13 +1351,13 @@ module TrNgGrid {
                         $event.stopPropagation();*/
                     }
 
-                    scope.switchPageSelection = ($event, pageSelectionActive) => {
-                        scope.pageSelectionActive = pageSelectionActive;
-                        if ($event) {
-                            $event.preventDefault();
-                            $event.stopPropagation();
-                        }
-                    }
+                    //scope.switchPageSelection = ($event, pageSelectionActive) => {
+                    //    scope.pageSelectionActive = pageSelectionActive;
+                    //    if ($event) {
+                    //        $event.preventDefault();
+                    //        $event.stopPropagation();
+                    //    }
+                    //}
                 };
 
                 //ng - model = "gridOptions.currentPage" 
