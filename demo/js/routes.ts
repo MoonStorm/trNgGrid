@@ -66,6 +66,7 @@
                                             name: 'trNgGridDemo',
                                             files: [
                                                 '../demo/css/index.css',
+                                                '../demo/js/tracking.js',
                                                 '../demo/js/demo.js',
                                                 '../demo/js/benchmark.js',
                                                 '../demo/js/test_hybrid_mode.js',
