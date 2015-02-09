@@ -2,7 +2,7 @@
 
 #### Documentation and demo site
  - [Release](http://moonstorm.github.io/trNgGrid/release)
- - [Beta (vNext)](http://moonstorm.github.io/trNgGrid/beta)
+ - [vNext (experimental)](http://moonstorm.github.io/trNgGrid/beta)
 
 
 #### Why another one?
