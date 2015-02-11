@@ -55,7 +55,7 @@
 /* http://keithclark.co.uk/articles/moving-ie-specific-css-into-media-blocks/media-tests/ */
 @media screen\0 {
     .tr-ng-grid .tr-ng-sort {
-        background:white;
-        filter: alpha(opacity=1);
+        background: transparent;
+        background: rgba(255, 255, 255, 0);
     }
 }
