@@ -349,7 +349,7 @@ module TrNgGrid {
             sectionElement.removeAttr("ng-non-bindable");
 
             // add the elements in order
-            var rowElementDefinitions = combineGridCellInfos(columnDefs, this.cells, false, false);
+            var rowElementDefinitions = combineGridCellInfos<IGridColumnOptions>(columnDefs, this.cells, false, false);
 
             // grab the templated row
             var templatedRowElement = this.getTemplatedRowElement(sectionElement, true);
