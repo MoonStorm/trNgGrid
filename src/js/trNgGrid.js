@@ -267,6 +267,7 @@ var TrNgGrid;
                 fields: null,
                 locale: "en",
                 selectedItems: [],
+                filteredItems : null,
                 filterBy: null,
                 filterByFields: {},
                 orderBy: null,
@@ -582,7 +583,7 @@ var TrNgGrid;
             TrNgGrid.debugMode && this.log("formatting items of length " + input.length);
             var formattedItems = scope.formattedItems = (scope.formattedItems || []);
             if (scope.gridOptions.onDataRequired) {
-                scope.filteredItems = formattedItems;
+                this.gridOptions.filteredItems = scope.filteredItems = formattedItems;
             }
             else {
                 scope.requiresReFilteringTrigger = !scope.requiresReFilteringTrigger;
@@ -644,7 +645,7 @@ var TrNgGrid;
                 }
             }
             TrNgGrid.debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | " + TrNgGrid.sortFilter + ":gridOptions | " + TrNgGrid.dataPagingFilter + ":gridOptions");
+            this.gridOptions.filteredItems = scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | " + TrNgGrid.sortFilter + ":gridOptions | " + TrNgGrid.dataPagingFilter + ":gridOptions");
             //debugger;
         };
         GridController.prototype.setupDisplayItemsArray = function (scope) {
@@ -762,6 +763,7 @@ var TrNgGrid;
                 scope: {
                     items: '=',
                     selectedItems: '=?',
+                    filteredItems : '=?',
                     filterBy: '=?',
                     filterByFields: '=?',
                     orderBy: '=?',
