@@ -2,7 +2,6 @@
 
 #### Documentation and demo site
  - [Release](http://moonstorm.github.io/trNgGrid/release)
- - [vNext (experimental)](http://moonstorm.github.io/trNgGrid/beta)
 
 
 #### Why another one?
@@ -28,11 +27,11 @@ Of course you can craft your own, as the grid layout is quite easy to style.
 
 ##### Legend
 - Release: master, gh-pages/release
-- Beta: beta, gh-pages/beta
+- Experimental: beta, gh-pages/beta
 
 ##### Issues
  Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
 
 ##### Pull Requests
- I accept pull requests that contain bug fixes or features that follow the direction of this project. Please target the `beta` branch for this purpose.  
+ I accept pull requests that contain bug fixes or features that follow the direction of this project. Please target the `master` branch for this purpose.
  
