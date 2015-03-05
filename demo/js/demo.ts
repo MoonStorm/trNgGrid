@@ -11,6 +11,8 @@
         myItemsCurrentPageIndex: number;
         myPageItemsCount: number;
         mySelectedItems: Array<any>;
+        myGridFilteredItems: Array<any>;
+        myGridFilteredItemsPage: Array<any>;
         myGlobalFilter: string;
         myColumnFilter: Object;
         myOrderBy: string;
@@ -90,7 +92,9 @@
             $scope.myOrderBy="";
             $scope.myOrderByReversed=false;
             $scope.myColumnFilter={};
-            $scope.mySelectedItems=[];
+            $scope.mySelectedItems = [];
+            $scope.myGridFilteredItems = [];
+            $scope.myGridFilteredItemsPage = [];
             $scope.myItemsTotalCount = 0;
             $scope.myItems=null;
             $scope.myEnableFieldAutoDetection = true,
@@ -103,6 +107,14 @@
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
             $scope.myNextItemsTotalCount = 100;
+
+            //$scope.$watch("myGridFilteredItemsPage", (newValue, oldvalue) => {
+            //    debugger;
+            //});
+
+            //$scope.$watch("myGridFilteredItems", (newValue, oldvalue) => {
+            //    debugger;
+            //});
 
             $scope.alert = (message) => {
                 $window.alert(message);

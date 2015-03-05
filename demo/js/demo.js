@@ -52,6 +52,8 @@ var TrNgGridDemo;
             $scope.myOrderByReversed = false;
             $scope.myColumnFilter = {};
             $scope.mySelectedItems = [];
+            $scope.myGridFilteredItems = [];
+            $scope.myGridFilteredItemsPage = [];
             $scope.myItemsTotalCount = 0;
             $scope.myItems = null;
             $scope.myEnableFieldAutoDetection = true, $scope.availableFields = ["id", "name", "address"];
@@ -63,6 +65,12 @@ var TrNgGridDemo;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
             $scope.myNextItemsTotalCount = 100;
+            //$scope.$watch("myGridFilteredItemsPage", (newValue, oldvalue) => {
+            //    debugger;
+            //});
+            //$scope.$watch("myGridFilteredItems", (newValue, oldvalue) => {
+            //    debugger;
+            //});
             $scope.alert = function (message) {
                 $window.alert(message);
             };

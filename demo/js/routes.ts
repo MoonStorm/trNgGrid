@@ -3,14 +3,14 @@
     var allConfigurations: { [configurationKey: string]: IDemoConfiguration } = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.0.4",
+            fullName: "trNgGrid v3.0.5",
             titleCssClass: "text-success"
-        },
-        "beta": {
-            name: "beta",
-            fullName: "trNgGrid vNext (BETA)",
-            titleCssClass: "text-warning"
         }
+        //"beta": {
+        //    name: "beta",
+        //    fullName: "trNgGrid vNext (BETA)",
+        //    titleCssClass: "text-warning"
+        //}
     };
 
     export interface IDemoConfiguration {
@@ -66,6 +66,7 @@
                                             name: 'trNgGridDemo',
                                             files: [
                                                 '../demo/css/index.css',
+                                                // '../demo/js/tracking.js',
                                                 '../demo/js/demo.js',
                                                 '../demo/js/benchmark.js',
                                                 '../demo/js/test_hybrid_mode.js',
