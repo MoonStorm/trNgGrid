@@ -1,7 +1,3 @@
-[submodule "beta"]
-	path = beta
-	url = https://github.com/MoonStorm/trNgGrid
-	branch = beta
 [submodule "release"]
 	path = release
 	url = https://github.com/MoonStorm/trNgGrid
