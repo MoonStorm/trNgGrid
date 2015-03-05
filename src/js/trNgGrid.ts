@@ -147,6 +147,8 @@ module TrNgGrid {
         fields: Array<string>;
         locale: string;
         selectedItems: Array<any>;
+        filteredItems: Array<any>;
+        filteredItemsPage:Array<any>;
         filterBy: string;
         filterByFields: Object;
         orderBy: string;
@@ -464,6 +466,8 @@ module TrNgGrid {
                 fields: null,
                 locale: "en",
                 selectedItems: [],
+                filteredItems: null,
+                filteredItemsPage: null,
                 filterBy: null,
                 filterByFields: {},
                 orderBy: null,
@@ -828,12 +832,10 @@ module TrNgGrid {
             var input = scope.gridOptions.items || <Array<any>>[];
             debugMode && this.log("formatting items of length " + input.length);
             var formattedItems: Array<IGridDisplayItem> = scope.formattedItems = (scope.formattedItems || <Array<IGridDisplayItem>>[]);
-            if (scope.gridOptions.onDataRequired) {
-                scope.filteredItems = formattedItems;
-            }
-            else {
-                scope.requiresReFilteringTrigger = !scope.requiresReFilteringTrigger;
-            }
+
+            // it's enough to flip the value of the trigger
+            scope.requiresReFilteringTrigger = !scope.requiresReFilteringTrigger;
+
             var gridColumnDefs = scope.gridOptions.gridColumnDefs;
 
             for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
@@ -890,16 +892,50 @@ module TrNgGrid {
             }
         }
 
-        computeFilteredItems(scope: IGridScope) {
-            scope.filterByDisplayFields = {};
-            if (scope.gridOptions.filterByFields) {
-                for (var fieldName in scope.gridOptions.filterByFields) {
-                    scope.filterByDisplayFields[this.getFormattedFieldName(fieldName)] = scope.gridOptions.filterByFields[fieldName];
+        extractDataItems(formattedItems: Array<IGridDisplayItem>) {
+            // copy speed tests: https://jsperf.com/copy-loop-vs-array-slice/13
+            var dataItems: Array<any>;
+            if (formattedItems) {
+                dataItems = new Array<any>(formattedItems.length);
+                for (var index = 0; index < formattedItems.length; index++) {
+                    dataItems[index] = formattedItems[index].$$_gridItem;
                 }
+            } else {
+                dataItems = [];
             }
-            debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-            scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | " + sortFilter + ":gridOptions | " + dataPagingFilter + ":gridOptions");
-            //debugger;
+
+            return dataItems;
+        }
+
+        computeFilteredItems(scope: IGridScope) {
+            if (scope.gridOptions.onDataRequired) {
+                // when server side data queries are active, bypass filtering and paging
+                scope.filteredItems = scope.formattedItems;
+            } else {
+                // apply filters first
+                scope.filterByDisplayFields = {};
+                if (scope.gridOptions.filterByFields) {
+                    for (var fieldName in scope.gridOptions.filterByFields) {
+                        scope.filterByDisplayFields[this.getFormattedFieldName(fieldName)] = scope.gridOptions.filterByFields[fieldName];
+                    }
+                }
+
+                debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
+                scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | " + sortFilter + ":gridOptions");
+
+                // check if anyone is interested in the filtered items
+                if (scope.gridOptions.filteredItems) {
+                    scope.gridOptions.filteredItems = this.extractDataItems(scope.filteredItems);
+                }
+
+                // proceed with paging
+                scope.filteredItems = scope.$eval("filteredItems | " + dataPagingFilter + ":gridOptions");
+            }
+
+            // check if anyone is interested in the items on the current page
+            if (scope.gridOptions.filteredItemsPage) {
+                scope.gridOptions.filteredItemsPage = this.extractDataItems(scope.filteredItems);
+            }
         }
 
         setupDisplayItemsArray(scope: IGridScope) {
@@ -926,14 +962,14 @@ module TrNgGrid {
             debugMode && this.log("re-formatting is set to watch for changes in " + watchExpression);
             scope.$watch(watchExpression, () => this.computeFormattedItems(scope), true);
 
+            watchExpression = "[requiresReFilteringTrigger";
             if (!scope.gridOptions.onDataRequired) {
-                watchExpression = "["
-                + "requiresReFilteringTrigger, gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage, gridOptions.pageItems"
-                + "]";
-                scope.$watch(watchExpression, (newValue: Array<any>, oldValue: Array<any>) => {
-                    this.computeFilteredItems(scope);
-                }, true);
+                watchExpression += ", gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage, gridOptions.pageItems";
             }
+            watchExpression += "]";
+            scope.$watch(watchExpression,(newValue: Array<any>, oldValue: Array<any>) => {
+                this.computeFilteredItems(scope);
+            }, true);
         }
 
         linkAttrs(tAttrs: ng.IAttributes, localStorage: any) {
@@ -1036,6 +1072,8 @@ module TrNgGrid {
                     scope: {
                         items: '=',
                         selectedItems: '=?',
+                        filteredItems: '=?',
+                        filteredItemsPage: '=?',
                         filterBy: '=?',
                         filterByFields: '=?',
                         orderBy: '=?',
