@@ -1,5 +1,6 @@
 ﻿/// <reference path="../../../typings/angularjs/angular.d.ts"/>
-module TrNgGrid { 
+module TrNgGrid {
+
     export interface IGridStyles {
         tableCssClass?: string;
         cellCssClass?: string;
@@ -40,7 +41,7 @@ module TrNgGrid {
 
     export interface IGridConfiguration {
         styles: IGridStyles;
-        defaultColumnOptions: IBasicGridColumnOptions;
+        defaultColumnOptions: IGridColumnOptions;
         translations: { [language: string]: IGridLocaleTranslations };
         pagerOptions: IGridPagerOptions;
         templates: IGridTemplates;
@@ -49,12 +50,12 @@ module TrNgGrid {
 
     export interface IGridConfigurationProvider {
         styles(styles?: IGridStyles): IGridStyles;
-        defaultColumnOptions(columnOptions?: IBasicGridColumnOptions): IBasicGridColumnOptions;
+        defaultColumnOptions(columnOptions?: IGridColumnOptions): IGridColumnOptions;
         translations(locale: string, translations?: IGridLocaleTranslations): IGridLocaleTranslations;
         defaultTranslations(translations?: IGridLocaleTranslations): IGridLocaleTranslations;
         pagerOptions(pagerOptions?: IGridPagerOptions): IGridPagerOptions;
         templates(templates?: IGridTemplates): IGridTemplates;
-        debugMode(debugMode?: boolean);
+        debugMode(debugMode?: boolean):boolean;
     }
 
     class GridConfigurationDefaultPagerOptions implements IGridPagerOptions {
@@ -80,15 +81,15 @@ module TrNgGrid {
     }
 
     // it's important to assign all the default column options, so we can match them with the column attributes in the markup
-    class GridConfigurationDefaultColumnOptions implements IBasicGridColumnOptions {
-        cellWidth: string = null;
-        cellHeight: string = null;
+    class GridConfigurationDefaultColumnOptions implements IGridColumnOptions {
+        cellWidth: string;
+        cellHeight: string;
         displayAlign: string = "left";
-        displayFormat: string = null;
-        displayName: string = null;
-        filter: string = null;
-        enableFiltering: boolean = null;
-        enableSorting: boolean = null;
+        displayFormat: string;
+        displayName: string;
+        filter: string;
+        enableFiltering: boolean;
+        enableSorting: boolean;
     }
 
     class GridConfigurationDefaultTemplates implements IGridTemplates {
@@ -108,12 +109,12 @@ module TrNgGrid {
             this.cellHeader =
                 '<div class="' + gridStyles.headerCellCssClass + '" >'
                 + '  <div ng-if="isCustomized" ng-transclude=""></div>'
-                + '  <div ng-if="!isCustomized" ' + TrNgGrid.columnSortDirectiveAttribute + '=""></div>'
+                + '  <div ng-if="!isCustomized" ' + TrNgGrid.Constants.columnSortDirectiveAttribute + '=""></div>'
                 + '  <a ng-if="!isCustomized" class="' + gridStyles.columnTitleCssClass + '"'
                 + '     href="" ng-click="((gridOptions.enableSorting&&columnOptions.enableSorting!==false)||columnOptions.enableSorting)&&toggleSorting(columnOptions.fieldName)">'
-                + '      {{columnTitle |' + TrNgGrid.translateFilter + ':gridOptions.locale}}'
+                + '      {{columnTitle |' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}'
                 + '  </a>'
-                + '  <div ng-if="!isCustomized" ' + TrNgGrid.columnFilterDirectiveAttribute + '=""></div>'
+                + '  <div ng-if="!isCustomized" ' + TrNgGrid.Constants.columnFilterDirectiveAttribute + '=""></div>'
                 + '</div>';
 
             this.cellBody =
@@ -130,20 +131,20 @@ module TrNgGrid {
                 + '    <div ng-transclude=""></div>'
                 + '  </div>'
                 + '  <div ng-switch-default>'
-                + '    <span ' + TrNgGrid.globalFilterDirectiveAttribute + '=""></span>'
-                + '    <span ' + TrNgGrid.pagerDirectiveAttribute + '=""></span>'
+                + '    <span ' + TrNgGrid.Constants.globalFilterDirectiveAttribute + '=""></span>'
+                + '    <span ' + TrNgGrid.Constants.pagerDirectiveAttribute + '=""></span>'
                 + '  </div>'
                 + '</div>';
 
-            this.columnFilter = 
+            this.columnFilter =
                 '<div ng-show="(gridOptions.enableFiltering&&columnOptions.enableFiltering!==false)||columnOptions.enableFiltering" class="' + gridStyles.columnFilterCssClass + '">'
                 + ' <div class="' + gridStyles.columnFilterInputWrapperCssClass + '">'
                 + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter" ng-keypress="speedUpAsyncDataRetrieval($event)"></input>'
                 + ' </div>'
                 + '</div>';
 
-            this.columnSort = 
-                '<a href="" ng-attr-title="{{\'Sort\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}"'
+            this.columnSort =
+                '<a href="" ng-attr-title="{{\'Sort\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}"'
                 + ' ng-show="(gridOptions.enableSorting&&columnOptions.enableSorting!==false)||columnOptions.enableSorting"'
                 + ' ng-click="toggleSorting(columnOptions.fieldName)"'
                 + ' class="' + gridStyles.columnSortCssClass + '" > '
@@ -157,19 +158,19 @@ module TrNgGrid {
 
             this.footerGlobalFilter =
                 '<span ng-show="gridOptions.enableFiltering" class="pull-left form-group">'
-                + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" ng-keypress="speedUpAsyncDataRetrieval($event)" ng-attr-placeholder="{{\'Search\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}"></input>'
+            + '  <input class="form-control" type="text" ng-model="gridOptions.filterBy" ng-keypress="speedUpAsyncDataRetrieval($event)" ng-attr-placeholder="{{\'Search\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}"></input>'
                 + '</span>';
 
             this.footerPager =
                 '<span class="pull-right form-group">'
                 + ' <ul class="pagination">'
                 + '   <li ng-class="{disabled:gridOptions.currentPage==0}" ng-if="isPaged&&!pageRangeFullCoverage">'
-                + '     <a href="" ng-click="gridOptions.currentPage!=0&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+                + '     <a href="" ng-click="gridOptions.currentPage!=0&&navigateToPage(0)" ng-attr-title="{{\'First Page\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}">'
                 + '         <span>&laquo;</span>'
                 + '     </a>'
                 + '   </li>'
                 + '   <li ng-class="{disabled:gridOptions.currentPage==0}" ng-if="isPaged&&!pageRangeFullCoverage">'
-                + '     <a href="" ng-click="gridOptions.currentPage!=0&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+            + '     <a href="" ng-click="gridOptions.currentPage!=0&&navigateToPage(gridOptions.currentPage - 1)" ng-attr-title="{{\'Previous Page\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}">'
                 + '         <span>&lsaquo;</span>'
                 + '     </a>'
                 + '   </li>'
@@ -177,36 +178,36 @@ module TrNgGrid {
                 + '      <span>...</span>'
                 + '   </li>'
                 + '   <li ng-if="isPaged" ng-repeat="pageIndex in visiblePageRange track by $index" ng-class="{active:pageIndex===gridOptions.currentPage}">'
-                + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-attr-title="{{\'Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">{{pageIndex+1}}</a>'
+                + '      <a href="" ng-click="navigateToPage(pageIndex)" ng-attr-title="{{\'Page\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}">{{pageIndex+1}}</a>'
                 + '   </li>'
                 + '   <li ng-if="isPaged&&!pageRangeFullCoverage&&visiblePageRange[visiblePageRange.length-1]!=lastPage" class="disabled">'
                 + '      <span>...</span>'
                 + '   </li>'
                 + '   <li ng-class="{disabled:gridOptions.currentPage==lastPage}" ng-if="isPaged&&!pageRangeFullCoverage">'
-                + '     <a href="" ng-click="gridOptions.currentPage!=lastPage&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+            + '     <a href="" ng-click="gridOptions.currentPage!=lastPage&&navigateToPage(gridOptions.currentPage + 1)" ng-attr-title="{{\'Next Page\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}">'
                 + '         <span>&rsaquo;</span>'
                 + '     </a>'
                 + '   </li>'
                 + '   <li ng-class="{disabled:gridOptions.currentPage==lastPage}" ng-if="isPaged&&!pageRangeFullCoverage">'
-                + '     <a href="" ng-click="gridOptions.currentPage!=lastPage&&navigateToPage(lastPage)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}">'
+            + '     <a href="" ng-click="gridOptions.currentPage!=lastPage&&navigateToPage(lastPage)" ng-attr-title="{{\'Last Page\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}">'
                 + '         <span>&raquo;</span>'
                 + '     </a>'
                 + '   </li>'
                 + '   <li class="disabled" style="white-space: nowrap;">'
-                + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
+                + '     <span ng-hide="totalItemsCount">{{\'No items to display\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}</span>'
                 + '     <span ng-show="totalItemsCount">'
-                + '       {{visibleStartItemIndex+1}} - {{visibleEndItemIndex+1}} {{\'displayed\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}'
-                + '       <span>, {{totalItemsCount}} {{\'in total\'|' + TrNgGrid.translateFilter + ':gridOptions.locale}}</span>'
+                + '       {{visibleStartItemIndex+1}} - {{visibleEndItemIndex+1}} {{\'displayed\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}'
+                + '       <span>, {{totalItemsCount}} {{\'in total\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}</span>'
                 + '     </span > '
                 + '   </li>'
                 + ' </ul>'
                 + '</span>';
-        }        
+        }
     }
 
     class GridConfigurationProvider implements ng.IServiceProvider, IGridConfigurationProvider {
         private gridStyles: IGridStyles;
-        private gridDefaultColumnOptions: IBasicGridColumnOptions;
+        private gridDefaultColumnOptions: IGridColumnOptions;
         private gridTranslations: { [language: string]: IGridLocaleTranslations };
         private gridPagerOptions: IGridPagerOptions;
         private gridDebugMode: boolean;
@@ -225,12 +226,12 @@ module TrNgGrid {
             return <IGridStyles>angular.extend({}, this.gridStyles || new GridConfigurationDefaultStyles());
         }
 
-        defaultColumnOptions(columnOptions?: IBasicGridColumnOptions): IBasicGridColumnOptions {
+        defaultColumnOptions(columnOptions?: IGridColumnOptions): IGridColumnOptions {
             if (columnOptions) {
                 this.gridDefaultColumnOptions = angular.extend({}, new GridConfigurationDefaultColumnOptions(), columnOptions);
             }
 
-            return <IBasicGridColumnOptions>angular.extend({}, this.gridDefaultColumnOptions || new GridConfigurationDefaultColumnOptions());
+            return <IGridColumnOptions>angular.extend({}, this.gridDefaultColumnOptions || new GridConfigurationDefaultColumnOptions());
         }
 
         translations(locale: string, translations?: IGridLocaleTranslations):IGridLocaleTranslations {
@@ -239,7 +240,7 @@ module TrNgGrid {
         }
 
         defaultTranslations(translations?: IGridLocaleTranslations) {
-            return this.translations(defaultTranslationLocale, translations);
+            return this.translations(Constants.defaultTranslationLocale, translations);
         }
 
         pagerOptions(pagerOptions?: IGridPagerOptions):IGridPagerOptions {
@@ -281,6 +282,6 @@ module TrNgGrid {
 
     }
 
-    angular.module(tableDirective)
-        .provider(gridConfigurationService, GridConfigurationProvider);
+    angular.module(Constants.tableDirective)
+        .provider(Constants.gridConfigurationService, GridConfigurationProvider);
 } 
