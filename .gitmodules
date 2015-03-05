@@ -6,3 +6,7 @@
 	path = alpha
 	url = https://github.com/MoonStorm/trNgGrid
 	branch = alpha
+[submodule "beta"]
+	path = beta
+	url = https://github.com/MoonStorm/trNgGrid
+	branch = beta
