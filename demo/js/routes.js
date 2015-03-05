@@ -3,13 +3,8 @@ var TrNgGridDemo;
     var allConfigurations = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.0.4",
+            fullName: "trNgGrid v3.0.5",
             titleCssClass: "text-success"
-        },
-        "beta": {
-            name: "beta",
-            fullName: "trNgGrid vNext (BETA)",
-            titleCssClass: "text-warning"
         }
     };
     // https://github.com/ocombe/ocLazyLoad
