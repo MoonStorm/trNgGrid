@@ -44,7 +44,6 @@ var TrNgGridDemo;
                                         '../' + configuration + '/trNgGrid.js',
                                         '../' + configuration + '/trNgGrid.css'
                                     ],
-                                    cache: false
                                 },
                                 {
                                     name: 'trNgGridDemo',
@@ -55,7 +54,6 @@ var TrNgGridDemo;
                                         '../demo/js/test_hybrid_mode.js',
                                         '../demo/js/translations.js'
                                     ],
-                                    cache: false
                                 },
                                 {
                                     name: 'ui.bootstrap',
@@ -66,7 +64,6 @@ var TrNgGridDemo;
                                         '//google-code-prettify.googlecode.com/svn/loader/prettify.css',
                                         '//maxcdn.bootstrapcdn.com/bootswatch/' + themeVersion + '/' + theme + '/bootstrap.min.css'
                                     ],
-                                    cache: false
                                 }
                             ]);
                         }
@@ -166,7 +163,6 @@ var TrNgGridDemo;
                             files: [
                                 '../demo/js/customizations_global_beta.js'
                             ],
-                            cache: false
                         }); }
                     ]
                 }
@@ -187,7 +183,6 @@ var TrNgGridDemo;
                             files: [
                                 '../demo/js/translations.js'
                             ],
-                            cache: false
                         }); }
                     ]
                 }
@@ -209,7 +204,6 @@ var TrNgGridDemo;
                             files: [
                                 '../demo/js/translations_beta.js'
                             ],
-                            cache: false
                         }); }
                     ]
                 }
@@ -232,7 +226,6 @@ var TrNgGridDemo;
                                     '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid-flexible-height.min.js',
                                     '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js'
                                 ],
-                                cache: false
                             });
                         }
                     ]
@@ -244,6 +237,9 @@ var TrNgGridDemo;
             }).state('demo.tests.ngswitch', {
                 url: '/TestNgSwitch',
                 templateUrl: '../demo/html/tests/test_ng_switch.html'
+            }).state('demo.tests.simple_beta', {
+                url: '/TestSimpleBeta',
+                templateUrl: '../demo/html/tests/test_simple_beta.html'
             }).state('demo.tests.itemsupdate', {
                 url: '/TestItemsUpdate',
                 templateUrl: '../demo/html/tests/test_items_update.html'

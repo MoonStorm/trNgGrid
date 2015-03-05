@@ -60,7 +60,7 @@
                                                 '../' + configuration + '/trNgGrid.js',
                                                 '../' + configuration + '/trNgGrid.css'
                                             ],
-                                            cache: false
+                                            //cache: false
                                         },
                                         {
                                             name: 'trNgGridDemo',
@@ -71,7 +71,7 @@
                                                 '../demo/js/test_hybrid_mode.js',
                                                 '../demo/js/translations.js'
                                             ],
-                                            cache: false
+                                            //cache: false
                                         },
                                         {
                                             name: 'ui.bootstrap',
@@ -86,7 +86,7 @@
                                                 // CROSS ORIGIN problem in FF, don't use
                                                 //themeUrl = "//thomaspark.github.io/bootswatch/" + this.$scope.ui.theme + "/bootstrap.css";
                                             ],
-                                            cache: false
+                                            //cache: false
                                         }
                                     ]);
                                 }
@@ -207,7 +207,7 @@
                                         files: [
                                             '../demo/js/customizations_global_beta.js'
                                         ],
-                                        cache: false
+                                        //cache: false
                                     })
                                 ]
                         }
@@ -227,7 +227,7 @@
                                     files: [
                                         '../demo/js/translations.js'
                                     ],
-                                    cache: false
+                                    //cache: false
                                 })
                             ]
                         }
@@ -248,7 +248,7 @@
                                     files: [
                                         '../demo/js/translations_beta.js'
                                     ],
-                                    cache: false
+                                    //cache: false
                                 })
                             ]
                         }
@@ -270,7 +270,7 @@
                                             '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid-flexible-height.min.js',
                                             '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js'
                                         ],
-                                        cache: false
+                                        //cache: false
                                     });
                                 }
                             ]
@@ -282,6 +282,9 @@
                     }).state('demo.tests.ngswitch', {
                         url: '/TestNgSwitch',
                         templateUrl: '../demo/html/tests/test_ng_switch.html'
+                    }).state('demo.tests.simple_beta', {
+                        url: '/TestSimpleBeta',
+                        templateUrl: '../demo/html/tests/test_simple_beta.html'
                     }).state('demo.tests.itemsupdate', {
                         url: '/TestItemsUpdate',
                         templateUrl: '../demo/html/tests/test_items_update.html'

@@ -1,0 +1,25 @@
+﻿<div ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(20)">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Custom test
+        </div>
+        <div class="panel-body" ng-init="testVar=10">
+            <div class="row">
+                <div class="col-md-5">
+                    <pre id="trNgGrid_simple_beta">
+                    </pre>
+                </div>
+                <div class="col-md-7" project-markup-to="#trNgGrid_simple_beta">
+                    <table tr-ng-grid items="myItems">
+                        <thead>
+                            <tr>
+                                <th data-field-name="id" display-name="Hello"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
