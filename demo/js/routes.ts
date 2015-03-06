@@ -21,7 +21,7 @@
 
     export interface IMainControllerScope extends ng.IScope {
         theme: string;
-        themeVersion;
+        themeVersion:string;
         isFrame: boolean;
         configurations: { [configurationKey: string]: IDemoConfiguration }
         currentConfiguration: IDemoConfiguration;
@@ -43,8 +43,10 @@
                         resolve: {
                             // Any property in resolve should return a promise and is executed before the view is loaded
                             loadMyCtrl: [
-                                '$ocLazyLoad', '$stateParams', '$location', ($ocLazyLoad, $stateParams: ng.ui.IStateParams, $location: ng.ILocationService) => {
-                                    var configuration = $location.absUrl().indexOf("/release/") >= 0 ? "release" : "beta";
+                                '$ocLazyLoad', '$stateParams', '$location', ($ocLazyLoad:any, $stateParams: ng.ui.IStateParams, $location: ng.ILocationService) => {
+                                    var configuration = $location.absUrl().indexOf("/release/") >= 0
+                                        ? "release"
+                                        : $location.absUrl().indexOf("/beta/") >= 0 ? "beta" : "alpha";
                                     var theme = $stateParams["theme"] || "slate";
                                     var themeVersion = $stateParams["themeVersion"] || "3.3.0";
                                     $stateParams["theme"] = theme;
@@ -203,7 +205,7 @@
                         },
                         resolve: {
                                 loadMyCtrl: [
-                                    '$ocLazyLoad', $ocLazyLoad => $ocLazyLoad.load({
+                                    '$ocLazyLoad', ($ocLazyLoad:any) => $ocLazyLoad.load({
                                         name: 'trNgGridDemoGlobalCustomizations',
                                         files: [
                                             '../demo/js/customizations_global_beta.js'
@@ -223,7 +225,7 @@
                         templateUrl: '../demo/html/localization.html',
                         resolve: {
                             loadMyCtrl: [
-                                '$ocLazyLoad', $ocLazyLoad => $ocLazyLoad.load({
+                                '$ocLazyLoad', ($ocLazyLoad:any) => $ocLazyLoad.load({
                                     name: 'trNgGridDemoLocalization',
                                     files: [
                                         '../demo/js/translations.js'
@@ -244,7 +246,7 @@
                         },
                         resolve: {
                             loadMyCtrl: [
-                                '$ocLazyLoad', $ocLazyLoad => $ocLazyLoad.load({
+                                '$ocLazyLoad', ($ocLazyLoad:any) => $ocLazyLoad.load({
                                     name: 'trNgGridDemoLocalization',
                                     files: [
                                         '../demo/js/translations_beta.js'
@@ -261,19 +263,16 @@
                         templateUrl: '../demo/html/tests/test_benchmark.html',
                         resolve: {
                             loadMyCtrl: [
-                                '$ocLazyLoad', function($ocLazyLoad) {
-                                    // you can lazy load files for an existing module
-                                    return $ocLazyLoad.load({
-                                        name: 'ngGrid',
-                                        files: [
-                                            '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js',
-                                            '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css',
-                                            '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid-flexible-height.min.js',
-                                            '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js'
-                                        ],
-                                        //cache: false
-                                    });
-                                }
+                                '$ocLazyLoad', ($ocLazyLoad:any) => $ocLazyLoad.load({
+                                    name: 'ngGrid',
+                                    files: [
+                                        '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js',
+                                        '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css',
+                                        '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid-flexible-height.min.js',
+                                        '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js'
+                                    ],
+                                    //cache: false
+                                })
                             ]
                         }
                     }).state('demo.tests', {

@@ -7,7 +7,6 @@ var TrNgGridDemo;
             titleCssClass: "text-success"
         }
     };
-    // https://github.com/ocombe/ocLazyLoad
     angular.module("trNgGridDemo", ["ui.router", "ngRoute", "oc.lazyLoad"]).config([
         "$stateProvider",
         "$urlRouterProvider",
@@ -19,19 +18,17 @@ var TrNgGridDemo;
                 abstract: true,
                 templateUrl: '../demo/demo.html',
                 resolve: {
-                    // Any property in resolve should return a promise and is executed before the view is loaded
                     loadMyCtrl: [
                         '$ocLazyLoad',
                         '$stateParams',
                         '$location',
                         function ($ocLazyLoad, $stateParams, $location) {
-                            var configuration = $location.absUrl().indexOf("/release/") >= 0 ? "release" : "beta";
+                            var configuration = $location.absUrl().indexOf("/release/") >= 0 ? "release" : $location.absUrl().indexOf("/beta/") >= 0 ? "beta" : "alpha";
                             var theme = $stateParams["theme"] || "slate";
                             var themeVersion = $stateParams["themeVersion"] || "3.3.0";
                             $stateParams["theme"] = theme;
                             $stateParams["themeVersion"] = themeVersion;
                             $stateParams["configuration"] = configuration;
-                            // you can lazy load files for an existing module
                             return $ocLazyLoad.load([
                                 {
                                     name: 'trNgGrid',
@@ -74,8 +71,6 @@ var TrNgGridDemo;
                         var stateChangeDereg = $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
                             var templateStateRegex = /^demo\.customizations\.global.*/gi;
                             if ((fromState.name != toState.name && fromState.name != "" && (fromState.name.match(templateStateRegex) || toState.name.match(templateStateRegex))) || (fromParams["theme"] && fromParams["theme"] != toParams["theme"]) || (fromParams["themeVersion"] && fromParams["themeVersion"] != toParams["themeVersion"]) || (fromParams["configuration"] && fromParams["configuration"] != toParams["configuration"])) {
-                                //event.preventDefault();
-                                //stateChangeDereg();
                                 $window.location.reload();
                             }
                         });
@@ -88,20 +83,12 @@ var TrNgGridDemo;
                             $state.go(".", {
                                 theme: theme
                             }, {});
-                            //.then(() => {
-                            //    // reload links to 3rd party resources
-                            //    $window.location.reload(true);
-                            //});
                         };
                         $scope.changeThemeVersion = function (themeVersion) {
                             $state.go(".", {
                                 themeVersion: themeVersion,
                                 theme: 'slate'
                             }, {});
-                            //.then(() => {
-                            //    // reload links to 3rd party resources
-                            //    $window.location.reload(true);
-                            //});
                         };
                     }
                 ]
@@ -211,18 +198,15 @@ var TrNgGridDemo;
                 resolve: {
                     loadMyCtrl: [
                         '$ocLazyLoad',
-                        function ($ocLazyLoad) {
-                            // you can lazy load files for an existing module
-                            return $ocLazyLoad.load({
-                                name: 'ngGrid',
-                                files: [
-                                    '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js',
-                                    '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css',
-                                    '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid-flexible-height.min.js',
-                                    '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js'
-                                ],
-                            });
-                        }
+                        function ($ocLazyLoad) { return $ocLazyLoad.load({
+                            name: 'ngGrid',
+                            files: [
+                                '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js',
+                                '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css',
+                                '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid-flexible-height.min.js',
+                                '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js'
+                            ],
+                        }); }
                     ]
                 }
             }).state('demo.tests', {
@@ -245,8 +229,6 @@ var TrNgGridDemo;
                 url: '/TestFixedHeaderFooter',
                 templateUrl: '../demo/html/tests/test_fixed_header_footer.html'
             });
-            // html5 is not working without server-side support
-            //$location.html5Mode(true);
         }
     ]);
 })(TrNgGridDemo || (TrNgGridDemo = {}));

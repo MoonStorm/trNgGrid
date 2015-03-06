@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectGuid>{1B813379-5DC5-4DA3-BD5F-F76E095C79A4}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <OutputPath>$(TEMP)\trNgGridBeta</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TypeScriptToolsVersion>1.4</TypeScriptToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>trNgGrid_Beta</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\WebApplications\Microsoft.WebApplication.targets')" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>5608</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:5608/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="alpha\index.html" />
+    <Content Include="alpha\relnotes.html" />
+    <Content Include="alpha\src\css\trNgGrid.css" />
+    <Content Include="alpha\src\js\trNgGridBody.js">
+      <DependentUpon>trNgGridBody.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridColumn.js">
+      <DependentUpon>trNgGridColumn.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridConfiguration.js">
+      <DependentUpon>trNgGridConfiguration.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridConstants.js">
+      <DependentUpon>trNgGridConstants.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridCore.js">
+      <DependentUpon>trNgGridCore.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridFilters.js">
+      <DependentUpon>trNgGridFilters.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridFooter.js">
+      <DependentUpon>trNgGridFooter.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridHeader.js">
+      <DependentUpon>trNgGridHeader.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\src\js\trNgGridUtils.js">
+      <DependentUpon>trNgGridUtils.ts</DependentUpon>
+    </Content>
+    <Content Include="alpha\trNgGrid.css">
+      <DependentUpon>trNgGrid.css.bundle</DependentUpon>
+    </Content>
+    <Content Include="alpha\trNgGrid.js">
+      <DependentUpon>trNgGrid.js.bundle</DependentUpon>
+    </Content>
+    <Content Include="alpha\trNgGrid.min.css">
+      <DependentUpon>trNgGrid.css</DependentUpon>
+    </Content>
+    <Content Include="alpha\trNgGrid.min.js">
+      <DependentUpon>trNgGrid.js</DependentUpon>
+    </Content>
+    <Content Include="demo\css\index.css" />
+    <Content Include="demo\css\index.min.css">
+      <DependentUpon>index.css</DependentUpon>
+    </Content>
+    <Content Include="demo\css\tests\test_fixed_header_footer.css" />
+    <Content Include="demo\demo.html" />
+    <Content Include="demo\html\columns.html" />
+    <Content Include="demo\html\common.html" />
+    <Content Include="demo\html\customizations_global.html" />
+    <Content Include="demo\html\customizations_instance.html" />
+    <Content Include="demo\html\default.html" />
+    <Content Include="demo\html\globaloptions.html" />
+    <Content Include="demo\html\localization.html" />
+    <Content Include="demo\html\paging.html" />
+    <Content Include="demo\html\selections.html" />
+    <Content Include="demo\html\serverside.html" />
+    <Content Include="demo\html\localization_beta.html" />
+    <Content Include="demo\html\customizations_global_beta.html" />
+    <Content Include="demo\html\tests\test_benchmark.html" />
+    <Content Include="demo\html\tests\test_fixed_header_footer.html" />
+    <Content Include="demo\html\tests\test_hybrid_mode.html" />
+    <Content Include="demo\html\tests\test_items_update.html" />
+    <Content Include="demo\html\tests\test_ng_switch.html" />
+    <Content Include="demo\html\tests\test_simple_beta.html" />
+    <Content Include="demo\html\tests\test_template_pager.html" />
+    <Content Include="demo\js\benchmark.js">
+      <DependentUpon>benchmark.ts</DependentUpon>
+    </Content>
+    <Content Include="demo\js\customizations_global_beta.js">
+      <DependentUpon>customizations_global_beta.ts</DependentUpon>
+    </Content>
+    <Content Include="demo\js\demo.js">
+      <DependentUpon>demo.ts</DependentUpon>
+    </Content>
+    <Content Include="demo\js\ocLazyLoad.js" />
+    <Content Include="demo\js\routes.js">
+      <DependentUpon>routes.ts</DependentUpon>
+    </Content>
+    <Content Include="demo\js\test_hybrid_mode.js">
+      <DependentUpon>test_hybrid_mode.ts</DependentUpon>
+    </Content>
+    <Content Include="demo\js\translations_beta.js">
+      <DependentUpon>translations_beta.ts</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="alpha\src\js\trNgGridBody.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridColumn.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridConfiguration.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridConstants.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridCore.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridFilters.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridFooter.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridHeader.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridUtils.ts" />
+    <TypeScriptCompile Include="demo\js\benchmark.ts" />
+    <TypeScriptCompile Include="demo\js\customizations_global_beta.ts" />
+    <TypeScriptCompile Include="demo\js\demo.ts" />
+    <TypeScriptCompile Include="demo\js\routes.ts" />
+    <TypeScriptCompile Include="demo\js\test_hybrid_mode.ts" />
+    <TypeScriptCompile Include="demo\js\translations_beta.ts" />
+    <TypeScriptCompile Include="typings\angularjs\angular-animate.d.ts" />
+    <TypeScriptCompile Include="typings\angularjs\angular-cookies.d.ts" />
+    <TypeScriptCompile Include="typings\angularjs\angular-mocks.d.ts" />
+    <TypeScriptCompile Include="typings\angularjs\angular-resource.d.ts" />
+    <TypeScriptCompile Include="typings\angularjs\angular-route.d.ts" />
+    <TypeScriptCompile Include="typings\angularjs\angular-sanitize.d.ts" />
+    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="typings\uirouter\angular-ui-router.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="demo\js\benchmark.js.map">
+      <DependentUpon>benchmark.js</DependentUpon>
+    </Content>
+    <Content Include="demo\js\demo.js.map">
+      <DependentUpon>demo.js</DependentUpon>
+    </Content>
+    <Content Include="demo\js\routes.js.map">
+      <DependentUpon>routes.js</DependentUpon>
+    </Content>
+    <Content Include="demo\js\test_hybrid_mode.js.map">
+      <DependentUpon>test_hybrid_mode.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="alpha\bower.json" />
+    <Content Include="alpha\LICENSE" />
+    <Content Include="alpha\package.json" />
+    <Content Include="alpha\README.md" />
+    <Content Include="alpha\trNgGrid.css.bundle">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="alpha\trNgGrid.js.bundle" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+</Project>
