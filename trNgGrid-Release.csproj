@@ -48,6 +48,7 @@
     <Content Include="demo\html\tests\test_hybrid_mode.html" />
     <Content Include="demo\html\tests\test_items_update.html" />
     <Content Include="demo\html\tests\test_ng_switch.html" />
+    <Content Include="demo\html\tests\test_symbols_data_keys.html" />
     <Content Include="demo\html\tests\test_template_pager.html" />
     <Content Include="demo\js\benchmark.js">
       <DependentUpon>benchmark.ts</DependentUpon>

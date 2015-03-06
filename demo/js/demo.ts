@@ -86,6 +86,7 @@
 
     export class TestController{ 
         constructor(public $scope: ITestControllerScope, $window: ng.IWindowService, $timeout: ng.ITimeoutService) {
+            TrNgGrid.debugMode = true;
             $scope.externalTestProp = "Externals should be visible";
             $scope.myLocale = "en";
             $scope.myGlobalFilter="";

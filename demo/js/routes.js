@@ -3,7 +3,7 @@ var TrNgGridDemo;
     var allConfigurations = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.0.5",
+            fullName: "trNgGrid v3.0.5 RC",
             titleCssClass: "text-success"
         }
     };
@@ -222,6 +222,9 @@ var TrNgGridDemo;
             }).state('demo.tests.itemsupdate', {
                 url: '/TestItemsUpdate',
                 templateUrl: '../demo/html/tests/test_items_update.html'
+            }).state('demo.tests.specialsymbols', {
+                url: '/TestSpecialSymbols',
+                templateUrl: '../demo/html/tests/test_symbols_data_keys.html'
             }).state('demo.tests.hybridmode', {
                 url: '/TestHybridMode',
                 templateUrl: '../demo/html/tests/test_hybrid_mode.html'

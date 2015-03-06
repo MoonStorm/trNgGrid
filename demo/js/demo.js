@@ -45,6 +45,7 @@ var TrNgGridDemo;
         function TestController($scope, $window, $timeout) {
             var _this = this;
             this.$scope = $scope;
+            TrNgGrid.debugMode = true;
             $scope.externalTestProp = "Externals should be visible";
             $scope.myLocale = "en";
             $scope.myGlobalFilter = "";

@@ -1,0 +1,26 @@
+﻿<div ng-controller="TrNgGridDemo.TestController">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Special symbols present in the keys
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <p>
+                        <a href="https://github.com/MoonStorm/trNgGrid/issues/161" target="_blank">GitHub Case</a>
+                    </p>
+                    <p>
+                        This is a test for checking whether the items and the header titles are being properly displayed even when the field names contain special characters.
+                    </p>
+                    <pre id="trNgGrid_symbol_keys_bug">
+                    </pre>
+                </div>
+                <div class="col-md-7" project-markup-to="#trNgGrid_symbol_keys_bug">
+<table tr-ng-grid items="[{'@__$name':'Maria', '$age':35}, {'@__$name':'John', '$age':16}]">                        
+</table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
