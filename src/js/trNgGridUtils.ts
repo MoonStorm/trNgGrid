@@ -63,9 +63,7 @@ module TrNgGrid {
         gridConfiguration: IGridConfiguration,
         cellElement: ng.IAugmentedJQuery,
         cellTagName: string,
-        cellElementDirectiveAttribute: string,
-        rowIndex: number,
-        cellIndex: number): ng.IAugmentedJQuery {
+        cellElementDirectiveAttribute: string): ng.IAugmentedJQuery {
 
         if (!cellElement) {
             cellElement = createCellElement(cellTagName);
@@ -73,8 +71,8 @@ module TrNgGrid {
         }
 
         cellElement.attr(cellElementDirectiveAttribute, "");
-        cellElement.attr(Constants.dataColumnRowIndexAttribute, rowIndex);
-        cellElement.attr(Constants.dataColumnBatchIndexAttribute, cellIndex);
+        //cellElement.attr(Constants.dataColumnRowIndexAttribute, rowIndex);
+        //cellElement.attr(Constants.dataColumnBatchIndexAttribute, cellIndex);
 
         var cellChildrenElements = cellElement.children();
 
@@ -99,6 +97,7 @@ module TrNgGrid {
     export function fixGridSection(
         gridConfiguration: IGridConfiguration,
         sectionElement: ng.IAugmentedJQuery,
+        rowElementDirectiveAttribute:string,
         cellTagName: string,
         cellElementDirectiveAttribute: string) {
 
@@ -118,6 +117,7 @@ module TrNgGrid {
             var weavedAutoElement: ng.IAugmentedJQuery;
 
             var cellElements = findChildrenByTagName(rowElement, "th");
+            for(var cellIndex = 0; cellIndex<cellElements.length; cellIndex++)
             //if (!cellElements.length) {
             //    rowElement.empty();
             //    cellElement = createCellElement("th");
