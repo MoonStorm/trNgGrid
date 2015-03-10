@@ -99,7 +99,7 @@
     "GenerateSourceMaps": false,
     "GzipMinifiedFiles": false,
     "LintOnBuild": false,
-    "LintOnSave": true,
+    "LintOnSave": false,
     "LintResultLocation": "Message",
     "MakeMinified": true,
     "OutputDirectory": null,
@@ -176,8 +176,8 @@
     "ShowPreviewPane": true
   },
   "TypeScript": {
-    "LintOnBuild": true,
-    "LintOnSave": true,
+    "LintOnBuild": false,
+    "LintOnSave": false,
     "LintResultLocation": "Message",
     "ShowPreviewPane": false
   }
