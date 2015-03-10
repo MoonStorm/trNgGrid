@@ -8,20 +8,19 @@ var TrNgGrid;
         SelectionMode[SelectionMode["MultiRowWithKeyModifiers"] = 3] = "MultiRowWithKeyModifiers";
     })(TrNgGrid.SelectionMode || (TrNgGrid.SelectionMode = {}));
     var SelectionMode = TrNgGrid.SelectionMode;
-    (function (GridEntitySection) {
-        GridEntitySection[GridEntitySection["Enforced"] = 0] = "Enforced";
-        GridEntitySection[GridEntitySection["Header"] = 1] = "Header";
-        GridEntitySection[GridEntitySection["Body"] = 2] = "Body";
-    })(TrNgGrid.GridEntitySection || (TrNgGrid.GridEntitySection = {}));
-    var GridEntitySection = TrNgGrid.GridEntitySection;
+    var IGridRow = (function () {
+        function IGridRow() {
+        }
+        return IGridRow;
+    })();
+    TrNgGrid.IGridRow = IGridRow;
     var GridController = (function () {
         function GridController($compile, $parse, $timeout, gridConfiguration) {
             this.$compile = $compile;
             this.$parse = $parse;
             this.$timeout = $timeout;
             this.gridConfiguration = gridConfiguration;
-            this.gridSections = new Array(2 /* Body */ + 1);
-            this.gridColumns = {};
+            this.gridLayout = new TrNgGrid.GridLayout();
         }
         GridController.prototype.setOptions = function (gridOptions) {
             var _this = this;
@@ -85,71 +84,6 @@ var TrNgGrid;
                 this.gridOptions.immediateDataRetrieval = true;
             }
         };
-        GridController.prototype.removeColumn = function (section, columnId) {
-            if (!columnId.fieldName) {
-                return;
-            }
-            var colSection = section < this.gridSections.length ? this.gridSections[section] : null;
-            if (!colSection) {
-                return;
-            }
-            var colSectionRow = columnId.rowIndex < colSection.rows.length ? colSection.rows[columnId.rowIndex] : null;
-            if (!colSectionRow) {
-                return;
-            }
-            var colSectionBatch = columnId.batchIndex < colSectionRow.columnBatches.length ? colSectionRow.columnBatches[columnId.batchIndex] : null;
-            if (!colSectionBatch) {
-                return;
-            }
-            for (var batchColIndex = 0; batchColIndex < colSectionBatch.columns.length; batchColIndex++) {
-                if (colSectionBatch.columns[batchColIndex].identity.fieldName === columnId.fieldName) {
-                    colSectionBatch.columns.splice(batchColIndex, 1);
-                    return;
-                }
-            }
-        };
-        GridController.prototype.setColumn = function (section, columnId, newColumnOptions) {
-            columnId.fieldName = columnId.fieldName || ("trNgGridCustomField_" + (unnamedFieldNameCount++));
-            var colSection = this.gridSections[section];
-            if (!colSection) {
-                this.gridSections[section] = colSection = { rows: new Array() };
-            }
-            while (colSection.rows.length <= columnId.rowIndex) {
-                colSection.rows.push({ columnBatches: new Array() });
-            }
-            var colSectionRow = colSection.rows[columnId.rowIndex];
-            while (colSectionRow.columnBatches.length <= columnId.batchIndex) {
-                colSectionRow.columnBatches.push({ columns: new Array() });
-            }
-            var colSectionBatch = colSectionRow.columnBatches[columnId.batchIndex];
-            var gridColumnOptions = this.gridColumns[columnId.fieldName];
-            if (gridColumnOptions) {
-                if (newColumnOptions) {
-                    this.gridColumns[columnId.fieldName] = gridColumnOptions = angular.extend(newColumnOptions, this.gridConfiguration.defaultColumnOptions);
-                }
-            }
-            else {
-                this.gridColumns[columnId.fieldName] = gridColumnOptions = angular.extend(newColumnOptions || {}, this.gridConfiguration.defaultColumnOptions);
-            }
-            var gridColumn = null;
-            for (var batchColIndex = 0; (batchColIndex < colSectionBatch.columns.length) && (!gridColumn); batchColIndex++) {
-                gridColumn = colSectionBatch.columns[batchColIndex];
-                if (gridColumn.identity.fieldName !== columnId.fieldName) {
-                    gridColumn = null;
-                }
-            }
-            if (!gridColumn) {
-                gridColumn = {
-                    identity: columnId,
-                    options: gridColumnOptions
-                };
-                colSectionBatch.columns.push(gridColumn);
-            }
-            else {
-                gridColumn.options = gridColumnOptions;
-            }
-            return gridColumn;
-        };
         GridController.prototype.toggleSorting = function (propertyName) {
             if (this.gridOptions.orderBy != propertyName) {
                 this.gridOptions.orderBy = propertyName;
@@ -195,13 +129,13 @@ var TrNgGrid;
                             }
                             var firstItemIndex;
                             var lastSelectedItem = this.gridOptions.selectedItems[this.gridOptions.selectedItems.length - 1];
-                            for (firstItemIndex = 0; firstItemIndex < filteredItems.length && filteredItems[firstItemIndex].trNgGridDataItem !== lastSelectedItem; firstItemIndex++)
+                            for (firstItemIndex = 0; firstItemIndex < filteredItems.length && filteredItems[firstItemIndex].$$_gridItem !== lastSelectedItem; firstItemIndex++)
                                 ;
                             if (firstItemIndex >= filteredItems.length) {
                                 firstItemIndex = 0;
                             }
                             var lastItemIndex;
-                            for (lastItemIndex = 0; lastItemIndex < filteredItems.length && filteredItems[lastItemIndex].trNgGridDataItem !== item; lastItemIndex++)
+                            for (lastItemIndex = 0; lastItemIndex < filteredItems.length && filteredItems[lastItemIndex].$$_gridItem !== item; lastItemIndex++)
                                 ;
                             if (lastItemIndex >= filteredItems.length) {
                                 throw "Invalid selection on a key modifier selection mode";
@@ -212,7 +146,7 @@ var TrNgGrid;
                                 lastItemIndex = tempIndex;
                             }
                             for (var currentItemIndex = firstItemIndex; currentItemIndex <= lastItemIndex; currentItemIndex++) {
-                                var currentItem = filteredItems[currentItemIndex].trNgGridDataItem;
+                                var currentItem = filteredItems[currentItemIndex].$$_gridItem;
                                 if (this.gridOptions.selectedItems.indexOf(currentItem) < 0) {
                                     this.gridOptions.selectedItems.push(currentItem);
                                 }

@@ -17,14 +17,14 @@
     export var bodyDirective = tableDirective + "Body";
     export var bodyDirectiveAttribute = tableDirectiveAttribute + "-body";
 
-    export var bodyDirectiveRow = bodyDirective + "Row";
-    export var bodyDirectiveRowAttribute = bodyDirectiveAttribute + "-row";
+    export var bodyRowDirective = bodyDirective + "Row";
+    export var bodyRowDirectiveAttribute = bodyDirectiveAttribute + "-row";
 
     export var headerDirective = tableDirective + "Header";
     export var headerDirectiveAttribute = tableDirectiveAttribute + "-header";
 
-    export var headerDirectiveRow = headerDirective + "Row";
-    export var headerDirectiveRowAttribute = headerDirectiveAttribute + "-row";
+    export var headerRowDirective = headerDirective + "Row";
+    export var headerRowDirectiveAttribute = headerDirectiveAttribute + "-row";
 
     export var footerDirective = tableDirective + "Footer";
     export var footerDirectiveAttribute = tableDirectiveAttribute + "-footer";

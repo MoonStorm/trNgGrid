@@ -8,12 +8,6 @@ module TrNgGrid {
         MultiRowWithKeyModifiers
     }
 
-    export enum GridEntitySection {
-        Enforced,
-        Header,
-        Body
-    } 
-
     export interface IGridOptions extends ng.IScope {
         immediateDataRetrieval: boolean;
         items: Array<any>;
@@ -35,67 +29,24 @@ module TrNgGrid {
     }
 
     export interface IGridDisplayItem {
-        trNgGridDataItem: any;
+        $$_gridItem: any;
     }
 
-    //export interface IGridScope extends ng.IScope {
-    //    //TrNgGrid: any; // useful for binding to static vars on the TrNgGrid type
-    //    gridOptions: IGridOptions;
-    //    gridColumns: IGridColumns;
-
-    //    filteredItems: Array<IGridDisplayItem>;
-    //    formattedItems: Array<IGridDisplayItem>;
-
-    //    filterByDisplayFields: any;
-    //    requiresReFilteringTrigger: boolean;
-    //    speedUpAsyncDataRetrieval: ($event?: ng.IAngularEvent) => void;
-    //}
-
-    //export interface IGridDataComputationScope extends IGridScope {
-    //    gridItem: any;
-    //}
-
-    /*
-     * Holds details about a section (e.g. head, body, footer)
-     * including the row composition.
-     */
-    export interface IGridSection {
-        rows: Array<IGridRow>;
-    }
-
-    export interface IGridSections {
-        [section: number]: IGridColumnOptions;
-    }
 
     export interface IGridColumns {
         [field: string]: IGridColumnOptions;
     }
 
-    export interface IGridColumn {
-        identity: IGridColumnIdentity;
-        options: IGridColumnOptions;
-    } 
-
-    /*
-    * TD/TH elements have a batch number assigned.
-    * Auto-generated ones are interweaved with the customized ones, in order to fill the gaps caused by missing columns.
-    * The columns that are grouped together by an ng-repeat will get data-bound to the same batch.  
-    */
-    export interface IGridColumnBatch {
-        columns: Array<IGridColumn>;
-    }
-
     /*
      * Holds details about a row inside a section of a grid.
      */
-    export interface IGridRow {
-        columnBatches: Array<IGridColumnBatch>;
+    export class IGridRow {
+        columns: Array<IGridColumnOptions>;
     }
 
     export class GridController {
         public gridOptions: IGridOptions;
-        private gridColumns: IGridColumns;
-        private gridSections: Array<IGridSection>;
+        public gridLayout: GridLayout;
 
         private columnDefsItemsWatcherDeregistration: Function;
         private columnDefsFieldsWatcherDeregistration: Function;
@@ -107,8 +58,7 @@ module TrNgGrid {
             private $timeout: ng.ITimeoutService,
             private gridConfiguration: IGridConfiguration) {
 
-            this.gridSections = new Array(GridEntitySection.Body + 1);
-            this.gridColumns = {};
+            this.gridLayout = new GridLayout();
         }
 
         setOptions(gridOptions: IGridOptions) {
@@ -193,100 +143,6 @@ module TrNgGrid {
             }
         }
 
-        removeColumn(section: GridEntitySection, columnId: IGridColumnIdentity){
-            // TODO: cleanup the global grid defs if the field is not referenced any more
-            if (!columnId.fieldName) {
-                return;
-            }
-
-            var colSection = section < this.gridSections.length
-                ? this.gridSections[section] : null;
-            if (!colSection) {
-                return;
-            }
-
-            var colSectionRow = columnId.rowIndex < colSection.rows.length
-                ? colSection.rows[columnId.rowIndex] : null;
-            if (!colSectionRow) {
-                return;
-            }
-
-            var colSectionBatch = columnId.batchIndex < colSectionRow.columnBatches.length
-                ? colSectionRow.columnBatches[columnId.batchIndex] : null;
-            if (!colSectionBatch) {
-                return;
-            }
-
-            for (var batchColIndex = 0; batchColIndex < colSectionBatch.columns.length; batchColIndex++) {
-                if (colSectionBatch.columns[batchColIndex].identity.fieldName === columnId.fieldName) {
-                    colSectionBatch.columns.splice(batchColIndex, 1);
-                    return;
-                }
-            }
-        }
-
-        setColumn(section: GridEntitySection, columnId: IGridColumnIdentity, newColumnOptions?: IGridColumnOptions) {
-
-            // make sure we've got a field name
-            columnId.fieldName = columnId.fieldName || ("trNgGridCustomField_" + (unnamedFieldNameCount++));
-
-            // ensure the section is available
-            var colSection = this.gridSections[section];
-            if (!colSection) {
-                this.gridSections[<number>section] = colSection = { rows: new Array <IGridRow>()};
-            }
-
-            // ... the row 
-            while (colSection.rows.length <= columnId.rowIndex) {
-                colSection.rows.push({ columnBatches: new Array<IGridColumnBatch>() });
-            }
-            var colSectionRow = colSection.rows[columnId.rowIndex];
-
-            // ...and the batch
-            while (colSectionRow.columnBatches.length <= columnId.batchIndex) {
-                colSectionRow.columnBatches.push({ columns: new Array<IGridColumn>() });
-            }
-            var colSectionBatch = colSectionRow.columnBatches[columnId.batchIndex];
-            
-            // make sure a column definition exists
-            var gridColumnOptions = this.gridColumns[columnId.fieldName];
-            if (gridColumnOptions) {
-                if (newColumnOptions) {
-                    // overwrite the existing settings
-                    this.gridColumns[columnId.fieldName] = gridColumnOptions = angular.extend(newColumnOptions, this.gridConfiguration.defaultColumnOptions);
-                    
-                    //TODO: Update the options on all the grid columns instances
-                }
-            }
-            else {
-                // not present
-                this.gridColumns[columnId.fieldName] = gridColumnOptions = angular.extend(newColumnOptions || {}, this.gridConfiguration.defaultColumnOptions);                
-            }
-
-            // add it to the batch if not there
-            var gridColumn: IGridColumn = null;
-            for (var batchColIndex = 0; (batchColIndex < colSectionBatch.columns.length) && (!gridColumn); batchColIndex++) {
-                gridColumn = colSectionBatch.columns[batchColIndex];
-                if (gridColumn.identity.fieldName !== columnId.fieldName) {
-                    gridColumn = null;
-                }
-            }
-
-            if (!gridColumn) {
-                gridColumn = {
-                    identity: columnId,
-                    options: gridColumnOptions
-                }
-
-                colSectionBatch.columns.push(gridColumn);
-            }
-            else {
-                gridColumn.options = gridColumnOptions;
-            }
-
-            return gridColumn;
-        }
-
         toggleSorting(propertyName: string) {
             if (this.gridOptions.orderBy != propertyName) {
                 // the column has changed
@@ -352,13 +208,13 @@ module TrNgGrid {
                             // the shift key will always select items from the last selected item
                             var firstItemIndex: number;
                             var lastSelectedItem = this.gridOptions.selectedItems[this.gridOptions.selectedItems.length - 1];
-                            for (firstItemIndex = 0; firstItemIndex < filteredItems.length && filteredItems[firstItemIndex].trNgGridDataItem !== lastSelectedItem; firstItemIndex++);
+                            for (firstItemIndex = 0; firstItemIndex < filteredItems.length && filteredItems[firstItemIndex].$$_gridItem !== lastSelectedItem; firstItemIndex++);
                             if (firstItemIndex >= filteredItems.length) {
                                 firstItemIndex = 0;
                             }
 
                             var lastItemIndex: number;
-                            for (lastItemIndex = 0; lastItemIndex < filteredItems.length && filteredItems[lastItemIndex].trNgGridDataItem !== item; lastItemIndex++);
+                            for (lastItemIndex = 0; lastItemIndex < filteredItems.length && filteredItems[lastItemIndex].$$_gridItem !== item; lastItemIndex++);
                             if (lastItemIndex >= filteredItems.length) {
                                 // this is an error
                                 throw "Invalid selection on a key modifier selection mode";
@@ -371,7 +227,7 @@ module TrNgGrid {
 
                             // now select everything in between. remember that a shift modifier can never be used for de-selecting items
                             for (var currentItemIndex = firstItemIndex; currentItemIndex <= lastItemIndex; currentItemIndex++) {
-                                var currentItem = filteredItems[currentItemIndex].trNgGridDataItem;
+                                var currentItem = filteredItems[currentItemIndex].$$_gridItem;
                                 if (this.gridOptions.selectedItems.indexOf(currentItem) < 0) {
                                     this.gridOptions.selectedItems.push(currentItem);
                                 }

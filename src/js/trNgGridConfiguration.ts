@@ -29,6 +29,7 @@ module TrNgGrid {
     }
 
     export interface IGridTemplates {
+        cellHeaderAuto?:string;
         cellHeader?: string;
         cellBody?: string;
         cellFooter?: string;
@@ -94,6 +95,7 @@ module TrNgGrid {
 
     class GridConfigurationDefaultTemplates implements IGridTemplates {
         cellHeader: string;
+        cellHeaderAuto:string;
         cellBody: string;
         cellFooter: string;
 
@@ -105,6 +107,8 @@ module TrNgGrid {
         constructor($interpolateProvider: ng.IInterpolateProvider, gridStyles: IGridStyles) {
             var startNgSymbol = $interpolateProvider.startSymbol();
             var endNgSymbol = $interpolateProvider.endSymbol();
+            this.cellHeaderAuto =
+                '<td data-ng-repeat="columnOptions in rowColumns" +' + Constants.cellHeaderTemplateDirectiveAttribute + '=""></td>';
 
             this.cellHeader =
                 '<div class="' + gridStyles.headerCellCssClass + '" >'

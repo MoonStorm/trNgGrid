@@ -12,6 +12,7 @@
   <files>
     <file>./src/js/trNgGridConstants.js</file>
     <file>./src/js/trNgGridUtils.js</file>
+    <file>./src/js/trNgGridLayoutManagement.js</file>
     <file>./src/js/trNgGridColumn.js</file>
     <file>./src/js/trNgGridCore.js</file>
     <file>./src/js/trNgGridHeader.js</file>
