@@ -1,19 +1,11 @@
 ﻿module TrNgGrid {
-    angular.module(tableDirective, [])
-        .filter(sortFilter, [
+    gridModule
+        .filter(Constants.sortFilter, [
             "$filter", "$parse", ($filter: ng.IFilterService, $parse: ng.IParseService) => {
-                return (input: Array<any>, gridOptions: IGridOptions, gridColumnOptions: IGridColumnsOptions) => {
+                return (input: Array<any>, gridOptions: IGridOptions, gridColumnOptions: IGridColumnOptions) => {
 
                     if (!gridOptions.orderBy || !gridColumnOptions) {
                         // not ready to sort, return the input array
-                        return input;
-                    }
-
-                    // we'll need the column options
-                    var columnOptions: IGridColumnOptions = gridColumnOptions[gridOptions.orderBy];
-
-                    if (!columnOptions) {
-                        // unable to find any info about the selected field
                         return input;
                     }
 
@@ -24,15 +16,13 @@
                             try {
                                 // get the value associated with the original grid item
                                 fieldValue = $parse("item.trNgGridDataItem." + gridOptions.orderBy)({ item: item });
-                            }
-                            catch (ex) {
+                            } catch (ex) {
                             }
                             if (fieldValue === undefined) {
                                 try {
                                     // next try the field on the display item, in case of computed fields
-                                    fieldValue = $parse("item." + columnOptions.displayFieldName)({ item: item });
-                                }
-                                catch (ex) {
+                                    fieldValue = $parse("item." + gridColumnOptions.displayFieldName)({ item: item });
+                                } catch (ex) {
                                 }
                             }
 
@@ -44,7 +34,7 @@
                 }
             }
         ])
-        .filter(dataPagingFilter, () => {
+        .filter(Constants.dataPagingFilter, () => {
             // when server-side logic is enabled, this directive should not be used!
             return (input: Array<any>, gridOptions: IGridOptions) => {
                 //currentPage?:number, pageItems?:number
@@ -68,8 +58,8 @@
                 return input.slice(startIndex, endIndex);
             };
         })
-        .filter(translateFilter, [
-            "$filter", gridConfigurationService, ($filter: ng.IFilterService, gridConfiguration: IGridConfiguration) => {
+        .filter(Constants.translateFilter, [
+            "$filter", "$injector", Constants.gridConfigurationService, ($filter: ng.IFilterService, $injector:ng.auto.IInjectorService, gridConfiguration: IGridConfiguration) => {
                 var translateFilterAvailable = true;
 
                 function getTranslation<T>(languageId: string, retrieveTranslationFct: (getLocaleTranslation: IGridLocaleTranslations) => T) {
@@ -77,7 +67,7 @@
 
                     var languageIdParts = languageId.split(/[-_]/);
                     for (var languageIdPartIndex = languageIdParts.length; (languageIdPartIndex >= 0) && (!foundTranslation); languageIdPartIndex--) {
-                        var subLanguageId = languageIdPartIndex === 0 ? defaultTranslationLocale : languageIdParts.slice(0, languageIdPartIndex).join("-");
+                        var subLanguageId = languageIdPartIndex === 0 ? Constants.defaultTranslationLocale : languageIdParts.slice(0, languageIdPartIndex).join("-");
                         var langTranslations = gridConfiguration.translations[subLanguageId];
                         if (langTranslations) {
                             foundTranslation = retrieveTranslationFct(langTranslations);
@@ -88,6 +78,14 @@
                 };
 
                 return (input: any, languageId: string) => {
+                    if (!input) {
+                        return input;
+                    }
+
+                    if (!languageId) {
+                        languageId = Constants.defaultTranslationLocale;
+                    }
+
                     var translatedText: string;
 
                     // dates require special attention
@@ -101,16 +99,10 @@
 
                     translatedText = getTranslation(languageId, (localeTranslations: IGridLocaleTranslations) => localeTranslations[input]);
 
-                    if (translateFilterAvailable && !translatedText) {
-                        // check for a filter directive
+                    // check for a filter directive
+                    if (!translatedText && $injector.has("translateFilter")) {
                         try {
-
-                            debugger; 
-
-                            var externalTranslationFilter = $filter("translate");
-                            if (externalTranslationFilter) {
-                                translatedText = externalTranslationFilter(input);
-                            }
+                            translatedText = $filter("translate")(input);
                         }
                         catch (ex) {
                         }

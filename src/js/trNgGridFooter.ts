@@ -1,5 +1,5 @@
 ﻿module TrNgGrid {
-    export interface IGridFooterScope extends IGridScope {
+    export interface IGridFooterScope extends IGridSectionScope {
         isCustomized?: boolean;
         isPaged: boolean;
         totalItemsCount: number;

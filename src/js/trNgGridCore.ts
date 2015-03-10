@@ -396,7 +396,7 @@ module TrNgGrid {
                         fields: '=?'
                     },
                     controller: ["$compile", "$parse", "$timeout", Constants.gridConfigurationService, GridController],
-                    compile: (templateElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes) => {
+                    compile(templateElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes) {
                         // fix & add a couple of elements & directives
                         fixTableStructure(gridConfiguration, templateElement);
 
