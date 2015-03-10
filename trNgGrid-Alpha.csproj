@@ -79,6 +79,9 @@
     <Content Include="alpha\src\js\trNgGridHeader.js">
       <DependentUpon>trNgGridHeader.ts</DependentUpon>
     </Content>
+    <Content Include="alpha\src\js\trNgGridLayoutManagement.js">
+      <DependentUpon>trNgGridLayoutManagement.ts</DependentUpon>
+    </Content>
     <Content Include="alpha\src\js\trNgGridUtils.js">
       <DependentUpon>trNgGridUtils.ts</DependentUpon>
     </Content>
@@ -148,6 +151,7 @@
     <TypeScriptCompile Include="alpha\src\js\trNgGridFilters.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridFooter.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridHeader.ts" />
+    <TypeScriptCompile Include="alpha\src\js\trNgGridLayoutManagement.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridUtils.ts" />
     <TypeScriptCompile Include="demo\js\benchmark.ts" />
     <TypeScriptCompile Include="demo\js\customizations_global_beta.ts" />
