@@ -7,11 +7,11 @@ Simply because everything else you're gonna find out there:
 - is over-engineered without giving you anything extra in return, making it difficult to maintain.
 
 #### Why this one?
-- is built with simplicity in mind.
+- is easy to use.
 - is using plain tables, allowing the browsers to optimize the rendering for performance.
 - allows you to fully describe it in a view, without messing up your controllers.
-- is fully customizable via templates and two-way data bound attributes.
-- easy to maintain, as its code was written under the type safe TypeScript. The repository also has the pure JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend this one).
+- is customizable via templates and two-way data bound attributes.
+- is easy to maintain, as its code was written under the type safe TypeScript. The repository also has the pure JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend this one).
 
 #### Limitations
 Like everything else in this life, not everything is sweet and wonderful. 
