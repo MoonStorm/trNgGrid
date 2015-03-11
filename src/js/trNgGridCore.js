@@ -20,11 +20,14 @@ var TrNgGrid;
             this.$parse = $parse;
             this.$timeout = $timeout;
             this.gridConfiguration = gridConfiguration;
-            this.gridLayout = new TrNgGrid.GridLayout();
+            this.nonFieldNameTagIndex = 0;
+            this.nonFieldNameFormat = "$$_trNgGridCustom_";
+            this.gridColumns = {};
         }
-        GridController.prototype.setOptions = function (gridOptions) {
+        GridController.prototype.setGridOptions = function (gridOptions) {
             var _this = this;
             this.gridOptions = gridOptions;
+            this.gridLayout = new TrNgGrid.GridLayout(this.gridConfiguration, this.gridOptions);
             if (this.gridOptions.onDataRequired) {
                 var retrieveDataCallback = function () {
                     _this.dataRequestPromise = null;
@@ -45,26 +48,26 @@ var TrNgGrid;
                         }, _this.gridOptions.onDataRequiredDelay, true);
                     }
                 };
-                this.gridOptions.$watch("gridOptions.currentPage", function (newValue, oldValue) {
+                this.gridOptions.$watch("currentPage", function (newValue, oldValue) {
                     if (newValue !== oldValue) {
                         scheduleDataRetrieval();
                     }
                 });
-                this.gridOptions.$watchCollection("[" + "gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.pageItems, " + "]", function () {
+                this.gridOptions.$watchCollection("[" + "filterBy, " + "filterByFields, " + "orderBy, " + "orderByReverse, " + "pageItems, " + "]", function () {
                     if (_this.gridOptions.currentPage !== 0) {
                         _this.gridOptions.currentPage = 0;
                         return;
                     }
                     scheduleDataRetrieval();
                 });
-                this.gridOptions.$watch("gridOptions.immediateDataRetrieval", function (newValue) {
+                this.gridOptions.$watch("immediateDataRetrieval", function (newValue) {
                     if (newValue && _this.dataRequestPromise) {
                         _this.$timeout.cancel(_this.dataRequestPromise);
                         retrieveDataCallback();
                     }
                 });
             }
-            this.gridOptions.$watch("gridOptions.selectionMode", function (newValue, oldValue) {
+            this.gridOptions.$watch("selectionMode", function (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     switch (newValue) {
                         case SelectionMode[0 /* None */]:
@@ -78,6 +81,28 @@ var TrNgGrid;
                     }
                 }
             });
+        };
+        GridController.prototype.setColumnOptions = function (columnOptions) {
+            columnOptions.isLinkedToField = (!!columnOptions.fieldName) || (columnOptions.fieldName.indexOf(this.nonFieldNameFormat) < 0);
+            if (!columnOptions.fieldName) {
+                columnOptions.fieldName = this.nonFieldNameFormat + (this.nonFieldNameTagIndex++);
+            }
+            columnOptions.displayItemFieldName = columnOptions.fieldName.replace(/[^a-zA-Z]/g, "_");
+            if (columnOptions.displayName) {
+                columnOptions.columnTitle = columnOptions.displayName;
+            }
+            else if (columnOptions.isLinkedToField) {
+                var rawTitle = columnOptions.fieldName.replace(/^([^\a-zA-Z]*)([\a-zA-Z]*)(.*)/g, "$2");
+                var splitTitleName = rawTitle.split(/(?=[A-Z])/);
+                if (splitTitleName.length && splitTitleName[0].length) {
+                    splitTitleName[0] = splitTitleName[0][0].toLocaleUpperCase() + splitTitleName[0].substr(1);
+                }
+                columnOptions.columnTitle = splitTitleName.join(" ");
+            }
+            else {
+                columnOptions.columnTitle = "";
+            }
+            this.gridColumns[columnOptions.fieldName] = columnOptions;
         };
         GridController.prototype.speedUpAsyncDataRetrieval = function ($event) {
             if (!$event || $event.keyCode == 13) {
@@ -210,7 +235,7 @@ var TrNgGrid;
                     TrNgGrid.fixTableStructure(gridConfiguration, templateElement);
                     return {
                         pre: function (isolatedScope, instanceElement, tAttrs, controller, transcludeFn) {
-                            controller.setOptions(isolatedScope);
+                            controller.setGridOptions(isolatedScope);
                         }
                     };
                 }

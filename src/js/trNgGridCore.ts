@@ -44,12 +44,15 @@ module TrNgGrid {
         columns: Array<IGridColumnOptions>;
     }
 
+    export interface IGridColumnDefinitions {
+        [fieldName: string]: IGridColumnOptions;
+}
+
     export class GridController {
         public gridOptions: IGridOptions;
         public gridLayout: GridLayout;
+        public gridColumns: IGridColumnDefinitions;
 
-        private columnDefsItemsWatcherDeregistration: Function;
-        private columnDefsFieldsWatcherDeregistration: Function;
         private dataRequestPromise: ng.IPromise<any>;
 
         constructor(
@@ -58,11 +61,12 @@ module TrNgGrid {
             private $timeout: ng.ITimeoutService,
             private gridConfiguration: IGridConfiguration) {
 
-            this.gridLayout = new GridLayout();
+            this.gridColumns = {};
         }
 
-        setOptions(gridOptions: IGridOptions) {
+        setGridOptions(gridOptions: IGridOptions) {
             this.gridOptions = gridOptions;
+            this.gridLayout = new GridLayout(this.gridConfiguration, this.gridOptions);
 
             //set up watchers for some of the special attributes we support
             if (this.gridOptions.onDataRequired) {
@@ -89,18 +93,18 @@ module TrNgGrid {
                 };
 
 
-                this.gridOptions.$watch("gridOptions.currentPage", (newValue: number, oldValue: number) => {
+                this.gridOptions.$watch("currentPage", (newValue: number, oldValue: number) => {
                     if (newValue !== oldValue) {
                         scheduleDataRetrieval();
                     }
                 });
 
                 this.gridOptions.$watchCollection("[" +
-                    "gridOptions.filterBy, " +
-                    "gridOptions.filterByFields, " +
-                    "gridOptions.orderBy, " +
-                    "gridOptions.orderByReverse, " +
-                    "gridOptions.pageItems, " +
+                    "filterBy, " +
+                    "filterByFields, " +
+                    "orderBy, " +
+                    "orderByReverse, " +
+                    "pageItems, " +
                     "]", () => {
                         // everything will reset the page index, with the exception of a page index change
                         if (this.gridOptions.currentPage !== 0) {
@@ -112,7 +116,7 @@ module TrNgGrid {
                         scheduleDataRetrieval();
                     });
 
-                this.gridOptions.$watch("gridOptions.immediateDataRetrieval", (newValue: boolean) => {
+                this.gridOptions.$watch("immediateDataRetrieval", (newValue: boolean) => {
                     if (newValue && this.dataRequestPromise) {
                         this.$timeout.cancel(this.dataRequestPromise);
                         retrieveDataCallback();
@@ -120,7 +124,7 @@ module TrNgGrid {
                 });
             }
 
-            this.gridOptions.$watch("gridOptions.selectionMode", (newValue: any, oldValue: SelectionMode) => {
+            this.gridOptions.$watch("selectionMode", (newValue: any, oldValue: SelectionMode) => {
                 if (newValue !== oldValue) {
                     // when this value is changing we need to handle the selectedItems
                     switch (newValue) {
@@ -135,6 +139,37 @@ module TrNgGrid {
                     }
                 }
             });
+        }
+
+        private nonFieldNameTagIndex = 0;
+        private nonFieldNameFormat = "$$_trNgGridCustom_";
+        setColumnOptions(columnOptions: IGridColumnOptions) {
+            columnOptions.isLinkedToField = (!!columnOptions.fieldName) || (columnOptions.fieldName.indexOf(this.nonFieldNameFormat)<0);
+            if (!columnOptions.fieldName) {
+                columnOptions.fieldName = this.nonFieldNameFormat + (this.nonFieldNameTagIndex++);
+            }
+
+            // the display field name is a safe property name for the displayed item
+            columnOptions.displayItemFieldName = columnOptions.fieldName.replace(/[^a-zA-Z]/g, "_");
+
+            // set up the column title and ensure the displayName attribute is being monitored for changes
+            if (columnOptions.displayName) {
+                columnOptions.columnTitle = columnOptions.displayName;
+            } else if (columnOptions.isLinkedToField) {
+                // exclude nested notations and invalid letters
+                var rawTitle = columnOptions.fieldName.replace(/^([^\a-zA-Z]*)([\a-zA-Z]*)(.*)/g, "$2"); // take just the first part
+
+                // split by camel-casing
+                var splitTitleName = rawTitle.split(/(?=[A-Z])/);
+                if (splitTitleName.length && splitTitleName[0].length) {
+                    splitTitleName[0] = splitTitleName[0][0].toLocaleUpperCase() + splitTitleName[0].substr(1);
+                }
+                columnOptions.columnTitle = splitTitleName.join(" ");
+            } else {
+                columnOptions.columnTitle = "";
+            }
+
+            this.gridColumns[columnOptions.fieldName] = columnOptions;
         }
 
         speedUpAsyncDataRetrieval($event?: ng.IAngularEvent) {
@@ -402,7 +437,7 @@ module TrNgGrid {
 
                         return{
                             pre(isolatedScope: IGridOptions, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) {
-                                controller.setOptions(isolatedScope);
+                                controller.setGridOptions(isolatedScope);
                             }
                         };
                     }
