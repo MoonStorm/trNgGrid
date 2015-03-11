@@ -25,6 +25,7 @@ Not everything is sweet and wonderful though. There are a few limitations which 
 - Global configuration is not done through a provider, but through a global object. Global templates can be provided though via the template cache mechanism inside Angular.
 
 These are some of the key complaints people have brought to my attention and I'm trying hard to address them in the next major release.
+
 If you want to show your support and help keep the flame burning, <a href='https://pledgie.com/campaigns/28572'><img alt='Click here to lend your support to: trNgGrid and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28572.png?skin_name=chrome' border='0' ></a>
 
 #### Convinced?
