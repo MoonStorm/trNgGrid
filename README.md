@@ -13,19 +13,19 @@ Simply because everything else you're gonna find out there:
 - is customizable via templates and two-way data bound attributes.
 - is easy to maintain, as its code was written under the type safe TypeScript. The repository also has the pure JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend this one).
 
+#### Documentation and demo site
+ - [Release](http://moonstorm.github.io/trNgGrid/release)
+
 #### Limitations
 Not everything is sweet and wonderful though. There are a few limitations which you should be aware of before jumping in.
 - Multiple `TR` rows in the table definition are not supported. In other words, you can't have more than one row per header, footer, or per data item.
-- Angular directives on the `TR` rows are ignored. You are free to customize your cells though in any way you want.
+- Any kind of attributes on the `TR` rows, including Angular directives or styles, are ignored. You are free to customize your cells though in any way you want.
 - You can't use the `data-` notation for the attributes.
 - Custom start/end symbols, set up via the `$interpolate` service, are not supported.
-- Configuration is not done through a provider, but through a global object. Templates can be provided though via the template cache mechanism inside Angular.
+- Global configuration is not done through a provider, but through a global object. Global templates can be provided though via the template cache mechanism inside Angular.
 
 These are some of the key complaints people have brought to my attention and I'm trying hard to address them in the next major release.
 If you want to show your support and help keep the flame burning, <a href='https://pledgie.com/campaigns/28572'><img alt='Click here to lend your support to: trNgGrid and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28572.png?skin_name=chrome' border='0' ></a>
-
-#### Documentation and demo site
- - [Release](http://moonstorm.github.io/trNgGrid/release)
 
 #### Convinced?
 You can download the grid from the master branch, which contains the latest release. 
