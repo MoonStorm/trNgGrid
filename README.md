@@ -15,7 +15,7 @@ Simply because everything else you're gonna find out there:
 
 #### Limitations
 Not everything is sweet and wonderful though. There are a few limitations which you should be aware of before jumping in.
-- Multiple `TR` rows in the table definitions are not supported. In other words, you can't have more than one row per header, footer, or per data item.
+- Multiple `TR` rows in the table definition are not supported. In other words, you can't have more than one row per header, footer, or per data item.
 - Angular directives on the `TR` rows are ignored. You are free to customize your cells though in any way you want.
 - You can't use the `data-` notation for the attributes.
 - Custom start/end symbols, set up via the `$interpolate` service, are not supported.
