@@ -1,3 +1,2 @@
-#### BETA
-You're currently viewing the BETA branch, with features and bug-fixes pre-released for testing. 
-Pull requests should target this branch.
+#### ALPHA
+You're currently viewing the ALPHA branch, with is usually used for exploration of various ideas and prototyping.
