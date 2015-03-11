@@ -34,10 +34,10 @@ Make sure you first include Angular and a Boostrap theme of your choice.
 Themes can be found on the Bootswatch website. 
 Of course you can craft your own, as the grid layout is quite easy to style.
 
-##### Legend
+#### Legend
 - Release: master, gh-pages/release
 - Experimental: beta, gh-pages/beta
 
-##### Issues
+#### Issues
  Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
  
