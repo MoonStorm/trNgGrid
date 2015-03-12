@@ -58,9 +58,6 @@
     <Content Include="alpha\src\js\trNgGridBody.js">
       <DependentUpon>trNgGridBody.ts</DependentUpon>
     </Content>
-    <Content Include="alpha\src\js\trNgGridColumn.js">
-      <DependentUpon>trNgGridColumn.ts</DependentUpon>
-    </Content>
     <Content Include="alpha\src\js\trNgGridConfiguration.js">
       <DependentUpon>trNgGridConfiguration.ts</DependentUpon>
     </Content>
@@ -144,7 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="alpha\src\js\trNgGridBody.ts" />
-    <TypeScriptCompile Include="alpha\src\js\trNgGridColumn.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridConfiguration.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridConstants.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridCore.ts" />
