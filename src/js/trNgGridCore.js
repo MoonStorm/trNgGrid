@@ -104,6 +104,9 @@ var TrNgGrid;
             }
             this.gridColumns[columnOptions.fieldName] = columnOptions;
         };
+        GridController.prototype.getColumnOptions = function (fieldName) {
+            return this.gridColumns[fieldName];
+        };
         GridController.prototype.speedUpAsyncDataRetrieval = function ($event) {
             if (!$event || $event.keyCode == 13) {
                 this.gridOptions.immediateDataRetrieval = true;

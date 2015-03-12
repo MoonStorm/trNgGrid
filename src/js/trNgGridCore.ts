@@ -172,6 +172,10 @@ module TrNgGrid {
             this.gridColumns[columnOptions.fieldName] = columnOptions;
         }
 
+        getColumnOptions(fieldName: string) {
+            return this.gridColumns[fieldName];
+        }
+
         speedUpAsyncDataRetrieval($event?: ng.IAngularEvent) {
             if (!$event || $event.keyCode == 13) {
                 this.gridOptions.immediateDataRetrieval = true;

@@ -32,26 +32,26 @@
     //var fieldNameAttribute = "field-name";
     //var isCustomizedAttribute = "is-customized";
 
-    export var cellFooterDirective = tableDirective + "FooterCell";
-    export var cellFooterDirectiveAttribute = tableDirectiveAttribute + "-footer-cell";
-    export var cellFooterTemplateDirective = tableDirective + "FooterCellTemplate";
-    export var cellFooterTemplateDirectiveAttribute = tableDirectiveAttribute + "-footer-cell-template";
-
     export var globalFilterDirective = tableDirective + "GlobalFilter";
     export var globalFilterDirectiveAttribute = tableDirectiveAttribute + "-global-filter";
 
     export var pagerDirective = tableDirective + "Pager";
     export var pagerDirectiveAttribute = tableDirectiveAttribute + "-pager";
 
-    export var cellHeaderDirective = tableDirective + "HeaderCell";
-    export var cellHeaderDirectiveAttribute = tableDirectiveAttribute + "-header-cell";
-    export var cellHeaderTemplateDirective = tableDirective + "HeaderCellTemplate";
-    export var cellHeaderTemplateDirectiveAttribute = tableDirectiveAttribute + "-header-cell-template";
+    export var headerCellDirective = tableDirective + "HeaderCell";
+    export var headerCellDirectiveAttribute = tableDirectiveAttribute + "-header-cell";
 
-    export var cellBodyDirective = tableDirective + "BodyCell";
-    export var cellBodyDirectiveAttribute = tableDirectiveAttribute + "-body-cell";
-    export var cellBodyTemplateDirective = tableDirective + "BodyCellTemplate";
-    export var cellBodyTemplateDirectiveAttribute = tableDirectiveAttribute + "-body-cell-template";
+    export var headerCellPlaceholderDirective = headerCellDirective + "Placeholder";
+    export var headerCellPlaceholderDirectiveAttribute = headerCellDirectiveAttribute + "-placeholder";
+
+    export var headerCellDirective = tableDirective + "HeaderCell";
+    export var headerCellDirectiveAttribute = tableDirectiveAttribute + "-header-cell";
+
+    export var bodyCellDirective = tableDirective + "BodyCell";
+    export var bodyCellDirectiveAttribute = tableDirectiveAttribute + "-body-cell";
+
+    export var footerCellDirective = tableDirective + "FooterCell";
+    export var footerCellDirectiveAttribute = tableDirectiveAttribute + "-footer-cell";
 
     export var columnSortDirective = tableDirective + "ColumnSort";
     export var columnSortDirectiveAttribute = tableDirectiveAttribute + "-column-sort";
