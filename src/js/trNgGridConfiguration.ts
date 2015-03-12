@@ -80,17 +80,17 @@ module TrNgGrid {
         rowSelectedCssClass: string = "active ";
         footerCssClass: string = "tr-ng-grid-footer form-inline ";
     }
-
-    // it's important to assign all the default column options, so we can match them with the column attributes in the markup
-    class GridConfigurationDefaultColumnOptions implements IGridColumnOptions {
-        cellWidth: string;
-        cellHeight: string;
+     
+    // it's important to assign all the default column options, so we can enumerate its fields
+    export class GridConfigurationDefaultColumnOptions implements IGridColumnOptions {
+        cellWidth: string = undefined;
+        cellHeight: string = undefined;
         displayAlign: string = "left";
-        displayFormat: string;
-        displayName: string;
-        filter: string;
-        enableFiltering: boolean;
-        enableSorting: boolean;
+        displayFormat: string = undefined;
+        displayName: string = undefined;
+        filter: string = undefined;
+        enableFiltering: boolean = true;
+        enableSorting: boolean = true;
     }
 
     class GridConfigurationDefaultTemplates implements IGridTemplates {
@@ -295,6 +295,5 @@ module TrNgGrid {
 
     }
 
-    angular.module(Constants.tableDirective)
-        .provider(Constants.gridConfigurationService, GridConfigurationProvider);
+    gridModule.provider(Constants.gridConfigurationService, GridConfigurationProvider);
 } 

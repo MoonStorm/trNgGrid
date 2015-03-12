@@ -27,10 +27,18 @@ var TrNgGrid;
     })();
     var GridConfigurationDefaultColumnOptions = (function () {
         function GridConfigurationDefaultColumnOptions() {
+            this.cellWidth = undefined;
+            this.cellHeight = undefined;
             this.displayAlign = "left";
+            this.displayFormat = undefined;
+            this.displayName = undefined;
+            this.filter = undefined;
+            this.enableFiltering = true;
+            this.enableSorting = true;
         }
         return GridConfigurationDefaultColumnOptions;
     })();
+    TrNgGrid.GridConfigurationDefaultColumnOptions = GridConfigurationDefaultColumnOptions;
     var GridConfigurationDefaultTemplates = (function () {
         function GridConfigurationDefaultTemplates($interpolateProvider, gridStyles) {
             var startNgSymbol = $interpolateProvider.startSymbol();
@@ -104,5 +112,5 @@ var TrNgGrid;
         };
         return GridConfigurationProvider;
     })();
-    angular.module(TrNgGrid.Constants.tableDirective).provider(TrNgGrid.Constants.gridConfigurationService, GridConfigurationProvider);
+    TrNgGrid.gridModule.provider(TrNgGrid.Constants.gridConfigurationService, GridConfigurationProvider);
 })(TrNgGrid || (TrNgGrid = {}));

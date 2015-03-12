@@ -102,7 +102,8 @@ var TrNgGrid;
             else {
                 columnOptions.columnTitle = "";
             }
-            this.gridColumns[columnOptions.fieldName] = columnOptions;
+            columnOptions = this.gridColumns[columnOptions.fieldName] = angular.extend(this.gridColumns[columnOptions.fieldName] || {}, this.gridConfiguration.defaultColumnOptions, columnOptions);
+            return columnOptions;
         };
         GridController.prototype.getColumnOptions = function (fieldName) {
             return this.gridColumns[fieldName];

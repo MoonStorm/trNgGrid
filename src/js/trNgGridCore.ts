@@ -169,7 +169,9 @@ module TrNgGrid {
                 columnOptions.columnTitle = "";
             }
 
-            this.gridColumns[columnOptions.fieldName] = columnOptions;
+            // keep the existing instance
+            columnOptions = this.gridColumns[columnOptions.fieldName] = angular.extend(this.gridColumns[columnOptions.fieldName] || {}, this.gridConfiguration.defaultColumnOptions, columnOptions);
+            return columnOptions;
         }
 
         getColumnOptions(fieldName: string) {

@@ -1,5 +1,8 @@
 ﻿/// <reference path="../../../typings/angularjs/angular.d.ts"/>
 module TrNgGrid {
+    export function extend {
+    }
+
     export function findChildByTagName(parent: JQuery, childTag: string): ng.IAugmentedJQuery{
         childTag = childTag.toUpperCase();
         var children = parent.children();
@@ -45,6 +48,15 @@ module TrNgGrid {
             templateElement.append(templateWrapElement);
         }
     };
+
+    export function extractFields(data: any): Array<string>  {
+        var fields = new Array<string>();
+        for (var fieldName in data) {
+            fields.push(fieldName);
+        }
+
+        return fields;
+    }
 
     export function log(message: string) {
         console.log(Constants.tableDirective + "(" + new Date().getTime() + "): " + message);

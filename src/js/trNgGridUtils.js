@@ -47,6 +47,14 @@ var TrNgGrid;
     }
     TrNgGrid.wrapTemplatedCell = wrapTemplatedCell;
     ;
+    function extractFields(data) {
+        var fields = new Array();
+        for (var fieldName in data) {
+            fields.push(fieldName);
+        }
+        return fields;
+    }
+    TrNgGrid.extractFields = extractFields;
     function log(message) {
         console.log(TrNgGrid.Constants.tableDirective + "(" + new Date().getTime() + "): " + message);
     }
