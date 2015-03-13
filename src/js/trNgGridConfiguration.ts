@@ -83,6 +83,7 @@ module TrNgGrid {
      
     // it's important to assign all the default column options, so we can enumerate its fields
     export class GridConfigurationDefaultColumnOptions implements IGridColumnOptions {
+        fieldName:string = undefined;
         cellWidth: string = undefined;
         cellHeight: string = undefined;
         displayAlign: string = "left";

@@ -1,5 +1,62 @@
 var TrNgGrid;
 (function (TrNgGrid) {
+    function processMonitorChanges(source, propKeys, onChangeDetected) {
+        debugger;
+        var newData = {};
+        var sourceIsArrayOfValues = source instanceof Array;
+        angular.forEach(propKeys, function (propKey, index) {
+            var propValue = sourceIsArrayOfValues ? source[index] : source[propKey];
+            if (propValue !== undefined) {
+                if (propValue === "true") {
+                    propValue = true;
+                }
+                else if (propValue === "false") {
+                    propValue = false;
+                }
+                if (propValue.toString().indexOf("{{") === 0) {
+                    throw "Invalid property value detected";
+                }
+                newData[propKey] = propValue;
+            }
+        });
+        onChangeDetected(newData);
+    }
+    ;
+    function monitorAttributes($interpolate, $tAttrs, $scope, properties, onChangeDetected) {
+        var propKeys;
+        if (properties instanceof Array) {
+            propKeys = properties;
+        }
+        else {
+            propKeys = extractFields(properties);
+        }
+        var watchArray = new Array(propKeys.length);
+        angular.forEach(propKeys, function (propKey, index) {
+            watchArray[index] = $interpolate($tAttrs[propKey])($scope);
+        });
+        debugger;
+        $scope.$watchGroup(watchArray, function (newValues) { return processMonitorChanges(newValues, propKeys, onChangeDetected); });
+    }
+    TrNgGrid.monitorAttributes = monitorAttributes;
+    function monitorScope($scope, properties, onChangeDetected) {
+        var propKeys;
+        if (properties instanceof Array) {
+            propKeys = properties;
+        }
+        else {
+            propKeys = extractFields(properties);
+        }
+        $scope.$watchGroup(propKeys, function () { return processMonitorChanges($scope, propKeys, onChangeDetected); });
+    }
+    TrNgGrid.monitorScope = monitorScope;
+    function extractFields(data) {
+        var fields = new Array();
+        for (var fieldName in data) {
+            fields.push(fieldName);
+        }
+        return fields;
+    }
+    TrNgGrid.extractFields = extractFields;
     function findChildByTagName(parent, childTag) {
         childTag = childTag.toUpperCase();
         var children = parent.children();
@@ -47,14 +104,6 @@ var TrNgGrid;
     }
     TrNgGrid.wrapTemplatedCell = wrapTemplatedCell;
     ;
-    function extractFields(data) {
-        var fields = new Array();
-        for (var fieldName in data) {
-            fields.push(fieldName);
-        }
-        return fields;
-    }
-    TrNgGrid.extractFields = extractFields;
     function log(message) {
         console.log(TrNgGrid.Constants.tableDirective + "(" + new Date().getTime() + "): " + message);
     }

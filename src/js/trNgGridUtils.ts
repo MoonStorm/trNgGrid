@@ -1,6 +1,80 @@
 ﻿/// <reference path="../../../typings/angularjs/angular.d.ts"/>
 module TrNgGrid {
-    export function extend {
+
+    /*
+     * Processes the result of a scope monitoring operation
+     */
+    function processMonitorChanges(source: any, propKeys: Array<string>, onChangeDetected: (newData: any) => void) {
+        debugger;
+        var newData: any = {};
+        var sourceIsArrayOfValues = source instanceof Array;
+        angular.forEach(propKeys,(propKey: string, index: number) => {
+            var propValue = sourceIsArrayOfValues ? source[index] : source[propKey];
+            if (propValue !== undefined) {
+                if (propValue === "true") {
+                    propValue = true;
+                }
+                else if (propValue === "false") {
+                    propValue = false;
+                }
+
+                // TODO: turn this check off
+                if (propValue.toString().indexOf("{{") === 0) {
+                    throw "Invalid property value detected";
+                }
+
+                newData[propKey] = propValue;
+            }
+        });
+
+        onChangeDetected(newData);
+    };
+
+    /*
+     * Monitors the attributes for changes to the list of properties provided either as an array of strings or an object with fields set
+     */
+    export function monitorAttributes($interpolate:ng.IInterpolateService, $tAttrs: ng.IAttributes, $scope: ng.IScope, properties: any, onChangeDetected: (newData: any) => void) {
+        var propKeys: Array<any>;
+
+        if (properties instanceof Array) {
+            propKeys = <Array<String>>properties;
+        }
+        else {
+            propKeys = extractFields(properties);
+        }
+
+        var watchArray = new Array<any>(propKeys.length);
+        angular.forEach(propKeys, (propKey: string, index: number) => {
+            watchArray[index] = $interpolate($tAttrs[propKey])($scope);
+        });
+
+        debugger;
+        $scope.$watchGroup(watchArray, (newValues:Array<any>) => processMonitorChanges(newValues,propKeys, onChangeDetected));
+    }
+
+    /*
+     * Monitors the scope for changes to the list of properties provided either as an array of strings or an object with fields set
+     */
+    export function monitorScope($scope: ng.IScope, properties: any, onChangeDetected:(newData:any)=>void) {
+        var propKeys: Array<any>;
+
+        if (properties instanceof Array) {
+            propKeys = <Array<String>>properties;
+        }
+        else {
+            propKeys = extractFields(properties);
+        }
+
+        $scope.$watchGroup(propKeys, ()=> processMonitorChanges($scope, propKeys, onChangeDetected));
+    }
+
+    export function extractFields(data: any): Array<string> {
+        var fields = new Array<string>();
+        for (var fieldName in data) {
+            fields.push(fieldName);
+        }
+
+        return fields;
     }
 
     export function findChildByTagName(parent: JQuery, childTag: string): ng.IAugmentedJQuery{
@@ -48,15 +122,6 @@ module TrNgGrid {
             templateElement.append(templateWrapElement);
         }
     };
-
-    export function extractFields(data: any): Array<string>  {
-        var fields = new Array<string>();
-        for (var fieldName in data) {
-            fields.push(fieldName);
-        }
-
-        return fields;
-    }
 
     export function log(message: string) {
         console.log(Constants.tableDirective + "(" + new Date().getTime() + "): " + message);

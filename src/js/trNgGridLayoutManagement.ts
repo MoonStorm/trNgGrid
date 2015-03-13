@@ -51,6 +51,16 @@
             private gridSectionType: GridSectionType) {
         }
 
+        swapCells(firstCellIndex: number, secondCellIndex: number) {
+            var firstCell = this.cells[firstCellIndex];
+            var secondCell = this.cells[secondCellIndex];
+
+            this.gridConfiguration.debugMode && log("About to swap cells ["+firstCell.fieldName+"] and ["+secondCell.fieldName+"] in section " + this.gridSectionType);
+
+            this.cells.splice(firstCellIndex, 1, secondCell);
+            this.cells.splice(secondCellIndex, 1, firstCell);
+        }
+
         findCell(fieldName: string):IGridColumnLayoutOptions {
             for (var cellIndex = 0; cellIndex < this.cells.length; cellIndex++) {
                 if (this.cells[cellIndex].fieldName === fieldName) {
@@ -61,7 +71,7 @@
             return null;
         }
 
-        registerCell(cell: IGridColumnLayoutOptions, index?:number){
+        registerCell(cell: IGridColumnLayoutOptions, index?: number) {
             if (!cell.fieldName) {
                 throw 'A field name was not provided';
             }
@@ -70,21 +80,21 @@
             if (index === undefined) {
                 for (var cellIndex = 0; (cellIndex < this.cells.length) && (!cellFound); cellIndex++) {
                     if (this.cells[cellIndex].fieldName === cell.fieldName) {
+                        this.gridConfiguration.debugMode && log("A layout cell [" + cell.fieldName + "] is about to be updated in section " + this.gridSectionType);
                         this.cells[cellIndex] = cell;
-                        this.gridConfiguration.debugMode && log("A layout cell [" + cell.fieldName + "] was updated in section " + this.gridSectionType);
                         cellFound = true;
                     }
                 }
             }
 
             if (!cellFound) {
+                this.gridConfiguration.debugMode && log("A new layout cell [" + cell.fieldName + "] is about to be registered in section " + this.gridSectionType);
                 if (index === undefined || index === this.cells.length) {
                     this.cells.push(cell);
                 }
                 else {
                     this.cells.splice(index, 0, cell);
                 }
-                this.gridConfiguration.debugMode && log("A new layout cell [" + cell.fieldName + "] was registered in section " + this.gridSectionType);
             }
 
             this.gridLayout.triggerReconciliation();
@@ -93,8 +103,8 @@
         unregisterCell(cell: IGridColumnLayoutOptions) {
             for (var cellIndex = 0; cellIndex < this.cells.length; cellIndex++) {
                 if (this.cells[cellIndex] === cell) {
+                    this.gridConfiguration.debugMode && log("A layout cell [" + cell.fieldName + "] is about to get unregistered in section " + this.gridSectionType);
                     this.cells.splice(cellIndex, 1);
-                    this.gridConfiguration.debugMode && log("A layout cell [" + cell.fieldName + "] was unregistered in section " + this.gridSectionType);
                     this.gridLayout.triggerReconciliation();
                     return;
                 }
@@ -272,50 +282,54 @@
             }
         }
 
-        private reconcileRows(templateRow: GridLayoutRow, targetRow: GridLayoutRow) {
+        private reconcileRows(enforcedRow: GridLayoutRow, targetRow: GridLayoutRow) {
             // the template represents the source
-            var currentTargetRowRegistrationIndex = 0;
-            for (var templateCellRegistrationIndex = 0; templateCellRegistrationIndex < templateRow.cells.length; templateCellRegistrationIndex++) {
-                var templateCellRegistration = templateRow.cells[templateCellRegistrationIndex];
-                if (templateCellRegistration.isDeactivated) {
+            var currentTargetRowCellIndex = 0;
+            for (var enforcedCellIndex = 0; enforcedCellIndex < enforcedRow.cells.length; enforcedCellIndex++) {
+                var enforcedCell = enforcedRow.cells[enforcedCellIndex];
+                if (enforcedCell.isDeactivated) {
                     continue;
                 }
 
+                // we need to fill up possible gaps in the target rows in order to match the template
+                // try to find a match
                 var matchNotFound = true;
-                while (matchNotFound) {
-                    // we need to fill up possible gaps in the target rows in order to match the template
-                    var currentTargetCellRegistration = currentTargetRowRegistrationIndex < targetRow.cells.length
-                                                            ? targetRow.cells[currentTargetRowRegistrationIndex] : null;
+                var targetCell: IGridColumnLayoutOptions;
+                for (var targetCellIndex = currentTargetRowCellIndex; matchNotFound && targetCellIndex < targetRow.cells.length; targetCellIndex++) {
+                    targetCell = targetRow.cells[targetCellIndex];
 
-                    if (!currentTargetCellRegistration || !currentTargetCellRegistration.isDeactivated) {
-                        // check for reconciliation
-                        if ((!currentTargetCellRegistration)
-                            || (currentTargetCellRegistration.isLinkedToField !== templateCellRegistration.isLinkedToField)
-                            || ((currentTargetCellRegistration.isLinkedToField) && (currentTargetCellRegistration.fieldName !== templateCellRegistration.fieldName))) {
-
-                            // need to match the template
-                            currentTargetCellRegistration = angular.extend({}, templateCellRegistration);
-                            currentTargetCellRegistration.isAutoGenerated = true;
-                            currentTargetCellRegistration.isCustomized = false;
-                            targetRow.registerCell(currentTargetCellRegistration, currentTargetRowRegistrationIndex);
-                        }
-
+                    if (targetCell && !targetCell.isDeactivated && targetCell.isLinkedToField == enforcedCell.isLinkedToField && (!targetCell.isLinkedToField || (targetCell.fieldName === enforcedCell.fieldName))) {
                         matchNotFound = false;
                     }
-
-                    currentTargetRowRegistrationIndex++;
                 }
+
+                if (matchNotFound) {
+                    // need to match the template
+                    targetCell = angular.extend({}, enforcedCell);
+                    targetCell.isAutoGenerated = true;
+                    targetCell.isCustomized = false;
+                    targetRow.registerCell(targetCell, currentTargetRowCellIndex);
+                }
+                else {
+                    targetCellIndex --;
+                    if (targetCellIndex !== currentTargetRowCellIndex) {
+                        // we need to switch cells
+                        targetRow.swapCells(targetCellIndex, currentTargetRowCellIndex);
+                    }
+                }
+
+                currentTargetRowCellIndex++;
             }
 
             // deactivate everything that's left
-            while (currentTargetRowRegistrationIndex < targetRow.cells.length) {
-                var extraCellRegistration = targetRow.cells[currentTargetRowRegistrationIndex];
+            while (currentTargetRowCellIndex < targetRow.cells.length) {
+                var extraCellRegistration = targetRow.cells[currentTargetRowCellIndex];
                 if (extraCellRegistration.isAutoGenerated) {
                     targetRow.unregisterCell(extraCellRegistration);
                 }
                 else {
                     extraCellRegistration.isDeactivated = true;
-                    currentTargetRowRegistrationIndex++;
+                    currentTargetRowCellIndex++;
                 }
             }
         }
@@ -334,9 +348,6 @@
         }
     }
 
-    var columnOptionsFields = extractFields(new GridConfigurationDefaultColumnOptions());
-    var columnLayoutOptionsFields = extractFields(new DefaultGridColumnLayoutOptions());
-
     /*
      * Controller responsible for properly setting up the cells
      */
@@ -348,70 +359,53 @@
         private columnLayout: IGridColumnLayoutOptions;
         private gridLayoutRow: GridLayoutRow;
 
-        constructor(private $scope: IGridColumnSettingsScope) {
+        constructor(private $interpolate:ng.IInterpolateService) {
         }
 
-        prepareColumn() {
-            var gridRowScope = <IGridRowScope>(this.$scope.$parent);
+        prepareColumn(gridController: GridController, $scope: IGridColumnScope, $tAttrs: ng.IAttributes) {
+            this.columnScope = $scope;
+            this.gridController = gridController;
+            this.gridLayoutRow = this.columnScope.gridLayoutRow;
 
-            this.gridController = gridRowScope.grid;
-            this.gridLayoutRow = gridRowScope.gridLayoutRow;
-            this.columnScope = <IGridColumnScope>gridRowScope.$new();
-
-            this.$scope.$on("$destroy",() => {
+            $scope.$on("$destroy",() => {
                 debugger;
                 this.columnScope.$destroy();
                 this.columnScope = null;
             });
 
-            this.$scope.$watchGroup(columnOptionsFields,() => {
-                this.registerColumnOptions();
-            });
+            monitorAttributes(
+                this.$interpolate,
+                $tAttrs,
+                $scope,
+                new GridConfigurationDefaultColumnOptions(),
+                (newOptions: IGridColumnOptions) => {
+                     this.registerColumnOptions(newOptions);
+                });
 
-            this.$scope.$watchGroup(columnLayoutOptionsFields,() => {
-                this.registerColumnLayoutOptions();
-            });
-
-            this.registerColumnOptions();
-            this.registerColumnLayoutOptions();
+            monitorAttributes(
+                this.$interpolate,
+                $tAttrs,
+                $scope,
+                new DefaultGridColumnLayoutOptions(),
+                (newLayoutOptions: IGridColumnOptions) => {
+                    if (!this.columnOptions) {
+                        throw "The column options could not be retrieved at this stage. Please report this error.";
+                    }
+                    newLayoutOptions.isLinkedToField = this.columnOptions.isLinkedToField;
+                    this.registerColumnLayoutOptions(newLayoutOptions);
+                });
         }
 
-        private registerColumnOptions() {
-
+        private registerColumnOptions(updatedColumnOptions: IGridColumnOptions) {
             debugger;
-            var updatedColumnOptions: IGridColumnOptions = {
-                fieldName: this.$scope.fieldName,
-                displayName: this.$scope.displayName,
-                displayAlign: this.$scope.displayAlign,
-                displayFormat: this.$scope.displayFormat,
-                enableSorting: this.$scope.enableSorting === undefined ? undefined : (this.$scope.enableSorting.toString() === "true"),
-                enableFiltering: this.$scope.enableFiltering === undefined ? undefined : (this.$scope.enableFiltering.toString() === "true"),
-                cellWidth: this.$scope.cellWidth,
-                cellHeight: this.$scope.cellHeight,
-                filter: this.$scope.filter
-            };
-
             updatedColumnOptions = this.gridController.setColumnOptions(updatedColumnOptions);                
 
             this.columnOptions = updatedColumnOptions;
             this.columnScope.gridColumnOptions = this.columnOptions;
         }
 
-        private registerColumnLayoutOptions() {
-
+        private registerColumnLayoutOptions(updatedLayoutOptions: IGridColumnLayoutOptions) {
             debugger;
-            if (!this.columnOptions) {
-                // they should be available, but in case they're not
-                this.registerColumnOptions();
-            }
-
-            var updatedLayoutOptions:IGridColumnLayoutOptions = {
-                fieldName: this.$scope.fieldName,
-                isAutoGenerated: this.$scope.isAutoGenerated && this.$scope.isAutoGenerated.toString() === "true",
-                isCustomized: this.$scope.isCustomized && this.$scope.isCustomized.toString() === "true",
-                isLinkedToField: this.columnOptions.isLinkedToField
-            };
-
             if (updatedLayoutOptions.isAutoGenerated) {
                 // we do not accept layout changes from auto-generated columns
                 updatedLayoutOptions = this.gridLayoutRow.findCell(updatedLayoutOptions.fieldName);

@@ -27,6 +27,7 @@ var TrNgGrid;
     })();
     var GridConfigurationDefaultColumnOptions = (function () {
         function GridConfigurationDefaultColumnOptions() {
+            this.fieldName = undefined;
             this.cellWidth = undefined;
             this.cellHeight = undefined;
             this.displayAlign = "left";

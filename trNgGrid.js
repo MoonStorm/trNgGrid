@@ -48,6 +48,63 @@
 
 var TrNgGrid;
 (function (TrNgGrid) {
+    function processMonitorChanges(source, propKeys, onChangeDetected) {
+        debugger;
+        var newData = {};
+        var sourceIsArrayOfValues = source instanceof Array;
+        angular.forEach(propKeys, function (propKey, index) {
+            var propValue = sourceIsArrayOfValues ? source[index] : source[propKey];
+            if (propValue !== undefined) {
+                if (propValue === "true") {
+                    propValue = true;
+                }
+                else if (propValue === "false") {
+                    propValue = false;
+                }
+                if (propValue.toString().indexOf("{{") === 0) {
+                    throw "Invalid property value detected";
+                }
+                newData[propKey] = propValue;
+            }
+        });
+        onChangeDetected(newData);
+    }
+    ;
+    function monitorAttributes($interpolate, $tAttrs, $scope, properties, onChangeDetected) {
+        var propKeys;
+        if (properties instanceof Array) {
+            propKeys = properties;
+        }
+        else {
+            propKeys = extractFields(properties);
+        }
+        var watchArray = new Array(propKeys.length);
+        angular.forEach(propKeys, function (propKey, index) {
+            watchArray[index] = $interpolate($tAttrs[propKey])($scope);
+        });
+        debugger;
+        $scope.$watchGroup(watchArray, function (newValues) { return processMonitorChanges(newValues, propKeys, onChangeDetected); });
+    }
+    TrNgGrid.monitorAttributes = monitorAttributes;
+    function monitorScope($scope, properties, onChangeDetected) {
+        var propKeys;
+        if (properties instanceof Array) {
+            propKeys = properties;
+        }
+        else {
+            propKeys = extractFields(properties);
+        }
+        $scope.$watchGroup(propKeys, function () { return processMonitorChanges($scope, propKeys, onChangeDetected); });
+    }
+    TrNgGrid.monitorScope = monitorScope;
+    function extractFields(data) {
+        var fields = new Array();
+        for (var fieldName in data) {
+            fields.push(fieldName);
+        }
+        return fields;
+    }
+    TrNgGrid.extractFields = extractFields;
     function findChildByTagName(parent, childTag) {
         childTag = childTag.toUpperCase();
         var children = parent.children();
@@ -95,14 +152,6 @@ var TrNgGrid;
     }
     TrNgGrid.wrapTemplatedCell = wrapTemplatedCell;
     ;
-    function extractFields(data) {
-        var fields = new Array();
-        for (var fieldName in data) {
-            fields.push(fieldName);
-        }
-        return fields;
-    }
-    TrNgGrid.extractFields = extractFields;
     function log(message) {
         console.log(TrNgGrid.Constants.tableDirective + "(" + new Date().getTime() + "): " + message);
     }
@@ -469,6 +518,7 @@ var TrNgGrid;
     })();
     var GridConfigurationDefaultColumnOptions = (function () {
         function GridConfigurationDefaultColumnOptions() {
+            this.fieldName = undefined;
             this.cellWidth = undefined;
             this.cellHeight = undefined;
             this.displayAlign = "left";
@@ -585,6 +635,13 @@ var TrNgGrid;
             this.gridSectionType = gridSectionType;
             this.cells = [];
         }
+        GridLayoutRow.prototype.swapCells = function (firstCellIndex, secondCellIndex) {
+            var firstCell = this.cells[firstCellIndex];
+            var secondCell = this.cells[secondCellIndex];
+            this.gridConfiguration.debugMode && TrNgGrid.log("About to swap cells [" + firstCell.fieldName + "] and [" + secondCell.fieldName + "] in section " + this.gridSectionType);
+            this.cells.splice(firstCellIndex, 1, secondCell);
+            this.cells.splice(secondCellIndex, 1, firstCell);
+        };
         GridLayoutRow.prototype.findCell = function (fieldName) {
             for (var cellIndex = 0; cellIndex < this.cells.length; cellIndex++) {
                 if (this.cells[cellIndex].fieldName === fieldName) {
@@ -601,28 +658,28 @@ var TrNgGrid;
             if (index === undefined) {
                 for (var cellIndex = 0; (cellIndex < this.cells.length) && (!cellFound); cellIndex++) {
                     if (this.cells[cellIndex].fieldName === cell.fieldName) {
+                        this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] is about to be updated in section " + this.gridSectionType);
                         this.cells[cellIndex] = cell;
-                        this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] was updated in section " + this.gridSectionType);
                         cellFound = true;
                     }
                 }
             }
             if (!cellFound) {
+                this.gridConfiguration.debugMode && TrNgGrid.log("A new layout cell [" + cell.fieldName + "] is about to be registered in section " + this.gridSectionType);
                 if (index === undefined || index === this.cells.length) {
                     this.cells.push(cell);
                 }
                 else {
                     this.cells.splice(index, 0, cell);
                 }
-                this.gridConfiguration.debugMode && TrNgGrid.log("A new layout cell [" + cell.fieldName + "] was registered in section " + this.gridSectionType);
             }
             this.gridLayout.triggerReconciliation();
         };
         GridLayoutRow.prototype.unregisterCell = function (cell) {
             for (var cellIndex = 0; cellIndex < this.cells.length; cellIndex++) {
                 if (this.cells[cellIndex] === cell) {
+                    this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] is about to get unregistered in section " + this.gridSectionType);
                     this.cells.splice(cellIndex, 1);
-                    this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] was unregistered in section " + this.gridSectionType);
                     this.gridLayout.triggerReconciliation();
                     return;
                 }
@@ -768,36 +825,43 @@ var TrNgGrid;
                 this.gridOptions[this.reconciliationTriggerKey] = false;
             }
         };
-        GridLayout.prototype.reconcileRows = function (templateRow, targetRow) {
-            var currentTargetRowRegistrationIndex = 0;
-            for (var templateCellRegistrationIndex = 0; templateCellRegistrationIndex < templateRow.cells.length; templateCellRegistrationIndex++) {
-                var templateCellRegistration = templateRow.cells[templateCellRegistrationIndex];
-                if (templateCellRegistration.isDeactivated) {
+        GridLayout.prototype.reconcileRows = function (enforcedRow, targetRow) {
+            var currentTargetRowCellIndex = 0;
+            for (var enforcedCellIndex = 0; enforcedCellIndex < enforcedRow.cells.length; enforcedCellIndex++) {
+                var enforcedCell = enforcedRow.cells[enforcedCellIndex];
+                if (enforcedCell.isDeactivated) {
                     continue;
                 }
                 var matchNotFound = true;
-                while (matchNotFound) {
-                    var currentTargetCellRegistration = currentTargetRowRegistrationIndex < targetRow.cells.length ? targetRow.cells[currentTargetRowRegistrationIndex] : null;
-                    if (!currentTargetCellRegistration || !currentTargetCellRegistration.isDeactivated) {
-                        if ((!currentTargetCellRegistration) || (currentTargetCellRegistration.isLinkedToField !== templateCellRegistration.isLinkedToField) || ((currentTargetCellRegistration.isLinkedToField) && (currentTargetCellRegistration.fieldName !== templateCellRegistration.fieldName))) {
-                            currentTargetCellRegistration = angular.extend({}, templateCellRegistration);
-                            currentTargetCellRegistration.isAutoGenerated = true;
-                            currentTargetCellRegistration.isCustomized = false;
-                            targetRow.registerCell(currentTargetCellRegistration, currentTargetRowRegistrationIndex);
-                        }
+                var targetCell;
+                for (var targetCellIndex = currentTargetRowCellIndex; matchNotFound && targetCellIndex < targetRow.cells.length; targetCellIndex++) {
+                    targetCell = targetRow.cells[targetCellIndex];
+                    if (targetCell && !targetCell.isDeactivated && targetCell.isLinkedToField == enforcedCell.isLinkedToField && (!targetCell.isLinkedToField || (targetCell.fieldName === enforcedCell.fieldName))) {
                         matchNotFound = false;
                     }
-                    currentTargetRowRegistrationIndex++;
                 }
+                if (matchNotFound) {
+                    targetCell = angular.extend({}, enforcedCell);
+                    targetCell.isAutoGenerated = true;
+                    targetCell.isCustomized = false;
+                    targetRow.registerCell(targetCell, currentTargetRowCellIndex);
+                }
+                else {
+                    targetCellIndex--;
+                    if (targetCellIndex !== currentTargetRowCellIndex) {
+                        targetRow.swapCells(targetCellIndex, currentTargetRowCellIndex);
+                    }
+                }
+                currentTargetRowCellIndex++;
             }
-            while (currentTargetRowRegistrationIndex < targetRow.cells.length) {
-                var extraCellRegistration = targetRow.cells[currentTargetRowRegistrationIndex];
+            while (currentTargetRowCellIndex < targetRow.cells.length) {
+                var extraCellRegistration = targetRow.cells[currentTargetRowCellIndex];
                 if (extraCellRegistration.isAutoGenerated) {
                     targetRow.unregisterCell(extraCellRegistration);
                 }
                 else {
                     extraCellRegistration.isDeactivated = true;
-                    currentTargetRowRegistrationIndex++;
+                    currentTargetRowCellIndex++;
                 }
             }
         };
@@ -816,60 +880,39 @@ var TrNgGrid;
         return GridLayout;
     })();
     TrNgGrid.GridLayout = GridLayout;
-    var columnOptionsFields = TrNgGrid.extractFields(new TrNgGrid.GridConfigurationDefaultColumnOptions());
-    var columnLayoutOptionsFields = TrNgGrid.extractFields(new DefaultGridColumnLayoutOptions());
     var GridColumnSetupController = (function () {
-        function GridColumnSetupController($scope) {
-            this.$scope = $scope;
+        function GridColumnSetupController($interpolate) {
+            this.$interpolate = $interpolate;
         }
-        GridColumnSetupController.prototype.prepareColumn = function () {
+        GridColumnSetupController.prototype.prepareColumn = function (gridController, $scope, $tAttrs) {
             var _this = this;
-            var gridRowScope = (this.$scope.$parent);
-            this.gridController = gridRowScope.grid;
-            this.gridLayoutRow = gridRowScope.gridLayoutRow;
-            this.columnScope = gridRowScope.$new();
-            this.$scope.$on("$destroy", function () {
+            this.columnScope = $scope;
+            this.gridController = gridController;
+            this.gridLayoutRow = this.columnScope.gridLayoutRow;
+            $scope.$on("$destroy", function () {
                 debugger;
                 _this.columnScope.$destroy();
                 _this.columnScope = null;
             });
-            this.$scope.$watchGroup(columnOptionsFields, function () {
-                _this.registerColumnOptions();
+            TrNgGrid.monitorAttributes(this.$interpolate, $tAttrs, $scope, new TrNgGrid.GridConfigurationDefaultColumnOptions(), function (newOptions) {
+                _this.registerColumnOptions(newOptions);
             });
-            this.$scope.$watchGroup(columnLayoutOptionsFields, function () {
-                _this.registerColumnLayoutOptions();
+            TrNgGrid.monitorAttributes(this.$interpolate, $tAttrs, $scope, new DefaultGridColumnLayoutOptions(), function (newLayoutOptions) {
+                if (!_this.columnOptions) {
+                    throw "The column options could not be retrieved at this stage. Please report this error.";
+                }
+                newLayoutOptions.isLinkedToField = _this.columnOptions.isLinkedToField;
+                _this.registerColumnLayoutOptions(newLayoutOptions);
             });
-            this.registerColumnOptions();
-            this.registerColumnLayoutOptions();
         };
-        GridColumnSetupController.prototype.registerColumnOptions = function () {
+        GridColumnSetupController.prototype.registerColumnOptions = function (updatedColumnOptions) {
             debugger;
-            var updatedColumnOptions = {
-                fieldName: this.$scope.fieldName,
-                displayName: this.$scope.displayName,
-                displayAlign: this.$scope.displayAlign,
-                displayFormat: this.$scope.displayFormat,
-                enableSorting: this.$scope.enableSorting === undefined ? undefined : (this.$scope.enableSorting.toString() === "true"),
-                enableFiltering: this.$scope.enableFiltering === undefined ? undefined : (this.$scope.enableFiltering.toString() === "true"),
-                cellWidth: this.$scope.cellWidth,
-                cellHeight: this.$scope.cellHeight,
-                filter: this.$scope.filter
-            };
             updatedColumnOptions = this.gridController.setColumnOptions(updatedColumnOptions);
             this.columnOptions = updatedColumnOptions;
             this.columnScope.gridColumnOptions = this.columnOptions;
         };
-        GridColumnSetupController.prototype.registerColumnLayoutOptions = function () {
+        GridColumnSetupController.prototype.registerColumnLayoutOptions = function (updatedLayoutOptions) {
             debugger;
-            if (!this.columnOptions) {
-                this.registerColumnOptions();
-            }
-            var updatedLayoutOptions = {
-                fieldName: this.$scope.fieldName,
-                isAutoGenerated: this.$scope.isAutoGenerated && this.$scope.isAutoGenerated.toString() === "true",
-                isCustomized: this.$scope.isCustomized && this.$scope.isCustomized.toString() === "true",
-                isLinkedToField: this.columnOptions.isLinkedToField
-            };
             if (updatedLayoutOptions.isAutoGenerated) {
                 updatedLayoutOptions = this.gridLayoutRow.findCell(updatedLayoutOptions.fieldName);
             }
@@ -894,7 +937,6 @@ var TrNgGrid;
                 require: "^" + TrNgGrid.Constants.tableDirective,
                 link: {
                     pre: function (scope, instanceElement, tAttrs, gridController, transcludeFn) {
-                        scope.grid = gridController;
                         scope.gridOptions = gridController.gridOptions;
                         scope.gridLayoutSection = gridController.gridLayout.getSection(TrNgGrid.GridSectionType.Header);
                     }
@@ -925,12 +967,10 @@ var TrNgGrid;
         var autoGeneratedCellTemplate = angular.element(gridConfiguration.templates.headerCellStandard);
         autoGeneratedCellTemplate.attr(TrNgGrid.Constants.headerCellDirectiveAttribute, "");
         autoGeneratedCellTemplate.attr(TrNgGrid.Constants.dataColumnIsAutoGeneratedAttribute, "true");
-        autoGeneratedCellTemplate.attr("data-field-name", $interpolate.startSymbol() + "gridColumnLayout.fieldName" + $interpolate.endSymbol());
         return {
             restrict: 'A',
             require: "^" + TrNgGrid.Constants.tableDirective,
             transclude: "element",
-            scope: true,
             compile: function ($templatedElement, $tAttrs) {
                 return {
                     pre: function ($scope, $instanceElement, $tAttrs, $controller, $transcludeFn) {
@@ -938,7 +978,9 @@ var TrNgGrid;
                     },
                     post: function ($scope, $instanceElement, $tAttrs, $controller, $transcludeFn) {
                         if ($scope.gridColumnLayout.isAutoGenerated) {
+                            gridConfiguration.debugMode && TrNgGrid.log("Creating auto-generated column for field " + $scope.gridColumnLayout.fieldName);
                             var autoGeneratedPreCompilationElement = autoGeneratedCellTemplate.clone();
+                            autoGeneratedPreCompilationElement.attr("data-field-name", $scope.gridColumnLayout.fieldName);
                             $instanceElement.after(autoGeneratedPreCompilationElement);
                             var autoGeneratedElementLinkingFct = $compile(autoGeneratedPreCompilationElement);
                             var autoGeneratedCell = autoGeneratedElementLinkingFct($scope);
@@ -962,59 +1004,21 @@ var TrNgGrid;
     TrNgGrid.gridModule.directive(TrNgGrid.Constants.headerCellDirective, ["$compile", TrNgGrid.Constants.gridConfigurationService, function ($compile, gridConfiguration) {
         return {
             restrict: 'A',
-            require: "^" + TrNgGrid.Constants.tableDirective,
-            controller: ["$scope", "$controller", TrNgGrid.GridColumnSetupController],
-            scope: {
-                isCustomized: "@" + TrNgGrid.Constants.dataColumnIsCustomizedField,
-                isAutoGenerated: "@" + TrNgGrid.Constants.dataColumnIsAutoGeneratedField,
-                fieldName: "@",
-                displayName: "@",
-                displayAlign: "@",
-                displayFormat: "@",
-                enableSorting: "@",
-                enableFiltering: "@",
-                cellWidth: "@",
-                cellHeight: "@",
-                filter: "@",
-                colspan: "@"
-            },
+            require: ["^" + TrNgGrid.Constants.tableDirective, TrNgGrid.Constants.headerCellDirective],
             priority: 101,
-            controllerAs: "gridColumnSetup",
-            transclude: 'element',
             terminal: true,
+            scope: true,
+            controller: [TrNgGrid.GridColumnSetupController],
+            transclude: 'element',
             compile: function ($templateElement, $tAttrs) {
                 return {
-                    pre: function ($scope, $instanceElement, $tAttrs, $controller, $transcludeFn) {
+                    pre: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                     },
-                    post: function ($scope, $instanceElement, $tAttrs, $controller, $transcludeFn) {
-                        $scope.gridColumnSetup.prepareColumn();
-                        var transcludedCellElement = null;
-                        var setupNewScope = function () {
-                            if (transcludedCellElement) {
-                                transcludedCellElement.remove();
-                                transcludedCellElement = null;
-                            }
-                            var gridColumnScope = $scope.gridColumnSetup.columnScope;
-                            var gridColumnLayout = gridColumnScope.gridColumnLayout;
-                            if (gridColumnLayout.placeholder) {
-                                $transcludeFn(gridColumnScope, function (newTranscludedCellElement) {
-                                    transcludedCellElement = newTranscludedCellElement;
-                                    gridColumnLayout.placeholder.after(transcludedCellElement);
-                                    if (!gridColumnLayout.isCustomized) {
-                                        var standardCellContentsTemplate = angular.element(gridConfiguration.templates.headerCellContentsStandard);
-                                        transcludedCellElement.append(standardCellContentsTemplate);
-                                        $compile(standardCellContentsTemplate)(gridColumnScope);
-                                    }
-                                });
-                            }
-                        };
-                        $scope.$watch("gridColumnSetup.columnScope.gridColumnLayout.placeholder", function (newPlaceholder, oldPlaceholder) {
-                            if (newPlaceholder === oldPlaceholder) {
-                                return;
-                            }
-                            setupNewScope();
-                        });
-                        setupNewScope();
+                    post: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
+                        debugger;
+                        var gridController = $controllers[0];
+                        var columnSetupController = $controllers[1];
+                        columnSetupController.prepareColumn(gridController, $scope, $tAttrs);
                     }
                 };
             }
