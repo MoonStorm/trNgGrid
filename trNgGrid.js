@@ -1008,13 +1008,17 @@ var TrNgGrid;
             priority: 101,
             terminal: true,
             scope: true,
-            controller: [TrNgGrid.GridColumnSetupController],
+            controller: ["$interpolate", TrNgGrid.GridColumnSetupController],
             transclude: 'element',
             compile: function ($templateElement, $tAttrs) {
                 return {
                     pre: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                     },
                     post: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
+                        debugger;
+                        $tAttrs.$observe("fieldName", function (newValue) {
+                            debugger;
+                        });
                         debugger;
                         var gridController = $controllers[0];
                         var columnSetupController = $controllers[1];

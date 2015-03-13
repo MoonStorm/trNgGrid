@@ -134,6 +134,11 @@
                             },
                             post($scope: IGridColumnScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controllers: Array<any>, $transcludeFn: ng.ITranscludeFunction) {
                                 debugger;
+                                $tAttrs.$observe("fieldName",(newValue: any) => {
+                                    debugger;
+                                });
+
+                                debugger;
                                 var gridController:GridController = $controllers[0];
                                 var columnSetupController:GridColumnSetupController = $controllers[1];
 

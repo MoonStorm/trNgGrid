@@ -87,6 +87,10 @@ var TrNgGrid;
                     },
                     post: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                         debugger;
+                        $tAttrs.$observe("fieldName", function (newValue) {
+                            debugger;
+                        });
+                        debugger;
                         var gridController = $controllers[0];
                         var columnSetupController = $controllers[1];
                         columnSetupController.prepareColumn(gridController, $scope, $tAttrs);
