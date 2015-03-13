@@ -28,11 +28,11 @@
         <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'" ng-click="navCollapsed=true">
             <ul class="nav navbar-nav">
                 <li ui-sref-active="active"><a ui-sref="demo.common">Plug & Play</a></li>
-                <li ui-sref-active="active"><a ui-sref="demo.columns">Column Definition</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.columns">Columns</a></li>
                 <li ui-sref-active="active"><a ui-sref="demo.paging">Paging</a></li>
                 <li ui-sref-active="active"><a ui-sref="demo.selections">Selections</a></li>
-                <li ui-sref-active="active"><a ui-sref="demo.globaloptions">Grid Options</a></li>
-                <li ui-sref-active="active"><a ui-sref="demo.serverside">Server Side Queries</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.globaloptions">Configuration</a></li>
+                <li ui-sref-active="active"><a ui-sref="demo.serverside">Server Side</a></li>
                 <!--<li><a ui-sref="demo.customizations">Customizations</a></li>-->
                 <li ui-sref-active="active" dropdown="">
                     <a class="dropdown-toggle" href="" dropdown-toggle="">Customizations<b class="caret"></b></a>
@@ -42,6 +42,7 @@
                         <li ng-if="currentConfiguration.name=='beta'"><a ui-sref="demo.customizations.global_beta">Global (breaking changes)</a></li>
                         <li ng-if="currentConfiguration.name=='release'"><a ui-sref="demo.localization">Localization</a></li>
                         <li ng-if="currentConfiguration.name=='beta'"><a ui-sref="demo.localization_beta">Localization (breaking changes)</a></li>
+                        <li class="divider"></li>
                     </ul>
                 </li>
                 <li ui-sref-active="active" dropdown="">
@@ -61,7 +62,7 @@
                 <li><a href="//github.com/MoonStorm/trNgGrid" target="_blank">Source & Download</a></li>
                 <li dropdown="">
                     <!--onclick="$(this).toggleClass('open'); return false;"-->
-                    <a class="dropdown-toggle" href="" dropdown-toggle="">Bootswatch theme<b class="caret"></b></a>
+                    <a class="dropdown-toggle" href="" dropdown-toggle="">Bootswatch<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-header">{{theme | capitalize}} (ver. {{themeVersion}})</li>
                         <li class="divider"></li>
