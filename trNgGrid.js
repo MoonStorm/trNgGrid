@@ -292,6 +292,7 @@ var TrNgGrid;
                 var retrieveDataCallback = function () {
                     _this.dataRequestPromise = null;
                     _this.gridOptions.immediateDataRetrieval = false;
+                    TrNgGrid.debugMode && _this.log("Requesting data - server side mode");
                     _this.gridOptions.onDataRequired(_this.gridOptions);
                 };
                 var scheduleDataRetrieval = function () {
@@ -1006,6 +1007,7 @@ var TrNgGrid;
         }
     ]).directive(pagerDirective, [
         function () {
+            var _this = this;
             var setupScope = function (scope, controller) {
                 // do not set scope.gridOptions.totalItems, it might be set from the outside
                 scope.totalItemsCount = (typeof (scope.gridOptions.totalItems) != "undefined" && scope.gridOptions.totalItems != null) ? scope.gridOptions.totalItems : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
@@ -1013,6 +1015,7 @@ var TrNgGrid;
                 scope.extendedControlsActive = false;
                 scope.lastPageIndex = (!scope.totalItemsCount || !scope.isPaged) ? 0 : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
                 if (scope.gridOptions.currentPage > scope.lastPageIndex) {
+                    TrNgGrid.debugMode && _this.log("The current page index falls outside of the range of items. Either the attached parameter has a wrong value or the total items count is not properly set in server side mode.");
                     // this will unfortunately trigger another query if in server side data query mode
                     scope.gridOptions.currentPage = scope.lastPageIndex;
                 }

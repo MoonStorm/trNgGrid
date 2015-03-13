@@ -495,6 +495,7 @@ module TrNgGrid {
                 var retrieveDataCallback = () => {
                     this.dataRequestPromise = null;
                     this.gridOptions.immediateDataRetrieval = false;
+                    debugMode && this.log("Requesting data - server side mode");                
                     this.gridOptions.onDataRequired(this.gridOptions);
                 };
 
@@ -1327,6 +1328,7 @@ module TrNgGrid {
                     ? 0
                     : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
                     if (scope.gridOptions.currentPage > scope.lastPageIndex) {
+                        debugMode && this.log("The current page index falls outside of the range of items. Either the attached parameter has a wrong value or the total items count is not properly set in server side mode.");                
                         // this will unfortunately trigger another query if in server side data query mode
                         scope.gridOptions.currentPage = scope.lastPageIndex;
                     }
