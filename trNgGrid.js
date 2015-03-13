@@ -308,18 +308,18 @@ var TrNgGrid;
                         }, _this.gridOptions.onDataRequiredDelay, true);
                     }
                 };
-                gridScope.$watch("gridOptions.currentPage", function (newValue, oldValue) {
-                    if (newValue !== oldValue) {
-                        scheduleDataRetrieval();
+                gridScope.$watchCollection("[" + "gridOptions.currentPage," + "gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.pageItems, " + "]", function (newValues, oldValues) {
+                    // first time both arrays of values will be the same
+                    var pageChanged = newValues[0] !== oldValues[0];
+                    if (!angular.equals(newValues, oldValues) && !pageChanged) {
+                        // everything will reset the page index, with the exception of a page index change
+                        if (_this.gridOptions.currentPage !== 0) {
+                            _this.gridOptions.currentPage = 0;
+                            // the page index watch will activate, exit for now to avoid duplicate data requests
+                            return;
+                        }
                     }
-                });
-                gridScope.$watchCollection("[" + "gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.pageItems, " + "]", function (newValues, oldValues) {
-                    // everything will reset the page index, with the exception of a page index change
-                    if (_this.gridOptions.currentPage !== 0) {
-                        _this.gridOptions.currentPage = 0;
-                        // the page index watch will activate, exit for now to avoid duplicate data requests
-                        return;
-                    }
+                    // initially called even when there is no change, but we need that to initiate the request for data
                     scheduleDataRetrieval();
                 });
                 gridScope.$watch("gridOptions.immediateDataRetrieval", function (newValue) {
