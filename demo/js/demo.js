@@ -124,7 +124,7 @@ var TrNgGridDemo;
                     orderByReverse: orderByReverse,
                     requestTrapped: true
                 };
-                $scope.generateItems(pageItems, $scope.myNextItemsTotalCount, true);
+                $scope.generateItems(pageItems, $scope.myNextItemsTotalCount);
                 prevServerItemsRequestedCallbackPromise = $timeout(function () {
                     $scope.requestedItemsGridOptions["requestTrapped"] = false;
                     prevServerItemsRequestedCallbackPromise = null;

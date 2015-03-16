@@ -170,7 +170,7 @@
                     requestTrapped:true
                 };
 
-                $scope.generateItems(pageItems,$scope.myNextItemsTotalCount, true);
+                $scope.generateItems(pageItems,$scope.myNextItemsTotalCount);
                 prevServerItemsRequestedCallbackPromise = $timeout(()=>{
                     $scope.requestedItemsGridOptions["requestTrapped"] = false;
                     prevServerItemsRequestedCallbackPromise = null;
