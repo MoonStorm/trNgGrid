@@ -15,7 +15,7 @@
     <file>./src/js/trNgGridCore.js</file>
     <file>./src/js/trNgGridConfiguration.js</file>
     <file>./src/js/trNgGridLayoutManagement.js</file>
-    <file>./src/js/trNgGridHeader.js</file>
+    <file>./src/js/trNgGridlayout.js</file>
     <file>./src/js/trNgGridFilters.js</file> 
   </files>
 </bundle> 

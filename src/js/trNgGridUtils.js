@@ -1,7 +1,6 @@
 var TrNgGrid;
 (function (TrNgGrid) {
     function processMonitorChanges(source, propKeys, onChangeDetected) {
-        debugger;
         var newData = {};
         var sourceIsArrayOfValues = source instanceof Array;
         angular.forEach(propKeys, function (propKey, index) {
@@ -12,9 +11,6 @@ var TrNgGrid;
                 }
                 else if (propValue === "false") {
                     propValue = false;
-                }
-                if (propValue.toString().indexOf("{{") === 0) {
-                    throw "Invalid property value detected";
                 }
                 newData[propKey] = propValue;
             }
@@ -32,9 +28,9 @@ var TrNgGrid;
         }
         var watchArray = new Array(propKeys.length);
         angular.forEach(propKeys, function (propKey, index) {
-            watchArray[index] = $interpolate($tAttrs[propKey])($scope);
+            var expression = $tAttrs[propKey];
+            watchArray[index] = expression;
         });
-        debugger;
         $scope.$watchGroup(watchArray, function (newValues) { return processMonitorChanges(newValues, propKeys, onChangeDetected); });
     }
     TrNgGrid.monitorAttributes = monitorAttributes;
@@ -149,11 +145,10 @@ var TrNgGrid;
             rowElement = rowElements[rowIndex];
             rowElement.attr(rowElementDirectiveAttribute, "");
             var cellElements = findChildrenByTagName(rowElement, cellTagName);
-            if (cellElements.length === 0 || !cellElements[0].attr(TrNgGrid.Constants.headerCellPlaceholderDirectiveAttribute)) {
+            if (cellElements.length === 0 || !cellElements[0].attr(TrNgGrid.Constants.cellPlaceholderDirectiveAttribute)) {
                 var placeholderTemplate = angular.element(gridConfiguration.templates.headerCellStandard);
                 placeholderTemplate.attr("data-ng-repeat", "gridColumnLayout in (gridLayoutRow.cells)");
-                placeholderTemplate.attr("data-ng-if", "!gridColumnLayout.isDeactivated");
-                placeholderTemplate.attr(TrNgGrid.Constants.headerCellPlaceholderDirectiveAttribute, "");
+                placeholderTemplate.attr(TrNgGrid.Constants.cellPlaceholderDirectiveAttribute, "");
                 rowElement.prepend(placeholderTemplate);
             }
             for (var cellIndex = 0; cellIndex < cellElements.length; cellIndex++) {
@@ -170,7 +165,7 @@ var TrNgGrid;
             gridElement.prepend(tableHeaderElement);
         }
         tableHeaderElement.attr(TrNgGrid.Constants.headerDirectiveAttribute, "");
-        fixGridSection(gridConfiguration, tableHeaderElement, TrNgGrid.Constants.headerRowDirectiveAttribute, "th", TrNgGrid.Constants.headerCellDirectiveAttribute);
+        fixGridSection(gridConfiguration, tableHeaderElement, TrNgGrid.Constants.rowDirectiveAttribute, "th", TrNgGrid.Constants.cellDirectiveAttribute);
         var tableFooterElement = findChildByTagName(gridElement, "tfoot");
         if (!tableFooterElement) {
             tableFooterElement = findChildByTagName(angular.element("<table><tfoot></tfoot></table"), "tfoot");

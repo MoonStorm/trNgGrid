@@ -5,7 +5,6 @@ module TrNgGrid {
      * Processes the result of a scope monitoring operation
      */
     function processMonitorChanges(source: any, propKeys: Array<string>, onChangeDetected: (newData: any) => void) {
-        debugger;
         var newData: any = {};
         var sourceIsArrayOfValues = source instanceof Array;
         angular.forEach(propKeys,(propKey: string, index: number) => {
@@ -16,11 +15,6 @@ module TrNgGrid {
                 }
                 else if (propValue === "false") {
                     propValue = false;
-                }
-
-                // TODO: turn this check off
-                if (propValue.toString().indexOf("{{") === 0) {
-                    throw "Invalid property value detected";
                 }
 
                 newData[propKey] = propValue;
@@ -44,11 +38,12 @@ module TrNgGrid {
         }
 
         var watchArray = new Array<any>(propKeys.length);
-        angular.forEach(propKeys, (propKey: string, index: number) => {
-            watchArray[index] = $interpolate($tAttrs[propKey])($scope);
+        angular.forEach(propKeys,(propKey: string, index: number) => {
+            var expression = $tAttrs[propKey];
+            // a nice touch would be to remove the interpolated symbols here, if present
+            watchArray[index] = expression;
         });
 
-        debugger;
         $scope.$watchGroup(watchArray, (newValues:Array<any>) => processMonitorChanges(newValues,propKeys, onChangeDetected));
     }
 
@@ -194,11 +189,11 @@ module TrNgGrid {
             var cellElements = findChildrenByTagName(rowElement, cellTagName);
 
             // ensure the placeholder elements are there
-            if (cellElements.length === 0 || !cellElements[0].attr(Constants.headerCellPlaceholderDirectiveAttribute)) {
+            if (cellElements.length === 0 || !cellElements[0].attr(Constants.cellPlaceholderDirectiveAttribute)) {
                 var placeholderTemplate = angular.element(gridConfiguration.templates.headerCellStandard);
                 placeholderTemplate.attr("data-ng-repeat", "gridColumnLayout in (gridLayoutRow.cells)");
-                placeholderTemplate.attr("data-ng-if", "!gridColumnLayout.isDeactivated");
-                placeholderTemplate.attr(Constants.headerCellPlaceholderDirectiveAttribute, "");
+                //placeholderTemplate.attr("data-ng-if", "!gridColumnLayout.isDeactivated");
+                placeholderTemplate.attr(Constants.cellPlaceholderDirectiveAttribute, "");
 
                 rowElement.prepend(placeholderTemplate);
             }
@@ -223,7 +218,7 @@ module TrNgGrid {
             gridElement.prepend(tableHeaderElement);
         }
         tableHeaderElement.attr(Constants.headerDirectiveAttribute, "");
-        fixGridSection(gridConfiguration, tableHeaderElement, Constants.headerRowDirectiveAttribute, "th", Constants.headerCellDirectiveAttribute);
+        fixGridSection(gridConfiguration, tableHeaderElement, Constants.rowDirectiveAttribute, "th", Constants.cellDirectiveAttribute);
 
         // the footer follows immediately after the header
         var tableFooterElement = findChildByTagName(gridElement, "tfoot");
