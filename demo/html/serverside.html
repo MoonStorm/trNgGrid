@@ -1,183 +1,242 @@
-<div ng-controller="TrNgGridDemo.TestController" class="row">
-    <div class="row">
-        <div class="col-md-5">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Server Side Data Queries
-                </div>
-                <div class="panel-body">
-                    <p>
-                        Set the <em>on-data-required</em> attribute to a function that will be called whenever the grid detects it requires new data.
-                        The callback is called in a period of inactivity only, which by default is 1 second. You can override this parameter by setting the <em>on-data-required-delay</em> attribute (milliseconds).
-                    </p>
-                    <p>
-                        The grid will automatically match the arguments used in the function call with the grid parameters, but instead of the HTML attribute notation, you'll have to use the lower camel case notation.
-                        You can requests as many as you need, and here are the basic ones:
-                    </p>
-                    <form class="form-horizontal well" role="form">
-                        <fieldset>
-                            <div class="form-group" ng-show="requestedItemsGridOptions.requestTrapped">
-                                <label class="col-md-5 control-label text-danger">The grid has just requested an update!</label>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Request</label>
-                                <p class="form-control-static">#{{requestedItemsGridOptions.serverSideRequestCount}}</p>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Current Page Index (currentPage)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.currentPage}}</p>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Number of items per page (pageItems)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.pageItems}}</p>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Global Filter (filterBy)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.filterBy}}</p>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Fields Filter (filterByFields)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.filterByFields}}</p>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Current Sort Column (orderBy)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.orderBy}}</p>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-5 control-label">Reverse Sort Order (orderByReverse)</label>
-                                <div class="col-md-7">
-                                    <p class="form-control-static">{{requestedItemsGridOptions.orderByReverse}}</p>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </form>
-                    <pre id="trNgGrid_Sample_Server_Side">
-                    </pre>
-                </div>
-            </div>
+<div class="row">
+    <div class="panel panel-primary" ng-controller="TrNgGridDemo.TestController">
+        <div class="panel-heading">
+            Server Side Data Queries
         </div>
-        <div class="col-md-7">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    Simulation
-                </div>
-                <div class="panel-body">
-                    <p>
-                        <fieldset class="form-horizontal">
-                            <!--<div class="form-group">
-                                <label class="col-md-7 control-label">Items per page:</label>
-                                <div class="col-md-5">
-                                    <input class="form-control" type="number" ng-model="myPageItemsCount" min="1"/>
-                                </div>
-                            </div>-->
-                            <div class="form-group">
-                                <label class="col-md-7 control-label">
-                                    Items count as reported by the server in the next call (<em>total-items</em>):
-                                </label>
-                                <div class="col-md-2">
-                                    <input class="form-control" type="number" ng-model="myNextItemsTotalCount" min="1" />
-                                </div>
-                            </div>
-                        </fieldset>
-                    </p>
-
-                    <div project-markup-to="#trNgGrid_Sample_Server_Side">
-<table tr-ng-grid
-        items="myItems"
-        page-items="myPageItemsCount"
-        total-items="myItemsTotalCount"
-        on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)">
-    <thead>
-        <tr>
-            <th field-name="id" cell-width="4em" display-align="right" />
-            <th field-name="name" display-format="uppercase" />
-            <th field-name="address.last" display-name="Last Address" />
-        </tr>
-    </thead>
-</table>
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <p>
-                        In this sample, the items are using an RNG to simulate a server-side response. It's expected for the server to perform these tasks.<br/>
-                        Column definitions (<em>TH</em>) are optional. Automatic field detection works in this mode as well.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
+        <div class="panel-body">
+            <div class="col-md-5">
                 <p>
-                    <ul>
+                    Set the <em>on-data-required</em> attribute to a function that will be called whenever the grid detects it requires new data.
+                    The callback is called in a period of inactivity only, which by default is 1 second. You can override this parameter by setting the <em>on-data-required-delay</em> attribute (milliseconds).
+                </p>
+                <p>
+                    The grid will automatically match the arguments used in the function call with the grid parameters, but instead of the HTML attribute notation, you'll have to use the lower camel case notation.
+                    You can requests as many as you need, and here are the basic ones:
+                </p>
+                <form class="form-horizontal well" role="form">
+                    <fieldset>
+                        <div class="form-group" ng-show="requestedItemsGridOptions.requestTrapped">
+                            <label class="col-md-5 control-label text-danger">The grid has just requested an update!</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Request</label>
+                            <p class="form-control-static">#{{requestedItemsGridOptions.serverSideRequestCount}}</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Current Page Index (currentPage)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.currentPage}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Number of items per page (pageItems)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.pageItems}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Global Filter (filterBy)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.filterBy}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Fields Filter (filterByFields)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.filterByFields}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Current Sort Column (orderBy)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.orderBy}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Reverse Sort Order (orderByReverse)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.orderByReverse}}</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <pre id="trNgGrid_Sample_Server_Side">
+                </pre>
+            </div>
+            <div class="col-md-7">
+                <p>
+                    <fieldset class="form-horizontal">
+                        <!--<div class="form-group">
+                            <label class="col-md-7 control-label">Items per page:</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="number" ng-model="myPageItemsCount" min="1"/>
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <label class="col-md-7 control-label">
+                                Items count as reported by the server in the next call (<em>total-items</em>):
+                            </label>
+                            <div class="col-md-2">
+                                <input class="form-control" type="number" ng-model="myNextItemsTotalCount" min="1" />
+                            </div>
+                        </div>
+                    </fieldset>
+                </p>
+
+                <div project-markup-to="#trNgGrid_Sample_Server_Side">
+                    <table tr-ng-grid
+                           items="myItems"
+                           page-items="myPageItemsCount"
+                           total-items="myItemsTotalCount"
+                           on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)"></table>
+                </div>
+                <p>
+                    In this sample, the items are using an RNG to simulate a server-side response. It's expected for the server to perform these tasks.<br />
+                    Column definitions (<em>TH</em>) are optional. Automatic field detection works in this mode as well.
+                </p>
+            </div>
+        </div>
+        <p>
+            <ul>
+                <li>
+                    When the grid is switched into this mode (by setting the <em>on-data-required</em> attribute),
+                    the internal filtering and sorting mechanisms are disabled.
+                </li>
+                <li>
+                    At the moment, no eye candy spinner will show up for the duration of the request.
+                </li>
+                <li>
+                    With all the information passed to your callback, you'll be able to perform a server side query. Here is an overly simplified workflow:
+                    <ol type="1">
+                        <li>You can use Angular's own $http or $resource service, or any library of your choice for making the HTTP request.</li>
                         <li>
-                            When the grid is switched into this mode (by setting the <em>on-data-required</em> attribute),
-                            the internal filtering and sorting mechanisms are disabled.
-                        </li>
-                        <li>
-                            With all the information passed to your callback, you'll be able to perform a server side query. Here is an overly simplified workflow:
-                            <ol type="1">
-                                <li>You can use Angular's own $http or $resource service, or any library of your choice for making the HTTP request.</li>
-                                <li>
-                                    Server side, you need to perform two queries:
-                                    <ol type="a">
-                                        <li>Taking filtering into account, get <b>just the count</b> of all the items.</li>
-                                        <li>Taking filtering, sorting and the current page into account, grab the list of items <b>just for the requested page only</b>. You will need the number of items per page as well.</li>
-                                    </ol>
-                                </li>
-                                <li>
-                                    Serialize the result of the two queries and send them down to the client in the HTTP response.
-                                    <ol type="a">
-                                        <li>
-                                            Set the variable bound to the attribute <em>total-items</em> to the result of your first query. That will make the pager happy.
-                                        </li>
-                                        <li>
-                                            Set your variable bound to the <em>items</em> attribute to the new list of items. Remember, that list only contains the items for the current page, but the <em>total-items</em> is the count for all the filtered items.
-                                        </li>
-                                    </ol>
-                                </li>
-                                <li>Done!</li>
+                            Server side, you need to perform two queries:
+                            <ol type="a">
+                                <li>Taking filtering into account, get <b>just the count</b> of all the items.</li>
+                                <li>Taking filtering, sorting and the current page into account, grab the list of items <b>just for the requested page only</b>. You will need the number of items per page as well.</li>
                             </ol>
                         </li>
                         <li>
-                            If you wish to restore the full state of the grid in this mode, you need to set the data bound variables for the following attributes:
-                            <ul>
-                                <li><em>items</em>, initially empty</li>
-                                <li><em>filter-by</em></li>
-                                <li><em>filter-by-fields</em></li>
-                                <li><em>order-by</em></li>
-                                <li><em>order-by-reverse</em></li>
-                            </ul>
-                            In addition to that, restoring the page number requires:
-                            <ul>
-                                <li><em>current-page</em></li>
-                                <li><em>total-items</em></li>
-                            </ul>
-                            Straight after initialization, the grid will call you to ask for the list of items.
-                            Make sure your data bound variables already contain valid values, otherwise you're gonna get additional calls.
+                            Serialize the result of the two queries and send them down to the client in the HTTP response.
+                            <ol type="a">
+                                <li>
+                                    Set the variable bound to the attribute <em>total-items</em> to the result of your first query. That will make the pager happy.
+                                </li>
+                                <li>
+                                    Set your variable bound to the <em>items</em> attribute to the new list of items. Remember, that list only contains the items for the current page, but the <em>total-items</em> is the count for all the filtered items.
+                                </li>
+                            </ol>
                         </li>
-                        <li>
-                            At the moment, no eye candy spinner will show up for the duration of the request.
-                        </li>
+                        <li>Done!</li>
+                    </ol>
+                </li>
+            </ul>
+    </div>
+    <div class="panel panel-primary" ng-controller="TrNgGridDemo.TestController">
+        <div class="panel-heading">
+            Saving & Restoring the State of the Grid
+        </div>
+        <div class="panel-body">
+            <div class="col-md-5">
+                <p>
+                    The following attributes must have the value of their data bound variables saved and restored:
+                    <ul>
+                        <li><em>items</em>, initially empty</li>
+                        <li><em>filter-by</em></li>
+                        <li><em>filter-by-fields</em></li>
+                        <li><em>order-by</em></li>
+                        <li><em>order-by-reverse</em></li>
                     </ul>
+                    In addition to that, restoring the page number requires:
+                    <ul>
+                        <li><em>current-page</em></li>
+                        <li><em>total-items</em>, set to the last known number of items</li>
+                    </ul>
+                    Straight after initialization, the grid will call you to ask for the list of items.
+                    Make sure your data bound variables already contain valid values, otherwise you're gonna get additional calls.
+                </p>
+                <pre id="trNgGrid_Sample_Server_Side_Restore_State">
+                </pre>
+                <form class="form-horizontal well" role="form">
+                    <fieldset>
+                        <div class="form-group" ng-show="requestedItemsGridOptions.requestTrapped">
+                            <label class="col-md-5 control-label text-danger">The grid has just requested an update!</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Request</label>
+                            <p class="form-control-static">#{{requestedItemsGridOptions.serverSideRequestCount}}</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Current Page Index (currentPage)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.currentPage}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Number of items per page (pageItems)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.pageItems}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Global Filter (filterBy)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.filterBy}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Fields Filter (filterByFields)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.filterByFields}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Current Sort Column (orderBy)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.orderBy}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Reverse Sort Order (orderByReverse)</label>
+                            <div class="col-md-7">
+                                <p class="form-control-static">{{requestedItemsGridOptions.orderByReverse}}</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="col-md-7">
+                <p>
+                    <div project-markup-to="#trNgGrid_Sample_Server_Side_Restore_State">
+<div ng-init="myItemsTotalCount=100;myGlobalFilter=' kitsch ';myCurrentPage=2;myOrderBy='name';myOrderByReversed=true;myColumnFilter={name:' helen '}">
+
+    <table tr-ng-grid
+            items="myItems"
+            page-items="10"
+            total-items="myItemsTotalCount"
+            filter-by="myGlobalFilter"
+            filter-by-fields="myColumnFilter"
+            order-by="myOrderBy"
+            order-by-reverse="myOrderByReversed"
+            current-page="myCurrentPage"
+            on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)"></table>
+
+</div>
+                    </div>
                 </p>
             </div>
         </div>

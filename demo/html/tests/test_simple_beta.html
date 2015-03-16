@@ -3,7 +3,7 @@
         <div class="panel-heading">
             Custom test
         </div>
-        <div class="panel-body" ng-init="testVar=10; fieldName='name'">
+        <div class="panel-body" ng-init="testVar=10; testFieldName='name'">
             <div class="row">
                 <div class="col-md-5">
                     <pre id="trNgGrid_simple_beta">
@@ -13,7 +13,7 @@
                     <table tr-ng-grid items="myItems" fields="['id', 'name']">
                         <thead>
                             <tr>
-                                <th data-field-name="{{fieldName}}" display-name="Hello"></th>
+                                <th data-field-name="{{testFieldName}}" display-name="Hello"></th>
                             </tr>
                         </thead>
                     </table>

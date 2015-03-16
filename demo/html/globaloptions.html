@@ -66,6 +66,16 @@
                                 <input class="form-control" type="text" ng-model="myGlobalFilter" />
                             </div>
                         </div>
+                        <div class="form-group" ng-show="myEnableFiltering">
+                            <label class="col-md-7 control-label">
+                                Column filter (filter-by-fields)
+                                <span class="glyphicon glyphicon-log-in"></span>
+                                <span class="glyphicon glyphicon-log-out"></span>
+                            </label>
+                            <div class="col-md-5">
+                                <p class="form-control-static">{{myColumnFilter}}</p>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-md-7 control-label">
                                 Sorting enabled flag (enable-sorting)
@@ -181,19 +191,20 @@
         </div>
     </div>
     <div class="col-md-7" project-markup-to="#trNgGrid_Sample_Full">
-        <table tr-ng-grid
-               items="myItems"
-               fields="myFields"
-               enable-filtering="myEnableFiltering"
-               enable-sorting="myEnableSorting"
-               filter-by="myGlobalFilter"
-               order-by="myOrderBy"
-               order-by-reverse="myOrderByReversed"
-               page-items="myPageItemsCount"
-               selected-items="mySelectedItems"
-               current-page="myCurrentPage"
-               selection-mode="{{mySelectionMode}}"
-               filtered-items="myGridFilteredItems"
-               filtered-items-page="myGridFilteredItemsPage"></table>
+<table tr-ng-grid
+        items="myItems"
+        fields="myFields"
+        enable-filtering="myEnableFiltering"
+        enable-sorting="myEnableSorting"
+        filter-by="myGlobalFilter"
+        filter-by-fields="myColumnFilter" 
+        order-by="myOrderBy"
+        order-by-reverse="myOrderByReversed"
+        page-items="myPageItemsCount"
+        selected-items="mySelectedItems"
+        current-page="myCurrentPage"
+        selection-mode="{{mySelectionMode}}"
+        filtered-items="myGridFilteredItems"
+        filtered-items-page="myGridFilteredItemsPage"></table>
     </div>
 </div>
