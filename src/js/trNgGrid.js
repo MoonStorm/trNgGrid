@@ -373,16 +373,6 @@ var TrNgGrid;
             }
             this.speedUpAsyncDataRetrieval();
         };
-        GridController.prototype.setFilter = function (fieldName, filter) {
-            if (!filter) {
-                delete (this.gridOptions.filterByFields[fieldName]);
-            }
-            else {
-                this.gridOptions.filterByFields[fieldName] = filter;
-            }
-            // in order for someone to successfully listen to changes made to this object, we need to replace it
-            this.gridOptions.filterByFields = angular.extend({}, this.gridOptions.filterByFields);
-        };
         GridController.prototype.toggleItemSelection = function (filteredItems, item, $event) {
             if (this.gridOptions.selectionMode === SelectionMode[0 /* None */])
                 return;
@@ -890,9 +880,26 @@ var TrNgGrid;
                             };
                             // set up the column title
                             setupColumnTitle(scope);
-                            scope.$watch("columnOptions.filter", function (newValue, oldValue) {
-                                if (newValue !== oldValue) {
-                                    controller.setFilter(columnOptions.fieldName, newValue);
+                            // set up the filter
+                            var isWatchingColumnFilter = false;
+                            scope.$watch("gridOptions.filterByFields." + columnOptions.fieldName, function (newFilterValue, oldFilterValue) {
+                                if (columnOptions.filter !== newFilterValue) {
+                                    columnOptions.filter = newFilterValue;
+                                }
+                                if (!isWatchingColumnFilter) {
+                                    scope.$watch("columnOptions.filter", function (newFilterValue, oldFilterValue) {
+                                        if (scope.gridOptions.filterByFields[columnOptions.fieldName] !== newFilterValue) {
+                                            if (!newFilterValue) {
+                                                delete (scope.gridOptions.filterByFields[columnOptions.fieldName]);
+                                            }
+                                            else {
+                                                scope.gridOptions.filterByFields[columnOptions.fieldName] = newFilterValue;
+                                            }
+                                            // in order for someone to successfully listen to changes made to this object, we need to replace it
+                                            scope.gridOptions.filterByFields = angular.extend({}, scope.gridOptions.filterByFields);
+                                        }
+                                    });
+                                    isWatchingColumnFilter = true;
                                 }
                             });
                         }
