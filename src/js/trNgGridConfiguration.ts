@@ -31,7 +31,9 @@
         headerCellContentsStandard?: string;
         headerCellStandard?: string;
         bodyCellStandard?: string;
+        bodyCellContentsStandard?: string;
         footerCellStandard?: string;
+        footerCellContentsStandard?: string;
 
         columnFilter?: string;
         columnSort?: string;

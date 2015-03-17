@@ -113,4 +113,40 @@ var TrNgGrid;
         return findChildByTagName(findChildByTagName(findChildByTagName(angular.element("<table><tbody><tr><" + cellTagName + "></" + cellTagName + "></tr></tbody></table>"), "tbody"), "tr"), cellTagName);
     }
     TrNgGrid.createCellElement = createCellElement;
+    function getStandardCellTemplate(gridConfiguration, sectionType) {
+        var elementTemplate;
+        switch (sectionType) {
+            case TrNgGrid.GridSectionType.Header:
+                elementTemplate = gridConfiguration.templates.headerCellStandard;
+                break;
+            case TrNgGrid.GridSectionType.Body:
+                elementTemplate = gridConfiguration.templates.bodyCellStandard;
+                break;
+            case TrNgGrid.GridSectionType.Footer:
+                elementTemplate = gridConfiguration.templates.footerCellStandard;
+                break;
+            default:
+                throw "Unknown standard template for section cell " + sectionType;
+        }
+        return angular.element(elementTemplate);
+    }
+    TrNgGrid.getStandardCellTemplate = getStandardCellTemplate;
+    function getStandardCellContentsTemplate(gridConfiguration, sectionType) {
+        var elementTemplate;
+        switch (sectionType) {
+            case TrNgGrid.GridSectionType.Header:
+                elementTemplate = gridConfiguration.templates.headerCellContentsStandard;
+                break;
+            case TrNgGrid.GridSectionType.Body:
+                elementTemplate = gridConfiguration.templates.bodyCellContentsStandard;
+                break;
+            case TrNgGrid.GridSectionType.Footer:
+                elementTemplate = gridConfiguration.templates.footerCellContentsStandard;
+                break;
+            default:
+                throw "Unknown standard contents template for section cell" + sectionType;
+        }
+        return angular.element(elementTemplate);
+    }
+    TrNgGrid.getStandardCellContentsTemplate = getStandardCellContentsTemplate;
 })(TrNgGrid || (TrNgGrid = {}));

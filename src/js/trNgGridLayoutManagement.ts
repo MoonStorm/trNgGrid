@@ -121,7 +121,7 @@
     export class GridLayoutSection {
         rows: Array<GridLayoutRow> = [];
 
-        constructor(private gridConfiguration: IGridConfiguration, private gridLayout: GridLayout, private gridSectionType: GridSectionType) {            
+        constructor(private gridConfiguration: IGridConfiguration, private gridLayout: GridLayout, public gridSectionType: GridSectionType) {            
         }
 
         registerRow(): GridLayoutRow {
