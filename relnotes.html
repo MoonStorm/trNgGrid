@@ -4,13 +4,15 @@
     </div>
     <div class="panel-body">
         <p>
-            <h4>3.0.5 RC</h4>
+            <h4>3.1.0 Release Candidate</h4>
             <ul>
                 <li>Column titles rendering fixed for IE11.</li>
-                <li>The grid is now capable of providing the filtered list of items.</li>
+                <li>The grid is now capable of reporting the filtered list of items and the paged items.</li>
                 <li>Better handling of data items having field names containing special characters.</li>
-                <li>Fixed a bug where the initial page index (currentPage) was ignored in server side mode.</li>
-                <li><em>filter-by-fields</em> is now two way data bound.</li>
+                <li>Fixed a bug where the initial page index was ignored in server side mode.</li>
+                <li><em>filter-by-fields</em> is now two way data bound, allowing for a full state restoration.</li>
+                <li>Limited support for Angular directives on the table row elements. The grid now accepts <a ui-sref="demo.tests.xeditable">Integration with Angular X-Editable</a>.</li>
+                <li class="text-warning">You can't update your local version through <em>bower</em> just yet. You need to manually download the files from the <em>master</em> branch.</li>
             </ul>
         </p>
         <p>

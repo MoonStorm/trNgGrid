@@ -1,6 +1,7 @@
-/// <reference path="../../../typings/angularjs/angular.d.ts"/>
 "use strict";
 module TrNgGrid {
+    export var version = "3.1.0 RC";
+
     export enum SelectionMode {
         None,
         SingleRow,
@@ -215,7 +216,7 @@ module TrNgGrid {
         navigateToPage: (pageIndex: number) => void;
     }
 
-    var findChildByTagName = (parent: JQuery, childTag: string): JQuery=> {
+    var findChildByTagName = (parent: JQuery, childTag: string): ng.IAugmentedJQuery=> {
         childTag = childTag.toUpperCase();
         var children = parent.children();
         for (var childIndex = 0; childIndex < children.length; childIndex++) {
@@ -228,13 +229,13 @@ module TrNgGrid {
         return null;
     }
 
-    var findChildrenByTagName = (parent: JQuery, childTag: string): Array<JQuery> => {
+    var findChildrenByTagName = (parent: JQuery, childTag: string): Array<ng.IAugmentedJQuery> => {
         childTag = childTag.toUpperCase();
         var retChildren = [];
         var children = parent.children();
         for (var childIndex = 0; childIndex < children.length; childIndex++) {
             var childElement = children[childIndex];
-            if (childElement.tagName == childTag) {
+            if (childElement.tagName === childTag) {
                 retChildren.push(angular.element(childElement));
             }
         }
@@ -320,6 +321,7 @@ module TrNgGrid {
 
     class TemplatedSection {
         public cells: Array<TemplatedCell>;
+        private cellRow:ng.IAugmentedJQuery;
 
         constructor(
             private sectionTagName: string,
@@ -331,7 +333,7 @@ module TrNgGrid {
             this.cells = null;
         }
 
-        public configureSection(gridElement: JQuery, columnDefs: Array<IGridColumnOptions>): JQuery {
+        public configureSection(gridElement: ng.IAugmentedJQuery, columnDefs: Array<IGridColumnOptions>): ng.IAugmentedJQuery {
             var sectionElement = this.getSectionElement(gridElement, true);
             sectionElement.empty();
             sectionElement.removeAttr("ng-non-bindable");
@@ -380,23 +382,27 @@ module TrNgGrid {
             return this.cells;
         }
 
-        public discoverCells(gridElement: JQuery) {
+        public discoverTemplates(gridElement: ng.IAugmentedJQuery) {
             this.cells = [];
+            this.cellRow = null;
 
             var templatedRow = this.getTemplatedRowElement(this.getSectionElement(gridElement, false), false);
             if (templatedRow) {
+                this.cellRow = angular.element(templatedRow.clone());
+                this.cellRow.empty();
+
                 angular.forEach(templatedRow.children(), (childElement: JQuery, childIndex: number) => {
                     childElement = angular.element(childElement);
                     if (childElement[0].tagName === this.cellTagName.toUpperCase()) {
-                        var templateElement = childElement.clone(true);
+                        var templateElement = childElement.clone();
                         this.cells.push(new TemplatedCell(this, templateElement));
                     }
                 });
             }
         }
 
-        public getSectionElement(gridElement?: JQuery, ensurePresent?: boolean): JQuery {
-            var sectionElement: JQuery = null;
+        public getSectionElement(gridElement?: ng.IAugmentedJQuery, ensurePresent?: boolean): ng.IAugmentedJQuery {
+            var sectionElement: ng.IAugmentedJQuery = null;
             if (gridElement) {
                 sectionElement = findChildByTagName(gridElement, this.sectionTagName);
             }
@@ -408,25 +414,25 @@ module TrNgGrid {
                 }
             }
 
-            if (ensurePresent && this.sectionDirectiveAttribute) {
+            if (sectionElement && ensurePresent && this.sectionDirectiveAttribute) {
                 sectionElement.attr(this.sectionDirectiveAttribute, "");
             }
             return sectionElement;
         }
 
-        public getTemplatedRowElement(sectionElement?: JQuery, ensurePresent?: boolean): JQuery {
-            var rowElement: JQuery = null;
+        public getTemplatedRowElement(sectionElement?: ng.IAugmentedJQuery, ensurePresent?: boolean): ng.IAugmentedJQuery {
+            var rowElement: ng.IAugmentedJQuery = null;
             if (sectionElement) {
                 rowElement = findChildByTagName(sectionElement, "tr");
             }
             if (!rowElement && ensurePresent) {
-                rowElement = angular.element("<table><tr></tr></table>").find("tr");
+                rowElement = this.cellRow ? angular.element(this.cellRow.clone()) : angular.element("<table><tr></tr></table>").find("tr");
                 if (sectionElement) {
                     sectionElement.append(rowElement);
                 }
             }
 
-            if (ensurePresent && this.rowDirectiveAttribute) {
+            if (rowElement && ensurePresent && this.rowDirectiveAttribute) {
                 rowElement.attr(this.rowDirectiveAttribute, "");
             }
             return rowElement;
@@ -682,14 +688,14 @@ module TrNgGrid {
             }
         }
 
-        discoverTemplates(gridElement: JQuery) {
+        discoverTemplates(gridElement: ng.IAugmentedJQuery) {
             this.templatedHeader = new TemplatedSection("thead", null, null, "th", cellHeaderDirectiveAttribute);
             this.templatedBody = new TemplatedSection("tbody", bodyDirectiveAttribute, null, "td", cellBodyDirectiveAttribute);
             this.templatedFooter = new TemplatedSection("tfoot", null, null, "td", cellFooterDirectiveAttribute);
 
-            this.templatedHeader.discoverCells(gridElement);
-            this.templatedFooter.discoverCells(gridElement);
-            this.templatedBody.discoverCells(gridElement);
+            this.templatedHeader.discoverTemplates(gridElement);
+            this.templatedFooter.discoverTemplates(gridElement);
+            this.templatedBody.discoverTemplates(gridElement);
         }
 
         getSafeFieldName(fieldName:string) {
@@ -697,143 +703,149 @@ module TrNgGrid {
         }
 
         configureTableStructure(parentScope: ng.IScope, gridElement: ng.IAugmentedJQuery, oldScope?: ng.IScope) {
-            try {
-                var scope = parentScope.$new();
-                gridElement.empty();
-
-                // make sure we're no longer watching for column defs
-                if (this.columnDefsItemsWatcherDeregistration) {
-                    this.columnDefsItemsWatcherDeregistration();
-                    this.columnDefsItemsWatcherDeregistration = null;
-                }
-                if (this.columnDefsFieldsWatcherDeregistration) {
-                    this.columnDefsFieldsWatcherDeregistration();
-                    this.columnDefsFieldsWatcherDeregistration = null;
-                }
-
-                // watch for a change in field values
-                // don't be tempted to use watchcollection, it always returns same values which can't be compared
-                // https://github.com/angular/angular.js/issues/2621
-                // which causes us the recompile even if we don't have to
-                this.columnDefsFieldsWatcherDeregistration = scope.$watch("gridOptions.fields", (newValue: Array<any>, oldValue: Array<any>) => {
-                    if (!angular.equals(newValue, oldValue)) {
-                        this.configureTableStructure(parentScope, gridElement, scope);
+            // not allowed to destroy the old scope in the same cycle
+            gridElement.empty();
+            parentScope.$evalAsync(() => {
+                try {
+                    if (oldScope) {
+                        oldScope.$destroy();
                     }
-                }, true);
 
-                // prepare a partial list of column definitions
-                var templatedHeaderPartialGridColumnDefs = this.templatedHeader.extractPartialColumnDefinitions();
-                var templatedBodyPartialGridColumnDefs = this.templatedBody.extractPartialColumnDefinitions();
-                var templatedFooterPartialGridColumnDefs = this.templatedFooter.extractPartialColumnDefinitions();
+                    var scope = parentScope.$new();
 
-                var finalPartialGridColumnDefs: Array<IGridColumnOptions> = [];
-                var fieldsEnforced = this.gridOptions.fields;
-                if (fieldsEnforced) {
-                    // the fields bound to the options will take precedence
-                    angular.forEach(this.gridOptions.fields, (fieldName: string) => {
-                        if (fieldName) {
-                            finalPartialGridColumnDefs.push({
-                                isStandardColumn: true,
-                                fieldName: fieldName
-                            });
+                    // make sure we're no longer watching for column defs
+                    if (this.columnDefsItemsWatcherDeregistration) {
+                        this.columnDefsItemsWatcherDeregistration();
+                        this.columnDefsItemsWatcherDeregistration = null;
+                    }
+                    if (this.columnDefsFieldsWatcherDeregistration) {
+                        this.columnDefsFieldsWatcherDeregistration();
+                        this.columnDefsFieldsWatcherDeregistration = null;
+                    }
+
+                    // watch for a change in field values
+                    // don't be tempted to use watchcollection, it always returns same values which can't be compared
+                    // https://github.com/angular/angular.js/issues/2621
+                    // which causes us the recompile even if we don't have to
+                    this.columnDefsFieldsWatcherDeregistration = scope.$watch("gridOptions.fields", (newValue: Array<any>, oldValue: Array<any>) => {
+                        if (!angular.equals(newValue, oldValue)) {
+                            this.configureTableStructure(parentScope, gridElement, scope);
+                        }
+                    }, true);
+
+                    // prepare a partial list of column definitions
+                    var templatedHeaderPartialGridColumnDefs = this.templatedHeader.extractPartialColumnDefinitions();
+                    var templatedBodyPartialGridColumnDefs = this.templatedBody.extractPartialColumnDefinitions();
+                    var templatedFooterPartialGridColumnDefs = this.templatedFooter.extractPartialColumnDefinitions();
+
+                    var finalPartialGridColumnDefs: Array<IGridColumnOptions> = [];
+                    var fieldsEnforced = this.gridOptions.fields;
+                    if (fieldsEnforced) {
+                        // the fields bound to the options will take precedence
+                        angular.forEach(this.gridOptions.fields, (fieldName: string) => {
+                            if (fieldName) {
+                                finalPartialGridColumnDefs.push({
+                                    isStandardColumn: true,
+                                    fieldName: fieldName
+                                });
+                            }
+                        });
+
+                        finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedHeaderPartialGridColumnDefs, false, true);
+                        finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, false, true);
+                    }
+                    else {
+                        // check for the header markup
+                        if (templatedHeaderPartialGridColumnDefs.length > 0) {
+                            // header and body will be used for fishing out the field names
+                            finalPartialGridColumnDefs = combineGridCellInfos(templatedHeaderPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, true);
+                        }
+                        else {
+                            // the object itself will provide the field names
+                            if (!this.gridOptions.items || this.gridOptions.items.length == 0) {
+                                // register our interest for when we do have something to look at
+                                this.columnDefsItemsWatcherDeregistration = scope.$watch("gridOptions.items.length", (newValue: number, oldValue: number) => {
+                                    if (newValue) {
+                                        this.configureTableStructure(parentScope, gridElement, scope);
+                                    }
+                                });
+                                return;
+                            }
+
+                            // extract the field names
+                            for (var propName in this.gridOptions.items[0]) {
+                                // exclude the library properties
+                                // UPDATE: decided to remove this restriction
+                                //if (!propName.match(/^[\$]/g)) 
+                                {
+                                    finalPartialGridColumnDefs.push({
+                                        isStandardColumn: true,
+                                        fieldName: propName
+                                    });
+                                }
+                            }
+
+                            // combine with the body template
+                            finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, true);
+                        }
+                    }
+
+                    // it's time to make final tweaks to the instances and recompile
+                    if (templatedFooterPartialGridColumnDefs.length == 0) {
+                        templatedFooterPartialGridColumnDefs.push({ isStandardColumn: true });
+                    }
+
+                    // compute the formatted field names and field exctraction expressions
+                    angular.forEach(finalPartialGridColumnDefs, (columnDefs: IGridColumnOptions) => {
+                        if (columnDefs.fieldName) {
+                            var fieldName = columnDefs.fieldName;
+
+                            columnDefs.displayFieldName = this.getSafeFieldName(fieldName);
+
+                            // create the field extraction expression
+                            // cope with special symbols in the field name (e.g. $ and @), also for the accepted notations (. or [])
+                            var fieldExtractionExpression: string;
+                            if (fieldName[0] === "[") {
+                                fieldExtractionExpression = fieldName;
+                            }
+                            else {
+                                // go ahead with the wrapping (e.g. transform field.child.extrachild[0] into [field].child.extrachild[0])
+                                fieldExtractionExpression = fieldName.replace(/^([^\.]+)/g, "\[\"$1\"]");
+                            }
+
+                            columnDefs.fieldExtractionExpression = fieldExtractionExpression;
                         }
                     });
 
-                    finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedHeaderPartialGridColumnDefs, false, true);
-                    finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, false, true);
-                } else {
-                    // check for the header markup
-                    if (templatedHeaderPartialGridColumnDefs.length > 0) {
-                        // header and body will be used for fishing out the field names
-                        finalPartialGridColumnDefs = combineGridCellInfos(templatedHeaderPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, true);
-                    } else {
-                        // the object itself will provide the field names
-                        if (!this.gridOptions.items || this.gridOptions.items.length == 0) {
-                            // register our interest for when we do have something to look at
-                            this.columnDefsItemsWatcherDeregistration = scope.$watch("gridOptions.items.length", (newValue: number, oldValue: number) => {
-                                if (newValue) {
-                                    this.configureTableStructure(parentScope, gridElement, scope);
-                                }
-                            });
-                            return;
-                        }
+                    this.gridOptions.gridColumnDefs = finalPartialGridColumnDefs;
+                    var headerElement = this.templatedHeader.configureSection(gridElement, finalPartialGridColumnDefs);
+                    var footerElement = this.templatedFooter.configureSection(gridElement, templatedFooterPartialGridColumnDefs);
+                    var bodyElement = this.templatedBody.configureSection(gridElement, finalPartialGridColumnDefs);
 
-                        // extract the field names
-                        for (var propName in this.gridOptions.items[0]) {
-                            // exclude the library properties
-                            // UPDATE: decided to remove this restriction
-                            //if (!propName.match(/^[\$]/g)) 
-                            {
-                                finalPartialGridColumnDefs.push({
-                                    isStandardColumn: true,
-                                    fieldName: propName
-                                });
-                            }
-                        }
+                    var templatedBodyRowElement = this.templatedBody.getTemplatedRowElement(bodyElement);
+                    var templatedHeaderRowElement = this.templatedHeader.getTemplatedRowElement(headerElement);
 
-                        // combine with the body template
-                        finalPartialGridColumnDefs = combineGridCellInfos(finalPartialGridColumnDefs, templatedBodyPartialGridColumnDefs, true, true);
-                    }
-                }
-
-                // it's time to make final tweaks to the instances and recompile
-                if (templatedFooterPartialGridColumnDefs.length == 0) {
-                    templatedFooterPartialGridColumnDefs.push({ isStandardColumn: true });
-                }
-
-                // compute the formatted field names and field exctraction expressions
-                angular.forEach(finalPartialGridColumnDefs, (columnDefs: IGridColumnOptions) => {
-                    if (columnDefs.fieldName) {
-                        var fieldName = columnDefs.fieldName;
-
-                        columnDefs.displayFieldName = this.getSafeFieldName(fieldName);
-
-                        // create the field extraction expression
-                        // cope with special symbols in the field name (e.g. $ and @), also for the accepted notations (. or [])
-                        var fieldExtractionExpression: string;
-                        if (fieldName[0] === "[") {
-                            fieldExtractionExpression = fieldName;
-                        } else {
-                            // go ahead with the wrapping (e.g. transform field.child.extrachild[0] into [field].child.extrachild[0])
-                            fieldExtractionExpression = fieldName.replace(/^([^\.]+)/g, "\[\"$1\"]");
-                        }
-
-                        columnDefs.fieldExtractionExpression = fieldExtractionExpression;
-                    }
-                });
-
-                this.gridOptions.gridColumnDefs = finalPartialGridColumnDefs;
-                var headerElement = this.templatedHeader.configureSection(gridElement, finalPartialGridColumnDefs);
-                var footerElement = this.templatedFooter.configureSection(gridElement, templatedFooterPartialGridColumnDefs);
-                var bodyElement = this.templatedBody.configureSection(gridElement, finalPartialGridColumnDefs);
-
-                var templatedBodyRowElement = this.templatedBody.getTemplatedRowElement(bodyElement);
-                var templatedHeaderRowElement = this.templatedHeader.getTemplatedRowElement(headerElement);
-
-                bodyElement.attr(bodyDirectiveAttribute, "");
-                templatedBodyRowElement.attr("ng-click", "toggleItemSelection(gridItem, $event)");
-                // when server-side get is active (scope.gridOptions.onDataRequired), the filtering through the standard filters should be disabled
-                /*if (this.gridOptions.onDataRequired) {
+                    bodyElement.attr(bodyDirectiveAttribute, "");
+                    templatedBodyRowElement.attr("ng-click", "toggleItemSelection(gridItem, $event)");
+                    // when server-side get is active (scope.gridOptions.onDataRequired), the filtering through the standard filters should be disabled
+                    /*if (this.gridOptions.onDataRequired) {
                 templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items");
             }
             else {
                 templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
             }*/
-                templatedBodyRowElement.attr("ng-repeat", "gridDisplayItem in filteredItems");
-                templatedBodyRowElement.attr("ng-init", "gridItem=gridDisplayItem.$$_gridItem");
-                templatedBodyRowElement.attr("ng-class", "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem)>=0}");
+                    templatedBodyRowElement.attr("ng-repeat", "gridDisplayItem in filteredItems");
+                    templatedBodyRowElement.attr("ng-init", "gridItem=gridDisplayItem.$$_gridItem");
+                    templatedBodyRowElement.attr("ng-class", "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem)>=0}");
 
-                headerElement.replaceWith(this.$compile(headerElement)(scope));
-                footerElement.replaceWith(this.$compile(footerElement)(scope));
-                bodyElement.replaceWith(this.$compile(bodyElement)(scope));
-
-                if (oldScope) {
-                    // an Angular bug is preventing us to destroy a scope inside the digest cycle
-                    this.$timeout(() => oldScope.$destroy());
+                    this.$compile(headerElement)(scope);
+                    this.$compile(footerElement)(scope);
+                    this.$compile(bodyElement)(scope);
                 }
-            } catch (ex) {
-                debugMode && this.log("Fixing table structure failed with error " + ex);                
-            }
+                catch (ex) {
+                    debugMode && this.log("Fixing table structure failed with error " + ex);
+                }
+            });
         }
 
         computeFormattedItems(scope: IGridScope) {
@@ -1107,7 +1119,7 @@ module TrNgGrid {
                     controller: ["$compile", "$parse", "$timeout", "$templateCache", GridController],
                     compile: (templateElement: JQuery, tAttrs: Object) => {
                         return {
-                            pre: (isolatedScope: ng.IScope, instanceElement: JQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
+                            pre: (isolatedScope: ng.IScope, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
                                 controller.discoverTemplates(instanceElement);
                             },
                             post: (isolatedScope: ng.IScope, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
