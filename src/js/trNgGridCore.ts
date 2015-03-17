@@ -410,44 +410,4 @@ module TrNgGrid {
     }
 
     export var gridModule = angular.module(Constants.tableDirective, []);
-
-    gridModule.directive(Constants.tableDirective, [
-            Constants.gridConfigurationService,
-            (gridConfiguration: IGridConfiguration) => {
-                return {
-                    restrict: 'A',
-
-                    // only an isolated scope ensures two-way binding
-                    scope: {
-                        items: '=',
-                        selectedItems: '=?',
-                        filterBy: '=?',
-                        filterByFields: '=?',
-                        orderBy: '=?',
-                        orderByReverse: '=?',
-                        pageItems: '=?',
-                        currentPage: '=?',
-                        totalItems: '=?',
-                        enableFiltering: '=?',
-                        enableSorting: '=?',
-                        selectionMode: '@',
-                        locale: '@',
-                        onDataRequired: '&',
-                        onDataRequiredDelay: '=?',
-                        fields: '=?'
-                    },
-                    controller: ["$compile", "$parse", "$timeout", Constants.gridConfigurationService, GridController],
-                    compile(templateElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes) {
-                        // fix & add a couple of elements & directives
-                        fixTableStructure(gridConfiguration, templateElement);
-
-                        return{
-                            pre(isolatedScope: IGridOptions, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) {
-                                controller.setGridOptions(isolatedScope);
-                            }
-                        };
-                    }
-                };
-            }
-        ]);
 }

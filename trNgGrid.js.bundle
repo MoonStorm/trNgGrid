@@ -10,7 +10,7 @@
   </settings>
   <!--The order of the <file> elements determines the order of the files in the bundle.-->
   <files>
-    <file>./src/js/trNgGridConstants.js</file>
+    <file>./src/js/trNgGridConstants.js</file> 
     <file>./src/js/trNgGridUtils.js</file>
     <file>./src/js/trNgGridCore.js</file>
     <file>./src/js/trNgGridConfiguration.js</file>

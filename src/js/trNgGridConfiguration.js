@@ -113,5 +113,8 @@ var TrNgGrid;
         };
         return GridConfigurationProvider;
     })();
-    TrNgGrid.gridModule.provider(TrNgGrid.Constants.gridConfigurationService, GridConfigurationProvider);
+    TrNgGrid.gridModule.provider(TrNgGrid.Constants.gridConfigurationService, [
+        "$interpolateProvider",
+        function ($interpolateProvider) { return new GridConfigurationProvider($interpolateProvider); }
+    ]);
 })(TrNgGrid || (TrNgGrid = {}));

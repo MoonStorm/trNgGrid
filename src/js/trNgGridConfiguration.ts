@@ -1,5 +1,4 @@
-﻿/// <reference path="../../../typings/angularjs/angular.d.ts"/>
-module TrNgGrid {
+﻿module TrNgGrid {
 
     export interface IGridStyles {
         tableCssClass?: string;
@@ -296,5 +295,7 @@ module TrNgGrid {
 
     }
 
-    gridModule.provider(Constants.gridConfigurationService, GridConfigurationProvider);
+    gridModule.provider(Constants.gridConfigurationService, [
+        "$interpolateProvider",
+        ($interpolateProvider:ng.IInterpolateProvider) => new GridConfigurationProvider($interpolateProvider)]);
 } 

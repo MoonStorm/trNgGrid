@@ -4,6 +4,7 @@ var TrNgGrid;
         GridSectionType[GridSectionType["Enforced"] = 0] = "Enforced";
         GridSectionType[GridSectionType["Header"] = 1] = "Header";
         GridSectionType[GridSectionType["Body"] = 2] = "Body";
+        GridSectionType[GridSectionType["Footer"] = 3] = "Footer";
     })(TrNgGrid.GridSectionType || (TrNgGrid.GridSectionType = {}));
     var GridSectionType = TrNgGrid.GridSectionType;
     var DefaultGridColumnLayoutOptions = (function () {

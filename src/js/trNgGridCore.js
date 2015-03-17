@@ -211,39 +211,4 @@ var TrNgGrid;
     })();
     TrNgGrid.GridController = GridController;
     TrNgGrid.gridModule = angular.module(TrNgGrid.Constants.tableDirective, []);
-    TrNgGrid.gridModule.directive(TrNgGrid.Constants.tableDirective, [
-        TrNgGrid.Constants.gridConfigurationService,
-        function (gridConfiguration) {
-            return {
-                restrict: 'A',
-                scope: {
-                    items: '=',
-                    selectedItems: '=?',
-                    filterBy: '=?',
-                    filterByFields: '=?',
-                    orderBy: '=?',
-                    orderByReverse: '=?',
-                    pageItems: '=?',
-                    currentPage: '=?',
-                    totalItems: '=?',
-                    enableFiltering: '=?',
-                    enableSorting: '=?',
-                    selectionMode: '@',
-                    locale: '@',
-                    onDataRequired: '&',
-                    onDataRequiredDelay: '=?',
-                    fields: '=?'
-                },
-                controller: ["$compile", "$parse", "$timeout", TrNgGrid.Constants.gridConfigurationService, GridController],
-                compile: function (templateElement, tAttrs) {
-                    TrNgGrid.fixTableStructure(gridConfiguration, templateElement);
-                    return {
-                        pre: function (isolatedScope, instanceElement, tAttrs, controller, transcludeFn) {
-                            controller.setGridOptions(isolatedScope);
-                        }
-                    };
-                }
-            };
-        }
-    ]);
 })(TrNgGrid || (TrNgGrid = {}));

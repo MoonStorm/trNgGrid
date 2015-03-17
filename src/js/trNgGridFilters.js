@@ -17,7 +17,7 @@ var TrNgGrid;
                     }
                     if (fieldValue === undefined) {
                         try {
-                            fieldValue = $parse("item." + gridColumnOptions.displayFieldName)({ item: item });
+                            fieldValue = $parse("item." + gridColumnOptions.displayItemFieldName)({ item: item });
                         }
                         catch (ex) {
                         }

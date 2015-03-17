@@ -2,7 +2,8 @@
     export enum GridSectionType {
         Enforced,
         Header,
-        Body
+        Body,
+        Footer
     } 
 
     export interface IGridColumnOptions {

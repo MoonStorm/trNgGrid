@@ -21,7 +21,7 @@
                             if (fieldValue === undefined) {
                                 try {
                                     // next try the field on the display item, in case of computed fields
-                                    fieldValue = $parse("item." + gridColumnOptions.displayFieldName)({ item: item });
+                                    fieldValue = $parse("item." + gridColumnOptions.displayItemFieldName)({ item: item });
                                 } catch (ex) {
                                 }
                             }
