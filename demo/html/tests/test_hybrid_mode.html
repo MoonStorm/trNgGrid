@@ -28,16 +28,16 @@ function HybridModeTestController($scope) {
                     </pre>
                 </div>
                 <div class="col-md-7" project-markup-to="#trNgGrid_items_update_bug">
-<div ng-controller="TrNgGridDemo.HybridModeTestController">
-    Page requested: {{requestedPageNumber}} (should show 2 initially)
-    <table tr-ng-grid=""
-           on-data-required-delay="1000"
-           items="myItems"
-           current-page="myCurrentPage"
-           page-items="myPageItemsCount"
-           total-items="myItemsTotalCount"
-           on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)"></table>
-</div>
+                    <div ng-controller="TrNgGridHybridDemo.HybridModeTestController">
+                        Page requested: {{requestedPageNumber}} (should show 2 initially)
+                        <table tr-ng-grid=""
+                               on-data-required-delay="1000"
+                               items="myItems"
+                               current-page="myCurrentPage"
+                               page-items="myPageItemsCount"
+                               total-items="myItemsTotalCount"
+                               on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)"></table>
+                    </div>
                 </div>
             </div>
         </div>

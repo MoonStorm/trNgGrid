@@ -831,6 +831,9 @@ declare module angular {
         // does not check the parameter. Let's force a value for consistency. If consumer
         // whants to undefine it, pass the undefined value explicitly.
         assign(context: any, value: any): any;
+
+        // added by Dan C.
+        constant:any;
     }
 
     /**

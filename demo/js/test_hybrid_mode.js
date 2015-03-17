@@ -4,8 +4,8 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-var TrNgGridDemo;
-(function (TrNgGridDemo) {
+var TrNgGridHybridDemo;
+(function (TrNgGridHybridDemo) {
     var HybridModeTestController = (function (_super) {
         __extends(HybridModeTestController, _super);
         function HybridModeTestController($scope, $window, $timeout) {
@@ -20,6 +20,6 @@ var TrNgGridDemo;
         }
         return HybridModeTestController;
     })(TrNgGridDemo.TestController);
-    TrNgGridDemo.HybridModeTestController = HybridModeTestController;
+    TrNgGridHybridDemo.HybridModeTestController = HybridModeTestController;
     angular.module("trNgGridDemo").controller("TrNgGridDemo.HybridModeTestController", ["$scope", "$window", "$timeout", HybridModeTestController]);
-})(TrNgGridDemo || (TrNgGridDemo = {}));
+})(TrNgGridHybridDemo || (TrNgGridHybridDemo = {}));

@@ -3,7 +3,7 @@
     var allConfigurations: { [configurationKey: string]: IDemoConfiguration } = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.0.5 RC",
+            fullName: "trNgGrid v3.1.0 RC",
             titleCssClass: "text-success"
         }
         //"beta": {
@@ -43,7 +43,7 @@
                         resolve: {
                             // Any property in resolve should return a promise and is executed before the view is loaded
                             loadMyCtrl: [
-                                '$ocLazyLoad', '$stateParams', '$location', ($ocLazyLoad:any, $stateParams: ng.ui.IStateParams, $location: ng.ILocationService) => {
+                                '$ocLazyLoad', '$stateParams', '$location', ($ocLazyLoad: any, $stateParams: ng.ui.IStateParamsService, $location: ng.ILocationService) => {
                                     var configuration = $location.absUrl().indexOf("/release/") >= 0
                                         ? "release"
                                         : $location.absUrl().indexOf("/beta/") >= 0 ? "beta" : "alpha";
@@ -61,11 +61,12 @@
                                             [
                                                 '../' + configuration + '/trNgGrid.js',
                                                 '../' + configuration + '/trNgGrid.css'
-                                            ],
+                                            ]
                                             //cache: false
                                         },
                                         {
                                             name: 'trNgGridDemo',
+                                            serie: true,
                                             files: [
                                                 '../demo/css/index.css',
                                                 // '../demo/js/tracking.js',
@@ -73,11 +74,12 @@
                                                 '../demo/js/benchmark.js',
                                                 '../demo/js/test_hybrid_mode.js',
                                                 '../demo/js/translations.js'
-                                            ],
+                                            ]
                                             //cache: false
                                         },
                                         {
                                             name: 'ui.bootstrap',
+                                            serie: true,
                                             files:
                                             [
                                                 '//necolas.github.io/normalize.css/latest/normalize.css',
@@ -97,8 +99,8 @@
                         },
                         controller: [
                             '$scope', '$stateParams', '$state', '$window', '$timeout',
-                            ($scope: IMainControllerScope, $stateParams: ng.ui.IStateParams, $state: ng.ui.IStateService, $window: ng.IWindowService, $timeout:ng.ITimeoutService) => {
-                                var stateChangeDereg = $scope.$on('$stateChangeSuccess', (event: ng.IAngularEvent, toState: ng.ui.IState, toParams: ng.ui.IStateParams, fromState: ng.ui.IState, fromParams: ng.ui.IStateParams) => {
+                            ($scope: IMainControllerScope, $stateParams: ng.ui.IStateParamsService, $state: ng.ui.IStateService, $window: ng.IWindowService, $timeout:ng.ITimeoutService) => {
+                                var stateChangeDereg = $scope.$on('$stateChangeSuccess',(event: ng.IAngularEvent, toState: ng.ui.IState, toParams: ng.ui.IStateParamsService, fromState: ng.ui.IState, fromParams: ng.ui.IStateParamsService) => {
                                     var templateStateRegex = /^demo\.customizations\.global.*/gi;
                                     if ((fromState.name != toState.name && fromState.name != "" && (fromState.name.match(templateStateRegex) || toState.name.match(templateStateRegex)))
                                         || (fromParams["theme"] && fromParams["theme"] != toParams["theme"])
@@ -265,6 +267,7 @@
                             loadMyCtrl: [
                                 '$ocLazyLoad', ($ocLazyLoad:any) => $ocLazyLoad.load({
                                     name: 'ngGrid',
+                                    serie: true,
                                     files: [
                                         '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js',
                                         '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css',
@@ -297,7 +300,41 @@
                     }).state('demo.tests.fixedheaderfooter', {
                         url: '/TestFixedHeaderFooter',
                         templateUrl: '../demo/html/tests/test_fixed_header_footer.html'
+                    }).state('demo.tests.xeditable', {
+                    url: '/TestXEditable',
+                        views: {
+                            '': {
+                                templateUrl: '../demo/html/tests/test_xeditable.html'
+                            },
+                            'source': {
+                                template: '../demo/js/test_xeditable.ts'
+                            }
+                        },
+                        resolve: {
+                            loadMyCtrl: [
+                                '$ocLazyLoad', ($ocLazyLoad: any) => $ocLazyLoad.load([
+                                    {
+                                        name: 'xeditable',
+                                        files: [
+                                            "//vitalets.github.io/angular-xeditable/dist/js/xeditable.js",
+                                            "//vitalets.github.io/angular-xeditable/dist/css/xeditable.css"
+                                        ],
+                                        //cache: false
+                                    },
+                                    {
+                                        name: 'TrNgGridXEditableDemo',
+                                        serie:true,
+                                        files: [
+                                            '../demo/js/demo.js',
+                                            '../demo/js/test_xeditable.js'
+                                        ],
+                                        //cache: false
+                                    }
+                                ])
+                            ]
+                        }
                     });
+    
                 // html5 is not working without server-side support
                 //$location.html5Mode(true);
             }

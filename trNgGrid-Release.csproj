@@ -50,6 +50,7 @@
     <Content Include="demo\html\tests\test_ng_switch.html" />
     <Content Include="demo\html\tests\test_symbols_data_keys.html" />
     <Content Include="demo\html\tests\test_template_pager.html" />
+    <Content Include="demo\html\tests\test_xeditable.html" />
     <Content Include="demo\js\benchmark.js">
       <DependentUpon>benchmark.ts</DependentUpon>
     </Content>
@@ -74,6 +75,9 @@
     </Content>
     <Content Include="demo\js\test_hybrid_mode.js.map">
       <DependentUpon>test_hybrid_mode.js</DependentUpon>
+    </Content>
+    <Content Include="demo\js\test_xeditable.js">
+      <DependentUpon>test_xeditable.ts</DependentUpon>
     </Content>
     <Content Include="demo\js\translations.js">
       <DependentUpon>translations.ts</DependentUpon>
@@ -102,16 +106,19 @@
     <TypeScriptCompile Include="demo\js\demo.ts" />
     <TypeScriptCompile Include="demo\js\routes.ts" />
     <TypeScriptCompile Include="demo\js\test_hybrid_mode.ts" />
+    <TypeScriptCompile Include="demo\js\test_xeditable.ts" />
     <TypeScriptCompile Include="demo\js\translations.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-animate.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-cookies.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-mocks.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-resource.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-route.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-sanitize.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\uirouter\angular-ui-router.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui-bootstrap\angular-ui-bootstrap.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-router.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-sortable.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-resource.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-route.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-sanitize.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <TypeScriptCompile Include="release\src\js\trNgGrid.ts" />

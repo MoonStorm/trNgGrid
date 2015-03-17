@@ -42,12 +42,12 @@
                         <li ng-if="currentConfiguration.name=='beta'"><a ui-sref="demo.customizations.global_beta">Global (breaking changes)</a></li>
                         <li ng-if="currentConfiguration.name=='release'"><a ui-sref="demo.localization">Localization</a></li>
                         <li ng-if="currentConfiguration.name=='beta'"><a ui-sref="demo.localization_beta">Localization (breaking changes)</a></li>
-                        <li class="divider"></li>
                     </ul>
                 </li>
                 <li ui-sref-active="active" dropdown="">
                     <a class="dropdown-toggle" href="" dropdown-toggle="">Test Cases<b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
+                        <li><a ui-sref="demo.tests.xeditable">Case #7 (Integration with X-Editable)</a></li>
                         <li><a ui-sref="demo.tests.ngswitch">Case #9 (ng-switch)</a></li>
                         <li><a ui-sref="demo.tests.itemsupdate">Case #6 (replacing the 'items' array) </a></li>
                         <li><a ui-sref="demo.tests.hybridmode">Case #28 (hybrid mode) </a></li>

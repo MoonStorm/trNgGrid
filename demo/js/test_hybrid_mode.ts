@@ -1,9 +1,9 @@
-﻿module TrNgGridDemo {
-    export interface IHybridTestControllerScope extends ITestControllerScope {
+﻿module TrNgGridHybridDemo {
+    export interface IHybridTestControllerScope extends TrNgGridDemo.ITestControllerScope {
         requestedPageNumber: number;
     }
 
-    export class HybridModeTestController extends TestController{
+    export class HybridModeTestController extends TrNgGridDemo.TestController{
         constructor($scope: IHybridTestControllerScope, $window: ng.IWindowService, $timeout: ng.ITimeoutService) {
             super($scope, $window, $timeout);
             $scope.myCurrentPage = 2;        

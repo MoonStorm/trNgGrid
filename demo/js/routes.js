@@ -3,7 +3,7 @@ var TrNgGridDemo;
     var allConfigurations = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.0.5 RC",
+            fullName: "trNgGrid v3.1.0 RC",
             titleCssClass: "text-success"
         }
     };
@@ -38,20 +38,22 @@ var TrNgGridDemo;
                                     files: [
                                         '../' + configuration + '/trNgGrid.js',
                                         '../' + configuration + '/trNgGrid.css'
-                                    ],
+                                    ]
                                 },
                                 {
                                     name: 'trNgGridDemo',
+                                    serie: true,
                                     files: [
                                         '../demo/css/index.css',
                                         '../demo/js/demo.js',
                                         '../demo/js/benchmark.js',
                                         '../demo/js/test_hybrid_mode.js',
                                         '../demo/js/translations.js'
-                                    ],
+                                    ]
                                 },
                                 {
                                     name: 'ui.bootstrap',
+                                    serie: true,
                                     files: [
                                         '//necolas.github.io/normalize.css/latest/normalize.css',
                                         '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.js',
@@ -213,6 +215,7 @@ var TrNgGridDemo;
                         '$ocLazyLoad',
                         function ($ocLazyLoad) { return $ocLazyLoad.load({
                             name: 'ngGrid',
+                            serie: true,
                             files: [
                                 '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js',
                                 '//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css',
@@ -244,6 +247,38 @@ var TrNgGridDemo;
             }).state('demo.tests.fixedheaderfooter', {
                 url: '/TestFixedHeaderFooter',
                 templateUrl: '../demo/html/tests/test_fixed_header_footer.html'
+            }).state('demo.tests.xeditable', {
+                url: '/TestXEditable',
+                views: {
+                    '': {
+                        templateUrl: '../demo/html/tests/test_xeditable.html'
+                    },
+                    'source': {
+                        template: '../demo/js/test_xeditable.ts'
+                    }
+                },
+                resolve: {
+                    loadMyCtrl: [
+                        '$ocLazyLoad',
+                        function ($ocLazyLoad) { return $ocLazyLoad.load([
+                            {
+                                name: 'xeditable',
+                                files: [
+                                    "//vitalets.github.io/angular-xeditable/dist/js/xeditable.js",
+                                    "//vitalets.github.io/angular-xeditable/dist/css/xeditable.css"
+                                ],
+                            },
+                            {
+                                name: 'TrNgGridXEditableDemo',
+                                serie: true,
+                                files: [
+                                    '../demo/js/demo.js',
+                                    '../demo/js/test_xeditable.js'
+                                ],
+                            }
+                        ]); }
+                    ]
+                }
             });
             // html5 is not working without server-side support
             //$location.html5Mode(true);
