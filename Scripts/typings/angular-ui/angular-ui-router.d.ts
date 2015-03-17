@@ -3,34 +3,32 @@
 // Definitions by: Michel Salib <https://github.com/michelsalib>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-declare module ng.ui {
+/// <reference path="../angularjs/angular.d.ts" />
+
+declare module angular.ui {
 
     interface IState {
         name?: string;
-        template?: string;
-        templateUrl?: any; // string || () => string
-        templateProvider?: any; // () => string || IPromise<string>
+        template?: any;
+        templateUrl?: any;
+        templateProvider?: any;
         controller?: any;
-        controllerAs?: string;    
+        controllerAs?: string;
         controllerProvider?: any;
         resolve?: {};
         url?: string;
         params?: any;
         views?: {};
         abstract?: boolean;
-        onEnter?: (...args: any[]) => void;
-        onExit?: (...args: any[]) => void;
+        onEnter?: any;
+        onExit?: any;
         data?: any;
         reloadOnSearch?: boolean;
     }
 
-    interface ITypedState<T> extends IState {
-        data?: T;
-    }
-
     interface IStateProvider extends IServiceProvider {
-        state(name: string, config: IState): IStateProvider;
-        state(config: IState): IStateProvider;
+        state(name:string, config:IState): IStateProvider;
+        state(config:IState): IStateProvider;
         decorator(name?: string, decorator?: (state: IState, parent: Function) => any): any;
     }
 
@@ -44,6 +42,7 @@ declare module ng.ui {
     interface IUrlMatcherFactory {
         compile(pattern: string): IUrlMatcher;
         isMatcher(o: any): boolean;
+        type(name: string, definition: any, definitionFn?: any): any;
     }
 
     interface IUrlRouterProvider extends IServiceProvider {
@@ -68,7 +67,6 @@ declare module ng.ui {
         inherit?: boolean;
         relative?: IState;
         notify?: boolean;
-        reload?: boolean;
     }
 
     interface IHrefOptions {
@@ -90,7 +88,7 @@ declare module ng.ui {
         get(state: string): IState;
         get(): IState[];
         current: IState;
-        params: any;
+        params: IStateParamsService;
         reload(): void;
     }
 
@@ -98,27 +96,23 @@ declare module ng.ui {
         [key: string]: any;
     }
 
-    interface IStateParams {
-        [key: string]: any;
-    }
-
     interface IUrlRouterService {
-        /*
-         * Triggers an update; the same update that happens when the address bar
-         * url changes, aka $locationChangeSuccess.
-         *
-         * This method is useful when you need to use preventDefault() on the
-         * $locationChangeSuccess event, perform some custom logic (route protection,
-         * auth, config, redirection, etc) and then finally proceed with the transition
-         * by calling $urlRouter.sync().
-         *
-         */
+    	/*
+    	 * Triggers an update; the same update that happens when the address bar
+    	 * url changes, aka $locationChangeSuccess.
+    	 *
+    	 * This method is useful when you need to use preventDefault() on the
+    	 * $locationChangeSuccess event, perform some custom logic (route protection,
+    	 * auth, config, redirection, etc) and then finally proceed with the transition
+    	 * by calling $urlRouter.sync().
+    	 *
+    	 */
         sync(): void;
     }
 
     interface IUiViewScrollProvider {
         /*
-         * Reverts back to using the core $anchorScroll service for scrolling 
+         * Reverts back to using the core $anchorScroll service for scrolling
          * based on the url anchor.
          */
         useAnchorScroll(): void;

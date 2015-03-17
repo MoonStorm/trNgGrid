@@ -55,9 +55,6 @@
     <Content Include="alpha\index.html" />
     <Content Include="alpha\relnotes.html" />
     <Content Include="alpha\src\css\trNgGrid.css" />
-    <Content Include="alpha\src\js\trNgGridBody.js">
-      <DependentUpon>trNgGridBody.ts</DependentUpon>
-    </Content>
     <Content Include="alpha\src\js\trNgGridConfiguration.js">
       <DependentUpon>trNgGridConfiguration.ts</DependentUpon>
     </Content>
@@ -69,9 +66,6 @@
     </Content>
     <Content Include="alpha\src\js\trNgGridFilters.js">
       <DependentUpon>trNgGridFilters.ts</DependentUpon>
-    </Content>
-    <Content Include="alpha\src\js\trNgGridFooter.js">
-      <DependentUpon>trNgGridFooter.ts</DependentUpon>
     </Content>
     <Content Include="alpha\src\js\trNgGridLayout.js">
       <DependentUpon>trNgGridLayout.ts</DependentUpon>
@@ -140,12 +134,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="alpha\src\js\trNgGridBody.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridConfiguration.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridConstants.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridCore.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridFilters.ts" />
-    <TypeScriptCompile Include="alpha\src\js\trNgGridFooter.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridLayout.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridLayoutManagement.ts" />
     <TypeScriptCompile Include="alpha\src\js\trNgGridUtils.ts" />
@@ -155,15 +147,17 @@
     <TypeScriptCompile Include="demo\js\routes.ts" />
     <TypeScriptCompile Include="demo\js\test_hybrid_mode.ts" />
     <TypeScriptCompile Include="demo\js\translations_beta.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-animate.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-cookies.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-mocks.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-resource.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-route.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular-sanitize.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\uirouter\angular-ui-router.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui-bootstrap\angular-ui-bootstrap.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-router.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angular-ui\angular-ui-sortable.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-resource.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-route.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular-sanitize.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="demo\js\benchmark.js.map">
@@ -188,6 +182,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="alpha\trNgGrid.js.bundle" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <TypeScriptNoImplicitAny>True</TypeScriptNoImplicitAny>

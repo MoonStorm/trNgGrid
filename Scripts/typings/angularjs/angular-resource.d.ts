@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // ngResource module (angular-resource.js)
 ///////////////////////////////////////////////////////////////////////////////
-declare module ng.resource {
+declare module angular.resource {
 
     /**
      * Currently supported options for the $resource factory options argument.
@@ -146,13 +146,13 @@ declare module ng.resource {
 }
 
 /** extensions to base ng based on using angular-resource */
-//declare module ng {
+declare module angular {
 
-//    interface IModule {
-//        /** creating a resource service factory */
-//        factory(name: string, resourceServiceFactoryFunction: ng.resource.IResourceServiceFactoryFunction<any>): IModule;
-//    }
-//}
+    interface IModule {
+        /** creating a resource service factory */
+        factory(name: string, resourceServiceFactoryFunction: ng.resource.IResourceServiceFactoryFunction<any>): IModule;
+    }
+}
 
 interface Array<T>
 {
