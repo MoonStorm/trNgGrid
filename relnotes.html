@@ -11,7 +11,10 @@
                 <li>Better handling of data items having field names containing special characters.</li>
                 <li>Fixed a bug where the initial page index was ignored in server side mode.</li>
                 <li><em>filter-by-fields</em> is now two way data bound, allowing for a full state restoration.</li>
-                <li>Limited support for Angular directives on the table row elements. The grid now accepts <a ui-sref="demo.tests.xeditable">Integration with Angular X-Editable</a>.</li>
+                <li>
+                    Limited support for Angular directives on the table row elements (integration with <a ui-sref="demo.tests.xeditable">Angular X-Editable</a> is now possible).
+                    DOM altering directives such as <em>ng-repeat</em>, <em>ng-if</em>, <em>ng-switch</em>, are still not supported on the row or cell elements.
+                </li>
                 <li class="text-warning">You can't update your local version through <em>bower</em> just yet. You need to manually download the files from the <em>master</em> branch.</li>
             </ul>
         </p>

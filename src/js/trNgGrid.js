@@ -572,16 +572,12 @@ var TrNgGrid;
                     var templatedHeaderRowElement = _this.templatedHeader.getTemplatedRowElement(headerElement);
                     bodyElement.attr(bodyDirectiveAttribute, "");
                     templatedBodyRowElement.attr("ng-click", "toggleItemSelection(gridItem, $event)");
-                    // when server-side get is active (scope.gridOptions.onDataRequired), the filtering through the standard filters should be disabled
-                    /*if (this.gridOptions.onDataRequired) {
-                templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items");
-            }
-            else {
-                templatedBodyRowElement.attr("ng-repeat", "gridItem in gridOptions.items | filter:gridOptions.filterBy | filter:gridOptions.filterByFields | orderBy:gridOptions.orderBy:gridOptions.orderByReverse | " + dataPagingFilter + ":gridOptions");
-            }*/
                     templatedBodyRowElement.attr("ng-repeat", "gridDisplayItem in filteredItems");
-                    templatedBodyRowElement.attr("ng-init", "gridItem=gridDisplayItem.$$_gridItem");
-                    templatedBodyRowElement.attr("ng-class", "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem)>=0}");
+                    templatedBodyRowElement.attr("ng-init", "gridItem=gridDisplayItem.$$_gridItem;" + templatedBodyRowElement.attr("ng-init"));
+                    // this is not properly handled, but it will be refactored in the next major version
+                    var ngClassValue = templatedBodyRowElement.attr("ng-class");
+                    ngClassValue = (ngClassValue || "").replace(/^(\s*\{?)(.*?)(\}?\s*)$/, "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem) >= 0" + ", $2}");
+                    templatedBodyRowElement.attr("ng-class", ngClassValue);
                     _this.$compile(headerElement)(scope);
                     _this.$compile(footerElement)(scope);
                     _this.$compile(bodyElement)(scope);
