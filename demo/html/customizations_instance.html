@@ -14,7 +14,7 @@
                 </div>
                 <div class="panel-body" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(5)">
                     <p>
-                        When you start adding additional cells in either the header or the body, there is one rule to remember:<br/>
+                        When you start adding additional cells in either the header or the body, there is one rule to remember:<br />
                         The grid will match the position of the header template cells with the ones in the body through the fields identified by the <em>field-name</em> attribute.
                         Everything that is not bound to a field will be matched by position as well, and the extra non-field elements will turn into columns placed at the far right end of the grid.
                     </p>
@@ -36,11 +36,11 @@
         <tr>
             <th display-align="center" cell-width="2em">
                 <div class="tr-ng-title">&nbsp;</div>
-                <input type="checkbox" ng-model="areAllSelected" 
-                       ng-change="!areAllSelected?mySelectedItems.splice(0, mySelectedItems.length):mySelectedItems.push.apply(mySelectedItems, myItems)"/>
+                <input type="checkbox" ng-model="areAllSelected"
+                        ng-change="!areAllSelected?mySelectedItems.splice(0, mySelectedItems.length):mySelectedItems.push.apply(mySelectedItems, myItems)" />
             </th>
             <th field-name="id">
-                
+
             </th>
             <th field-name="name"></th>
             <th field-name="address"></th>
@@ -50,22 +50,22 @@
         </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>
-            <input type="checkbox" ng-model="isSelected" ng-checked="mySelectedItems.indexOf(gridItem)>=0" ng-change="isSelected?mySelectedItems.push(gridItem):mySelectedItems.splice(mySelectedItems.indexOf(gridItem),1)"/>
-        </td>
-        <td>
-            <div>
-                Custom Summary for
-                {{gridDisplayItem.name}}
-            </div>
-        </td>
-        <td>
-            <button class="btn btn-default btn-sm" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
-                Remove {{gridDisplayItem.id}}
-            </button>
-        </td>
-    </tr>
+        <tr>
+            <td>
+                <input type="checkbox" ng-model="isSelected" ng-checked="mySelectedItems.indexOf(gridItem)>=0" ng-change="isSelected?mySelectedItems.push(gridItem):mySelectedItems.splice(mySelectedItems.indexOf(gridItem),1)" />
+            </td>
+            <td>
+                <div>
+                    Custom Summary for
+                    {{gridDisplayItem.name}}
+                </div>
+            </td>
+            <td>
+                <button class="btn btn-default btn-sm" ng-click="myItems.splice(myItems.indexOf(gridItem),1)">
+                    Remove {{gridDisplayItem.id}}
+                </button>
+            </td>
+        </tr>
     </tbody>
 </table>
                     </div>
@@ -106,9 +106,9 @@
                 </div>
                 <div class="panel-body" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(21)">
                     <p>
-                        You can override the style of the generated data cells, but do remember to match by <em>field-name</em> the TD element with a TH element present in the header. <br/>
-                        The data cell template must be placed inside an HTML child element, otherwise the content will be ignored and treated as a placeholder for the default cell template. <br/> 
-                        Keep in mind that you have access to both the <em>gridItem</em> scoped variable, which points to the actual data item, and <em>gridDisplayItem</em>, which points to the formatted item and should only be used for presentation purposes.                    
+                        You can override the style of the generated data cells, but do remember to match by <em>field-name</em> the TD element with a TH element present in the header. <br />
+                        The data cell template must be placed inside an HTML child element, otherwise the content will be ignored and treated as a placeholder for the default cell template. <br />
+                        Keep in mind that you have access to both the <em>gridItem</em> scoped variable, which points to the actual data item, and <em>gridDisplayItem</em>, which points to the formatted item and should only be used for presentation purposes.
                     </p>
                     <pre id="trNgGrid_Customize_Data_Cells"></pre>
 
@@ -125,8 +125,29 @@
         <tr>
             <td field-name="id">
                 <div ng-class="{'text-danger':gridItem.id%2}">{{gridDisplayItem.id}}</div>
-            </td>            
+            </td>
         </tr>
+    </tbody>
+</table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    Angular directives on <em>TR</em> elements
+                </div>
+                <div class="panel-body" ng-controller="TrNgGridDemo.TestController" ng-init="generateItems(21)">
+                    <p>
+                        You can apply a limited amount of directives onto the <em>TR</em> elements.
+                        In general, DOM changing directives such as <em>ng-if</em>, <em>ng-repeat</em> or <em>ng-switch</em> are not supported.
+                    </p>
+                    <pre id="trNgGrid_Customize_Rows"></pre>
+
+                    <div project-markup-to="#trNgGrid_Customize_Rows">
+<table tr-ng-grid items="myItems" selected-items="mySelectedItems" page-items="5">
+    <tbody>
+        <tr ng-class="{'bg-danger':gridItem.id%2}"></tr>
     </tbody>
 </table>
                     </div>
