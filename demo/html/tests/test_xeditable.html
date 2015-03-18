@@ -19,7 +19,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-form="" editable-form name="rowform" onbeforesave="saveUser($data, gridItem)" shown="newFormData == gridItem">
+                        <tr ng-form="" editable-form name="rowform" onbeforesave="saveUser($data, gridItem.id)" shown="newFormData == gridItem">
                             <td field-name="id">
                                 <!--<div>
                             <span editable-text="gridItem.name" e-name="name" e-form="rowform" e-required>
