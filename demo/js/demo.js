@@ -216,7 +216,7 @@ var TrNgGridDemo;
         angular.element(dstElement).html(formattedText).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
     }
     angular.module("trNgGridDemo")
-    .config(["$compileProvider", function ($compileProvider: ng.ICompileProvider) {
+    .config(["$compileProvider", function ($compileProvider) {
             $compileProvider.debugInfoEnabled(false);
     }])
     .controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).directive("projectMarkupTo", ["$document", function ($document) {
