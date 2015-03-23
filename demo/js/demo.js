@@ -215,7 +215,11 @@ var TrNgGridDemo;
         //.replace(/  /g, "&nbsp;&nbsp;");
         angular.element(dstElement).html(formattedText).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
     }
-    angular.module("trNgGridDemo").controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).directive("projectMarkupTo", ["$document", function ($document) {
+    angular.module("trNgGridDemo")
+    .config(["$compileProvider", function ($compileProvider: ng.ICompileProvider) {
+            $compileProvider.debugInfoEnabled(false);
+    }])
+    .controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).directive("projectMarkupTo", ["$document", function ($document) {
         return {
             restrict: "EA",
             template: function (element, tAttrs) {
@@ -223,7 +227,8 @@ var TrNgGridDemo;
                 populateSample(document.querySelector(projectionElementId), element.html());
             }
         };
-    }]).directive("projectMarkupFromStateView", ["$http", "$state", function ($http, $state) {
+    }])
+    .directive("projectMarkupFromStateView", ["$http", "$state", function ($http, $state) {
         return {
             restrict: "EA",
             compile: function (element, tAttrs) {
