@@ -21,5 +21,5 @@ var TrNgGridHybridDemo;
         return HybridModeTestController;
     })(TrNgGridDemo.TestController);
     TrNgGridHybridDemo.HybridModeTestController = HybridModeTestController;
-    angular.module("trNgGridDemo").controller("TrNgGridDemo.HybridModeTestController", ["$scope", "$window", "$timeout", HybridModeTestController]);
+    angular.module("trNgGridDemo").controller("HybridModeTestController", ["$scope", "$window", "$timeout", HybridModeTestController]);
 })(TrNgGridHybridDemo || (TrNgGridHybridDemo = {}));

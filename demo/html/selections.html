@@ -42,12 +42,22 @@
                 <div class=" col-md-4">
                     <pre id="trNgGrid_Selection_Types">
                     </pre>
-                    <div>
-                        <div class="well">
-                            Selection mode: <select ng-model="mySelectionMode" ng-options="modeName for modeName in ['None', 'SingleRow', 'MultiRow', 'MultiRowWithKeyModifiers']"></select>
-                            &nbsp;&nbsp;
-                            Selected items: {{mySelectedItems.length}}
-                        </div>
+                    <div class="well form-horizontal">
+                        <fieldset>
+                            <div class="form-group">
+                                <label class="col-md-5 control-label">
+                                    Selection mode:
+                                </label>
+                                <div class="col-md-7">
+                                    <select class="form-control" ng-model="mySelectionMode" ng-options="modeName for modeName in ['None', 'SingleRow', 'MultiRow', 'MultiRowWithKeyModifiers']"></select>
+                                </div>
+                                <label class="col-md-5 control-label">
+                                    Selected items:
+                                </label>
+                                <div class="col-md-7">
+                                    <p class="form-control-static">{{mySelectedItems.length}}</p>
+                                </div>
+                            </fieldset>
                     </div>
                     <p>
                         Whenever you wish to monitor for changes in the selection, initialize your selections bound array with an empty array and watch for a change in its length.

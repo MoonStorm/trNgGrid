@@ -29,14 +29,14 @@
                                 <div class="checkbox">
                                     <label>
                                         <span class="checkbox">
-                                            <input type="checkbox" ng-model="myEnableFieldAutoDetection" /> Autodetect (fields = null or not set)
+                                            <input type="checkbox" ng-model="myEnableFieldAutoDetection" /> Autodetect (<em>fields</em> not set)
                                         </span>
                                     </label>
                                 </div>
                                 <div class="checkbox" ng-repeat="fieldName in availableFields" ng-if="!myEnableFieldAutoDetection">
                                     <label>
                                         <span class="checkbox">
-                                            <input type="checkbox" ng-model="myFields[$index]" ng-true-value="{{fieldName}}" ng-false-value="" />
+                                            <input type="checkbox" ng-model="myFields[$index]" ng-true-value="'{{fieldName}}'" ng-false-value="''" />
                                             {{fieldName}}
                                         </span>
                                     </label>

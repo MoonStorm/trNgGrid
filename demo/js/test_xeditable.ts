@@ -38,5 +38,7 @@ module TrNgGridXEditableDemo {
         }
     }
 
-    angular.module("TrNgGridXEditableDemo", ["trNgGrid", "xeditable"]);
+    angular
+        .module("TrNgGridXEditableDemo", ["trNgGrid", "xeditable"])
+        .controller("XEditableTestController", ["$scope", "$window", "$timeout", XEditableTestController]);
 }

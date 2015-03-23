@@ -283,7 +283,10 @@
     }
 
     angular.module("trNgGridDemo")
-        .controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout",  TestController])
+        .controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController])
+        .config(["$compileProvider", function ($compileProvider: ng.ICompileProvider) {
+            $compileProvider.debugInfoEnabled(false);
+        }])
         .directive("projectMarkupTo", [ "$document",
             ($document:ng.IDocumentService) => { 
                 return {

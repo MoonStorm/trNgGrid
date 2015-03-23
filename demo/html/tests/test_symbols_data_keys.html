@@ -14,10 +14,15 @@
                     </p>
                     <pre id="trNgGrid_symbol_keys_bug">
                     </pre>
+                    <div>
+                        Order By: {{myOrderBy}}
+                    </div>
+                    <div>
+                        Column Filters: {{myColumnFilter}}
+                    </div>
                 </div>
                 <div class="col-md-7" project-markup-to="#trNgGrid_symbol_keys_bug">
-<table tr-ng-grid items="[{'@__$name':'Maria', '$age':35}, {'@__$name':'John', '$age':16}]">                        
-</table>
+<table tr-ng-grid items="[{'@__$name':'Maria', '$age':35}, {'@__$name':'John', '$age':16}]" filter-by-fields="myColumnFilter" order-by="myOrderBy"></table>
                 </div>
             </div>
         </div>

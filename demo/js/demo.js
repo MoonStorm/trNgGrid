@@ -215,7 +215,9 @@ var TrNgGridDemo;
         //.replace(/  /g, "&nbsp;&nbsp;");
         angular.element(dstElement).html(formattedText).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
     }
-    angular.module("trNgGridDemo").controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).directive("projectMarkupTo", ["$document", function ($document) {
+    angular.module("trNgGridDemo").controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).config(["$compileProvider", function ($compileProvider) {
+        $compileProvider.debugInfoEnabled(false);
+    }]).directive("projectMarkupTo", ["$document", function ($document) {
         return {
             restrict: "EA",
             template: function (element, tAttrs) {

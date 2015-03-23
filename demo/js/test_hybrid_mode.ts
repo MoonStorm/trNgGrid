@@ -18,5 +18,5 @@
     }
 
     angular.module("trNgGridDemo")
-        .controller("TrNgGridDemo.HybridModeTestController", ["$scope", "$window", "$timeout", HybridModeTestController]);
+        .controller("HybridModeTestController", ["$scope", "$window", "$timeout", HybridModeTestController]);
 } 
