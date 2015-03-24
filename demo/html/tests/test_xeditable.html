@@ -7,57 +7,60 @@
             <div ng-controller="XEditableTestController" ng-init="generateItems(5)">
                 <table tr-ng-grid="" items="myItems" class="table table-bordered table-hover table-condensed">
                     <thead>
-                        <tr>
-                            <th field-name="id" cell-width="35%"></th>
-                            <th field-name="name" cell-width="20%">Status</th>
-                            <th field-name="address" cell-width="20%">Group</th>
-                            <th cell-width="25%">
-                                <div>
-                                    <button class="btn btn-default" ng-click="addUser()">Add row</button>
-                                </div>
-                            </th>
-                        </tr>
+                    <tr>
+                        <th field-name="id" cell-width="35%"></th>
+                        <th field-name="name" cell-width="20%">Status</th>
+                        <th field-name="address" cell-width="20%">Group</th>
+                        <th cell-width="25%">
+                            <div>
+                                <button class="btn btn-default" ng-click="addUser()">Add row</button>
+                            </div>
+                        </th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr ng-form="" editable-form name="rowform" onbeforesave="saveUser($data, gridItem.id)" shown="newFormData == gridItem">
-                            <td field-name="id">
-                                <!--<div>
-                            <span editable-text="gridItem.name" e-name="name" e-form="rowform" e-required>
+                    <tr ng-form="" editable-form name="rowform" onbeforesave="saveUser($data, gridItem.id)" shown="newFormData == gridItem">
+                        <td field-name="id">
+                            <!--<div>
+                                <span editable-text="gridItem.name" e-name="name" e-form="rowform" e-required>
                                 {{ gridDisplayItem.name || 'empty' }}
                             </span>
-                        </div>-->
-                            </td>
-                            <td field-name="name">
-                                <span editable-text="gridItem.name" e-name="name" e-form="rowform">
+                            </div>-->
+                        </td>
+                        <td field-name="name">
+                            <span editable-text="gridItem.name" e-name="name" e-form="rowform">
                                     {{ gridDisplayItem.name || 'unknown' }}
                                 </span>
-                            </td>
-                            <td field-name="address">
-                                <span editable-text="gridItem.address" e-name="address" e-form="rowform">
+                        </td>
+                        <td field-name="address">
+                            <span editable-text="gridItem.address" e-name="address" e-form="rowform">
                                     {{ gridDisplayItem.address || 'unknown' }}
                                 </span>
-                            </td>
-                            <td>
-                                <div>
-                                    <div ng-show="rowform.$visible" class="form-buttons form-inline">
-                                        <button type="button" ng-disabled="rowform.$waiting" class="btn btn-primary" ng-click="rowform.$submit()">
-                                            save
-                                        </button>
-                                        <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
-                                            cancel
-                                        </button>
-                                    </div>
-                                    <div class="buttons" ng-show="!rowform.$visible">
-                                        <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
-                                        <button class="btn btn-danger" ng-click="removeUser(gridItem)">del</button>
-                                    </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div ng-show="rowform.$visible" class="form-buttons form-inline">
+                                    <button type="button" ng-disabled="rowform.$waiting" class="btn btn-primary" ng-click="rowform.$submit()">
+                                        save
+                                    </button>
+                                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                                        cancel
+                                    </button>
                                 </div>
-                            </td>
-                        </tr>
+                                <div class="buttons" ng-show="!rowform.$visible">
+                                    <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                                    <button class="btn btn-danger" ng-click="removeUser(gridItem)">del</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <p>
+            Play with this sample in <a href="http://plnkr.co/edit/utqmMV?p=preview" target="_blank">Plunker</a>.
+        </p>
         <p>
             Markup:
             <pre id="trNgGrid_XEditable">

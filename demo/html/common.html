@@ -27,11 +27,12 @@ angular.module("your_app_name", ["trNgGrid"]);
                         At minimum, you also need to pass in the array of items you wish to be listed in the grid,
                         and that is achieved by assigning the <em>items</em> attribute to a property on the current scope that represents the array of items.
                         <br />
-                        The array will get data bound so any change in the array will get automatically detected by the grid.
+                        The items will get data bound so any change in the array will get detected automatically by the grid.
                     </p>
                     <pre id="trNgGrid_Sample_Common"></pre>
                     <p>
-                        Sorting, global filtering and per-column filtering are active by default.
+                        Sorting, global filtering and per-column filtering are active by default. <br/>
+                        Take it out for as spin in <a href="http://plnkr.co/edit/JCLrJD?p=preview" target="_blank">Plunker</a>.
                     </p>
                 </div>
                 <div class="col-md-5" project-markup-to="#trNgGrid_Sample_Common"><table tr-ng-grid items="myItems"></table></div>
