@@ -17,8 +17,7 @@ Simply because everything else you're gonna find out there is either:
 - has a very short list of dependencies: Angular and Bootstrap CSS
 - it's far from perfection, but it's actively being maintained and improved
 
-#### Documentation and demo site
- - [Release](http://moonstorm.github.io/trNgGrid/release)
+#### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/release)
 
 #### Convinced?
 You can download the grid from the master branch, which contains the latest release. 
