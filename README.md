@@ -34,5 +34,5 @@ If you want to show your support and help keep the flame burning, please <a href
 - Experimental: beta, gh-pages/beta
 
 #### Issues
- Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
+ Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple Plunker](http://plnkr.co/edit/JCLrJD?p=preview) and attempt to isolate the issue.
  
