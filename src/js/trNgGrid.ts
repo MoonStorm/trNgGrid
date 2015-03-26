@@ -12,6 +12,7 @@ module TrNgGrid {
 
     export declare var defaultPagerMinifiedPageCountThreshold: number;
     export declare var defaultColumnOptions: IBasicGridColumnOptions;
+    export declare var defaultColumnOptionsTemplate: IBasicGridColumnOptions;
     export declare var translations: { [language: string]: { [textId: string]: string } };
     export declare var translationDateFormat: string;
 
@@ -51,7 +52,7 @@ module TrNgGrid {
     export declare var footerGlobalFilterTemplateId: string;
 
     // it's important to assign all the default column options, so we can match them with the column attributes in the markup
-    defaultColumnOptions = {
+    defaultColumnOptionsTemplate = {
         cellWidth: null,
         cellHeight: null,
         displayAlign: null,
@@ -61,6 +62,8 @@ module TrNgGrid {
         enableFiltering: null,
         enableSorting: null
     };
+
+    defaultColumnOptions = {};
 
     translations = {};
 
@@ -856,7 +859,7 @@ module TrNgGrid {
                         columnDefs.displayFieldName = this.getSafeFieldName(fieldName);
 
                         // create the field extraction expression
-                        // cope with special symbols in the field name (e.g. $ and @), also for the accepted notations (. or [])
+                        // cope with special symbols in the field name (e.g.  @), also for the accepted notations (. or [])
                         var fieldExtractionExpression: string;
                         if (fieldName[0] === "[") {
                             fieldExtractionExpression = fieldName;
@@ -1135,8 +1138,8 @@ module TrNgGrid {
             }])
         .directive(cellHeaderDirective, [
             () => {
-                var setupColumnTitle = (scope: IGridHeaderColumnScope) => {
-                    if (scope.columnOptions.displayName) {
+            var setupColumnTitle = (scope: IGridHeaderColumnScope) => {
+                if (scope.columnOptions.displayName) { // TODO: != undefined && scope.columnOptions.displayName!=null causes the sort glyph to be displayed out of place
                         scope.columnTitle = scope.columnOptions.displayName;
                     }
                     else if (scope.columnOptions.fieldName) {
@@ -1171,7 +1174,7 @@ module TrNgGrid {
                                 var columnIndex = parseInt(tAttrs[cellHeaderDirective]);
 
                                 // create a clone of the default column options
-                                var columnOptions: IGridColumnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], defaultColumnOptions);
+                                var columnOptions: IGridColumnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], defaultColumnOptions, defaultColumnOptionsTemplate);
 
                                 // now match and observe the attributes
                                 controller.linkAttrs(tAttrs, columnOptions);
@@ -1184,9 +1187,13 @@ module TrNgGrid {
                                 };
 
                                 // set up the column title
-                                setupColumnTitle(scope);
+                                scope.$watch("columnOptions.displayName",() => {
+                                    setupColumnTitle(scope);
+                                });
 
                                 // set up the filter
+                                // field names starting with $ are ignored by angular in watchers
+                                // https://github.com/angular/angular.js/issues/4581
                                 var isWatchingColumnFilter = false;
                                 scope.$watch("gridOptions.filterByFields['" + columnOptions.fieldName+"']",(newFilterValue: string, oldFilterValue: string) => {
                                     if (columnOptions.filter !== newFilterValue) {

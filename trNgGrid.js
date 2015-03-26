@@ -11,7 +11,7 @@ var TrNgGrid;
     })(TrNgGrid.SelectionMode || (TrNgGrid.SelectionMode = {}));
     var SelectionMode = TrNgGrid.SelectionMode;
     // it's important to assign all the default column options, so we can match them with the column attributes in the markup
-    TrNgGrid.defaultColumnOptions = {
+    TrNgGrid.defaultColumnOptionsTemplate = {
         cellWidth: null,
         cellHeight: null,
         displayAlign: null,
@@ -21,6 +21,7 @@ var TrNgGrid;
         enableFiltering: null,
         enableSorting: null
     };
+    TrNgGrid.defaultColumnOptions = {};
     TrNgGrid.translations = {};
     TrNgGrid.debugMode = false;
     var templatesConfigured = false;
@@ -597,7 +598,7 @@ var TrNgGrid;
                         var fieldName = columnDefs.fieldName;
                         columnDefs.displayFieldName = _this.getSafeFieldName(fieldName);
                         // create the field extraction expression
-                        // cope with special symbols in the field name (e.g. $ and @), also for the accepted notations (. or [])
+                        // cope with special symbols in the field name (e.g.  @), also for the accepted notations (. or [])
                         var fieldExtractionExpression;
                         if (fieldName[0] === "[") {
                             fieldExtractionExpression = fieldName;
@@ -872,7 +873,7 @@ var TrNgGrid;
                             // so we're gonna have to do this manually
                             var columnIndex = parseInt(tAttrs[cellHeaderDirective]);
                             // create a clone of the default column options
-                            var columnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], TrNgGrid.defaultColumnOptions);
+                            var columnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], TrNgGrid.defaultColumnOptions, TrNgGrid.defaultColumnOptionsTemplate);
                             // now match and observe the attributes
                             controller.linkAttrs(tAttrs, columnOptions);
                             // set up the new scope
@@ -882,8 +883,12 @@ var TrNgGrid;
                                 controller.toggleSorting(propertyName);
                             };
                             // set up the column title
-                            setupColumnTitle(scope);
+                            scope.$watch("columnOptions.displayName", function () {
+                                setupColumnTitle(scope);
+                            });
                             // set up the filter
+                            // field names starting with $ are ignored by angular in watchers
+                            // https://github.com/angular/angular.js/issues/4581
                             var isWatchingColumnFilter = false;
                             scope.$watch("gridOptions.filterByFields['" + columnOptions.fieldName + "']", function (newFilterValue, oldFilterValue) {
                                 if (columnOptions.filter !== newFilterValue) {
