@@ -12,6 +12,10 @@
                     <p>
                         This is a test for checking whether the items and the header titles are being properly displayed even when the field names contain special characters.
                     </p>
+                    <p class="text-warning">
+                        Please bear in mind that Angular doesn't handle well data items with fields having '$' as the first character in their name.
+                        As a side effect of this limitation, you'll find that for example column filtering won't work for such fields.
+                    </p>
                     <pre id="trNgGrid_symbol_keys_bug">
                     </pre>
                     <div>

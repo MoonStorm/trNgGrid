@@ -14,6 +14,10 @@
                     <p>
                         This alwo works for nested objects and arrays.
                     </p>
+                    <p class="text-warning">
+                        Please bear in mind that Angular doesn't handle well data items with fields having '$' as the first character in their name.
+                        As a side effect of this limitation, you'll find that for example column filtering won't work for such fields.
+                    </p>
 
                     <pre id="trNgGrid_Sample_Columns_Manual_Fields">
                 </pre>
