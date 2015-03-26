@@ -306,6 +306,7 @@
                         var stateView = tAttrs["projectMarkupFromStateView"];
                         var currentStateView = $state.current.views[stateView];
                         $http.get(currentStateView.template).success((data: string) => {
+                            debugger;
                             populateSample(element, data);
                         });
                     }

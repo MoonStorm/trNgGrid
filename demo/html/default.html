@@ -34,7 +34,7 @@
                                 <li>spits out plain HTML table elements, meant to be used for displaying tabular data, thus helping the browsers to optimize the rendering</li>
                                 <li>allows you to fully describe it in a view, without messing up your controllers with elaborate configs</li>
                                 <li>fully customizable via templates and two-way data bound attributes</li>
-                                <li>easy to maintain, as its code was written in TypeScript. The repository also has the JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend this one)</li>
+                                <li>easy to maintain, as its code was written in TypeScript. The repository also has the JS implementation, so no need to worry if you don't have time to learn something new (even though I strongly recommend this one as it brings a bit of order in the Javascript chaos)</li>
                                 <li>has a very short list of dependencies: Angular and Bootstrap CSS</li>
                                 <li>it's far from perfection, but it's actively being maintained and improved</li>
                             </ul>
@@ -46,10 +46,9 @@
                             Not everything is sweet and wonderful though. There are a few limitations which you should be aware of before jumping in.
                             <ul>
                                 <li>Multiple `TR` rows in the table definition are not supported. In other words, you can't have more than one row per header, footer, or per data item.</li>
-                                <li>DOM manipulation directives (e.g ng-if, ng-switch) are not supported on the table sections, rows and cell elements.</li>
-                                <li>You can't use the `data-` notation for the attributes.</li>
+                                <li>DOM manipulation directives (e.g ng-if, ng-switch, ng-repeat) are not supported on the table sections, rows and cell elements.</li>
                                 <li>Custom start/end symbols, set up via the `$interpolate` service, are not supported.</li>
-                                <li>The default global configuration is not done through a provider, but through a global object. Global templates can be provided though via the template cache mechanism.</li>
+                                <li>A global configuration provider would be nice to have.</li>
                             </ul>
                             These are some of the key complaints people have brought to my attention and I'm trying hard to address them in the next major release.
                         </div>
