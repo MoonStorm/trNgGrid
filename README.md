@@ -13,12 +13,11 @@ Simply because everything else you're gonna find out there is either:
 - spits out plain HTML table elements, meant to be used for displaying tabular data, thus helping the browsers to optimize the rendering
 - allows you to fully describe it in a view, without messing up your controllers with elaborate configs
 - fully customizable via templates and two-way data bound attributes
-- easy to maintain, as its code was written in TypeScript. The repository also has the JS implementation, so no need to worry if you don't want to learn a new technology (even though I strongly recommend this one)
+- easy to maintain, as its code was written in TypeScript. The repository also has the JS implementation, so no need to worry if you don't have time to learn something new (even though I strongly recommend this one as it brings a bit of order in the Javascript chaos)
 - has a very short list of dependencies: Angular and Bootstrap CSS
 - it's far from perfection, but it's actively being maintained and improved
 
-#### Documentation and demo site
- - [Release](http://moonstorm.github.io/trNgGrid/release)
+#### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/release)
 
 #### Convinced?
 You can download the grid from the master branch, which contains the latest release. 
@@ -34,5 +33,5 @@ If you want to show your support and help keep the flame burning, please <a href
 - Experimental: beta, gh-pages/beta
 
 #### Issues
- Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple example](http://jsfiddle.net/MoonStorm/pkuca2f8/) and attempt to isolate the issue.
+ Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple Plunker](http://plnkr.co/edit/JCLrJD?p=preview) and attempt to isolate the issue.
  

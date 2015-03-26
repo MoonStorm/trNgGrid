@@ -36,6 +36,7 @@ var TrNgGrid;
     var bodyDirective = "trNgGridBody";
     var bodyDirectiveAttribute = "tr-ng-grid-body";
     var fieldNameAttribute = "field-name";
+    var altFieldNameAttribute = "data-field-name";
     var isCustomizedAttribute = "is-customized";
     var cellFooterDirective = "trNgGridFooterCell";
     var cellFooterDirectiveAttribute = "tr-ng-grid-footer-cell";
@@ -145,7 +146,7 @@ var TrNgGrid;
         function TemplatedCell(parent, cellElement) {
             this.parent = parent;
             this.cellElement = cellElement;
-            this.fieldName = cellElement.attr(fieldNameAttribute);
+            this.fieldName = cellElement.attr(fieldNameAttribute) || cellElement.attr(altFieldNameAttribute);
             var customContent = cellElement.children();
             this.isStandardColumn = customContent.length === 0;
         }

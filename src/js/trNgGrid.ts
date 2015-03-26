@@ -8,7 +8,7 @@ module TrNgGrid {
         SingleRow,
         MultiRow,
         MultiRowWithKeyModifiers
-    }
+    } 
 
     export declare var defaultPagerMinifiedPageCountThreshold: number;
     export declare var defaultColumnOptions: IBasicGridColumnOptions;
@@ -69,7 +69,7 @@ module TrNgGrid {
 
     debugMode = false;
 
-    var templatesConfigured = false;
+    var templatesConfigured = false; 
     var tableDirective = "trNgGrid";
     sortFilter = tableDirective + "SortFilter";
     dataPagingFilter = tableDirective + "DataPagingFilter";
@@ -84,6 +84,7 @@ module TrNgGrid {
     var bodyDirectiveAttribute = "tr-ng-grid-body";
 
     var fieldNameAttribute = "field-name";
+    var altFieldNameAttribute = "data-field-name";
     var isCustomizedAttribute = "is-customized";
 
     var cellFooterDirective = "trNgGridFooterCell";
@@ -323,7 +324,7 @@ module TrNgGrid {
         public isStandardColumn: boolean;
 
         constructor(public parent: TemplatedSection, public cellElement: JQuery) {
-            this.fieldName = cellElement.attr(fieldNameAttribute);
+            this.fieldName = cellElement.attr(fieldNameAttribute) || cellElement.attr(altFieldNameAttribute);
             var customContent = cellElement.children();
             this.isStandardColumn = customContent.length === 0;
         }
