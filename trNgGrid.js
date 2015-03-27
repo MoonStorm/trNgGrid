@@ -30,6 +30,7 @@
         Constants.columnFilterDirective = Constants.tableDirective + "ColumnFilter";
         Constants.columnFilterDirectiveAttribute = Constants.tableDirectiveAttribute + "-column-filter";
         Constants.gridConfigurationService = Constants.tableDirective + "Configuration";
+        Constants.gridLoggingService = Constants.tableDirective + "Log";
         Constants.gridConfigurationProvider = Constants.gridConfigurationService + "Provider";
     })(Constants = TrNgGrid.Constants || (TrNgGrid.Constants = {}));
 })(TrNgGrid || (TrNgGrid = {}));
@@ -56,6 +57,8 @@ var TrNgGrid;
     ;
     function monitorAttributes($interpolate, $tAttrs, $scope, properties, onChangeDetected) {
         var propKeys;
+        var startSymbol = $interpolate.startSymbol();
+        var endSymbol = $interpolate.endSymbol();
         if (properties instanceof Array) {
             propKeys = properties;
         }
@@ -65,7 +68,12 @@ var TrNgGrid;
         var watchArray = new Array(propKeys.length);
         angular.forEach(propKeys, function (propKey, index) {
             var expression = $tAttrs[propKey];
-            watchArray[index] = expression;
+            if (expression.length >= startSymbol.length && expression.slice(0, startSymbol.length) === startSymbol) {
+                watchArray[index] = expression.slice(startSymbol.length, expression.length - startSymbol.length - endSymbol.length);
+            }
+            else {
+                watchArray[index] = "'" + expression + "'";
+            }
         });
         $scope.$watchGroup(watchArray, function (newValues) { return processMonitorChanges(newValues, propKeys, onChangeDetected); });
     }
@@ -136,11 +144,6 @@ var TrNgGrid;
     }
     TrNgGrid.wrapTemplatedCell = wrapTemplatedCell;
     ;
-    function log(message) {
-        console.log(TrNgGrid.Constants.tableDirective + "(" + new Date().getTime() + "): " + message);
-    }
-    TrNgGrid.log = log;
-    ;
     function createRowElement() {
         return findChildByTagName(findChildByTagName(angular.element("<table><tbody><tr></tr></tbody></table>"), "tbody"), "tr");
     }
@@ -189,7 +192,6 @@ var TrNgGrid;
 
 var TrNgGrid;
 (function (TrNgGrid) {
-    var unnamedFieldNameCount = 0;
     (function (SelectionMode) {
         SelectionMode[SelectionMode["None"] = 0] = "None";
         SelectionMode[SelectionMode["SingleRow"] = 1] = "SingleRow";
@@ -204,11 +206,12 @@ var TrNgGrid;
     })();
     TrNgGrid.IGridRow = IGridRow;
     var GridController = (function () {
-        function GridController($compile, $parse, $timeout, gridConfiguration) {
+        function GridController($compile, $parse, $timeout, gridConfiguration, loggingService) {
             this.$compile = $compile;
             this.$parse = $parse;
             this.$timeout = $timeout;
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.nonFieldNameTagIndex = 0;
             this.nonFieldNameFormat = "$$_trNgGridCustom_";
             this.gridColumns = {};
@@ -216,7 +219,7 @@ var TrNgGrid;
         GridController.prototype.setGridOptions = function (gridOptions) {
             var _this = this;
             this.gridOptions = gridOptions;
-            this.gridLayout = new TrNgGrid.GridLayout(this.gridConfiguration, this.gridOptions);
+            this.gridLayout = new TrNgGrid.GridLayout(this.gridConfiguration, this.loggingService, this.gridOptions);
             if (this.gridOptions.onDataRequired) {
                 var retrieveDataCallback = function () {
                     _this.dataRequestPromise = null;
@@ -404,6 +407,31 @@ var TrNgGrid;
 
 var TrNgGrid;
 (function (TrNgGrid) {
+    var LoggingService = (function () {
+        function LoggingService(gridConfig) {
+            this.gridConfig = gridConfig;
+        }
+        LoggingService.prototype.log = function () {
+            var messageParams = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                messageParams[_i - 0] = arguments[_i];
+            }
+            messageParams.splice(0, 0, TrNgGrid.Constants.tableDirective, "(" + new Date() + "): ");
+            try {
+                console.info(messageParams);
+            }
+            catch (ex) {
+                console.log("trNgGrid: Logging failed " + ex);
+            }
+        };
+        return LoggingService;
+    })();
+    TrNgGrid.LoggingService = LoggingService;
+    TrNgGrid.gridModule.service(TrNgGrid.Constants.gridLoggingService, [TrNgGrid.Constants.gridConfigurationService, LoggingService]);
+})(TrNgGrid || (TrNgGrid = {}));
+
+var TrNgGrid;
+(function (TrNgGrid) {
     var GridConfigurationDefaultPagerOptions = (function () {
         function GridConfigurationDefaultPagerOptions() {
             this.minifiedPageCountThreshold = 3;
@@ -414,8 +442,6 @@ var TrNgGrid;
         function GridConfigurationDefaultStyles() {
             this.tableCssClass = "tr-ng-grid table table-bordered table-hover ";
             this.cellCssClass = "tr-ng-cell ";
-            this.headerCellCssClass = "tr-ng-cell tr-ng-column-header ";
-            this.bodyCellCssClass = "tr-ng-cell ";
             this.columnTitleCssClass = "tr-ng-title ";
             this.columnSortCssClass = "tr-ng-sort pull-right pull-top ";
             this.columnFilterInputWrapperCssClass = " ";
@@ -449,8 +475,9 @@ var TrNgGrid;
             var startNgSymbol = $interpolateProvider.startSymbol();
             var endNgSymbol = $interpolateProvider.endSymbol();
             this.headerCellStandard = '<th></th>';
-            this.headerCellContentsStandard = '<div class="' + gridStyles.headerCellCssClass + '" >' + '  <div ' + TrNgGrid.Constants.columnSortDirectiveAttribute + '=""></div>' + '  <a ' + gridStyles.columnTitleCssClass + '"' + '     href="" ng-click="((gridOptions.enableSorting&&gridColumnOptions.enableSorting!==false)||gridColumnOptions.enableSorting)&&toggleSorting(gridColumnOptions.fieldName)">' + '      ' + startNgSymbol + 'gridColumnOptions.columnTitle |' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale' + endNgSymbol + '  </a>' + '  <div ' + TrNgGrid.Constants.columnFilterDirectiveAttribute + '=""></div>' + '</div>';
-            this.bodyCellStandard = '<div ng-attr-class="' + gridStyles.bodyCellCssClass + ' text-{{columnOptions.displayAlign}}" ng-switch="isCustomized">' + '  <div ng-switch-when="true">' + '    <div ng-transclude=""></div>' + '  </div>' + '  <div ng-switch-default>{{gridDisplayItem[columnOptions.displayFieldName]}}</div>' + '</div>';
+            this.headerCellContentsStandard = '<div>' + '  <div ' + TrNgGrid.Constants.columnSortDirectiveAttribute + '=""></div>' + '  <a ' + gridStyles.columnTitleCssClass + '"' + '     href="" ng-click="((gridOptions.enableSorting&&gridColumnOptions.enableSorting!==false)||gridColumnOptions.enableSorting)&&toggleSorting(gridColumnOptions.fieldName)">' + '      ' + startNgSymbol + 'gridColumnOptions.columnTitle |' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale' + endNgSymbol + '  </a>' + '  <div ' + TrNgGrid.Constants.columnFilterDirectiveAttribute + '=""></div>' + '</div>';
+            this.bodyCellStandard = '<td></td>';
+            this.bodyCellContentsStandard = '<div>' + '  ' + startNgSymbol + 'gridDisplayItem[columnOptions.displayFieldName]' + endNgSymbol + '</div>' + '</div>';
             this.footerCellStandard = '<div class="' + gridStyles.footerCssClass + '" ng-switch="isCustomized">' + '  <div ng-switch-when="true">' + '    <div ng-transclude=""></div>' + '  </div>' + '  <div ng-switch-default>' + '    <span ' + TrNgGrid.Constants.globalFilterDirectiveAttribute + '=""></span>' + '    <span ' + TrNgGrid.Constants.pagerDirectiveAttribute + '=""></span>' + '  </div>' + '</div>';
             this.columnFilter = '<div ng-show="(gridOptions.enableFiltering&&columnOptions.enableFiltering!==false)||columnOptions.enableFiltering" class="' + gridStyles.columnFilterCssClass + '">' + ' <div class="' + gridStyles.columnFilterInputWrapperCssClass + '">' + '   <input class="form-control input-sm" type="text" ng-model="columnOptions.filter" ng-keypress="speedUpAsyncDataRetrieval($event)"></input>' + ' </div>' + '</div>';
             this.columnSort = '<a href="" ng-attr-title="{{\'Sort\'|' + TrNgGrid.Constants.translateFilter + ':gridOptions.locale}}"' + ' ng-show="(gridOptions.enableSorting&&columnOptions.enableSorting!==false)||columnOptions.enableSorting"' + ' ng-click="toggleSorting(columnOptions.fieldName)"' + ' class="' + gridStyles.columnSortCssClass + '" > ' + '  <span ng-class="{\'' + gridStyles.columnSortActiveCssClass + '\':gridOptions.orderBy==columnOptions.fieldName,\'' + gridStyles.columnSortInactiveCssClass + '\':gridOptions.orderBy!=columnOptions.fieldName,\'' + gridStyles.columnSortNormalOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&!gridOptions.orderByReverse,\'' + gridStyles.columnSortReverseOrderCssClass + '\':gridOptions.orderBy==columnOptions.fieldName&&gridOptions.orderByReverse}" >' + '  </span>' + '</a>';
@@ -546,8 +573,9 @@ var TrNgGrid;
     })();
     TrNgGrid.DefaultGridColumnLayoutOptions = DefaultGridColumnLayoutOptions;
     var GridLayoutRow = (function () {
-        function GridLayoutRow(gridConfiguration, gridLayout, gridSectionType) {
+        function GridLayoutRow(gridConfiguration, loggingService, gridLayout, gridSectionType) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.gridLayout = gridLayout;
             this.gridSectionType = gridSectionType;
             this.cells = [];
@@ -555,7 +583,7 @@ var TrNgGrid;
         GridLayoutRow.prototype.swapCells = function (firstCellIndex, secondCellIndex) {
             var firstCell = this.cells[firstCellIndex];
             var secondCell = this.cells[secondCellIndex];
-            this.gridConfiguration.debugMode && TrNgGrid.log("About to swap cells [" + firstCell.fieldName + "] and [" + secondCell.fieldName + "] in section " + this.gridSectionType);
+            this.gridConfiguration.debugMode && this.loggingService.log("About to swap cells [" + firstCell.fieldName + "] and [" + secondCell.fieldName + "] in section " + this.gridSectionType, this);
             this.cells.splice(firstCellIndex, 1, secondCell);
             this.cells.splice(secondCellIndex, 1, firstCell);
         };
@@ -575,14 +603,14 @@ var TrNgGrid;
             if (index === undefined) {
                 for (var cellIndex = 0; (cellIndex < this.cells.length) && (!cellFound); cellIndex++) {
                     if (this.cells[cellIndex].fieldName === cell.fieldName) {
-                        this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] is about to be updated in section " + this.gridSectionType);
+                        this.gridConfiguration.debugMode && this.loggingService.log("A layout cell [", cell.fieldName, cell, "] is about to be updated in section ", this.gridSectionType, this);
                         this.cells[cellIndex] = cell;
                         cellFound = true;
                     }
                 }
             }
             if (!cellFound) {
-                this.gridConfiguration.debugMode && TrNgGrid.log("A new layout cell [" + cell.fieldName + "] is about to be registered in section " + this.gridSectionType);
+                this.gridConfiguration.debugMode && this.loggingService.log("A new layout cell [", cell.fieldName, cell, "] is about to be registered in section ", this.gridSectionType, this);
                 if (index === undefined || index === this.cells.length) {
                     this.cells.push(cell);
                 }
@@ -596,7 +624,7 @@ var TrNgGrid;
             for (var cellIndex = 0; cellIndex < this.cells.length; cellIndex++) {
                 if (this.cells[cellIndex] === cell) {
                     debugger;
-                    this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] is about to get unregistered in section " + this.gridSectionType);
+                    this.gridConfiguration.debugMode && this.loggingService.log("A layout cell [", cell, "] is about to get unregistered in section ", this);
                     this.cells.splice(cellIndex, 1);
                     this.gridLayout.triggerReconciliation();
                     return;
@@ -607,16 +635,17 @@ var TrNgGrid;
     })();
     TrNgGrid.GridLayoutRow = GridLayoutRow;
     var GridLayoutSection = (function () {
-        function GridLayoutSection(gridConfiguration, gridLayout, gridSectionType) {
+        function GridLayoutSection(gridConfiguration, loggingService, gridLayout, gridSectionType) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.gridLayout = gridLayout;
             this.gridSectionType = gridSectionType;
             this.rows = [];
         }
         GridLayoutSection.prototype.registerRow = function () {
-            var row = new GridLayoutRow(this.gridConfiguration, this.gridLayout, this.gridSectionType);
+            var row = new GridLayoutRow(this.gridConfiguration, this.loggingService, this.gridLayout, this.gridSectionType);
             this.rows.push(row);
-            this.gridConfiguration.debugMode && TrNgGrid.log("A new layout row [" + this.rows.length + "] was registered in section " + this.gridSectionType);
+            this.gridConfiguration.debugMode && this.loggingService.log("A new layout row [", row, "] was registered in section ", this);
             this.gridLayout.triggerReconciliation();
             return row;
         };
@@ -624,7 +653,7 @@ var TrNgGrid;
             for (var rowIndex = 0; rowIndex < this.rows.length; rowIndex++) {
                 if (this.rows[rowIndex] === row) {
                     this.rows.splice(rowIndex, 1);
-                    this.gridConfiguration.debugMode && TrNgGrid.log("A layout row was unregistered in section " + this.gridSectionType);
+                    this.gridConfiguration.debugMode && this.loggingService.log("A layout row [", row, "] was unregistered from section ", this);
                     this.gridLayout.triggerReconciliation();
                     return;
                 }
@@ -632,15 +661,16 @@ var TrNgGrid;
         };
         GridLayoutSection.prototype.clear = function () {
             this.rows.splice(0);
-            this.gridConfiguration.debugMode && TrNgGrid.log("Layout section " + this.gridSectionType + " got cleared");
+            this.gridConfiguration.debugMode && this.loggingService.log("Layout section ", this, " got cleared");
             this.gridLayout.triggerReconciliation();
         };
         return GridLayoutSection;
     })();
     TrNgGrid.GridLayoutSection = GridLayoutSection;
     var GridLayout = (function () {
-        function GridLayout(gridConfiguration, gridOptions) {
+        function GridLayout(gridConfiguration, loggingService, gridOptions) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.gridOptions = gridOptions;
             this.sections = new Array(2 /* Body */ + 1);
             this.reconciliationTriggerKey = "triggerGridReconciliation";
@@ -650,8 +680,8 @@ var TrNgGrid;
         GridLayout.prototype.getSection = function (section) {
             var colSection = this.sections[section];
             if (!colSection) {
-                this.sections[section] = colSection = new GridLayoutSection(this.gridConfiguration, this, section);
-                this.gridConfiguration.debugMode && TrNgGrid.log("A new layout section [" + section + "] was registered");
+                this.sections[section] = colSection = new GridLayoutSection(this.gridConfiguration, this.loggingService, this, section);
+                this.gridConfiguration.debugMode && this.loggingService.log("A new layout section [" + section + "] was registered");
                 this.triggerReconciliation();
             }
             return colSection;
@@ -715,7 +745,7 @@ var TrNgGrid;
         GridLayout.prototype.reconcile = function () {
             var _this = this;
             try {
-                this.gridConfiguration.debugMode && TrNgGrid.log("Starting to reconcile all the rows");
+                this.gridConfiguration.debugMode && this.loggingService.log("Starting to reconcile all the rows");
                 var extractedFieldNames = new Array();
                 var sectionIndex;
                 for (sectionIndex = 0 /* Enforced */; sectionIndex <= 1 /* Header */ && extractedFieldNames.length === 0; sectionIndex++) {
@@ -806,10 +836,6 @@ var TrNgGrid;
         }
         GridColumnController.prototype.prepareColumnSettingsScope = function (columnScope, settingsScope) {
             var _this = this;
-            settingsScope.$on("$destroy", function () {
-                debugger;
-                columnScope.$destroy();
-            });
             var isMonitoringLayoutUpdates = false;
             TrNgGrid.monitorScope(settingsScope, new TrNgGrid.GridConfigurationDefaultColumnOptions(), function (newOptions) {
                 _this.registerColumnOptions(columnScope, newOptions);
@@ -853,8 +879,9 @@ var TrNgGrid;
 var TrNgGrid;
 (function (TrNgGrid) {
     var TableDirective = (function () {
-        function TableDirective(gridConfiguration) {
+        function TableDirective(gridConfiguration, loggingService) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.restrict = 'A';
             this.scope = {
                 items: '=',
@@ -874,7 +901,7 @@ var TrNgGrid;
                 onDataRequiredDelay: '=?',
                 fields: '=?'
             };
-            this.controller = ["$compile", "$parse", "$timeout", TrNgGrid.Constants.gridConfigurationService, TrNgGrid.GridController];
+            this.controller = ["$compile", "$parse", "$timeout", TrNgGrid.Constants.gridConfigurationService, TrNgGrid.Constants.gridLoggingService, TrNgGrid.GridController];
         }
         TableDirective.prototype.fixTableStructure = function (gridElement) {
             var _this = this;
@@ -894,15 +921,17 @@ var TrNgGrid;
                 tableBodyElement = TrNgGrid.findChildByTagName(angular.element("<table><tbody></tbody></table"), "tbody");
                 tableFooterElement.after(tableBodyElement);
             }
+            tableBodyElement.attr(TrNgGrid.Constants.sectionDirectiveAttribute, "");
             angular.forEach(gridElement.children, function (element) {
                 if (element !== tableHeaderElement[0] || element !== tableBodyElement[0] || element !== tableFooterElement[0]) {
                     angular.element(element).remove();
-                    _this.gridConfiguration.debugMode && TrNgGrid.log("Invalid extra element found inside the grid template structure: " + element.tagName);
+                    _this.gridConfiguration.debugMode && _this.loggingService.log("Invalid extra element found inside the grid template structure: ", element);
                 }
             });
         };
         TableDirective.prototype.compile = function (templateElement, tAttrs) {
             this.fixTableStructure(templateElement);
+            templateElement.addClass(this.gridConfiguration.styles.tableCssClass);
             return {
                 pre: function (isolatedScope, instanceElement, tAttrs, controller, transcludeFn) {
                     controller.setGridOptions(isolatedScope);
@@ -931,6 +960,19 @@ var TrNgGrid;
             var standardCellTemplate = TrNgGrid.getStandardCellTemplate(this.gridConfiguration, sectionType);
             for (var rowIndex = 0; rowIndex < rowElements.length; rowIndex++) {
                 rowElement = rowElements[rowIndex];
+                if (sectionType === TrNgGrid.GridSectionType.Body) {
+                    if (rowIndex === 0 && rowElements.length > 1) {
+                        rowElement.attr("data-ng-repeat-start", "gridDisplayItem in gridDisplayItems");
+                    }
+                    else if (rowIndex === rowElements.length - 1) {
+                        if (rowElements.length > 1) {
+                            rowElement.attr("data-ng-repeat-end", "");
+                        }
+                        else {
+                            rowElement.attr("data-ng-repeat", "gridDisplayItem in gridDisplayItems");
+                        }
+                    }
+                }
                 rowElement.attr(TrNgGrid.Constants.rowDirectiveAttribute, "");
                 var cellElements = TrNgGrid.findChildrenByTagName(rowElement, cellTagName);
                 if (cellElements.length === 0 || !cellElements[0].attr(TrNgGrid.Constants.cellPlaceholderDirectiveAttribute)) {
@@ -951,6 +993,7 @@ var TrNgGrid;
                     if (isCustomized) {
                         cellElement.attr(TrNgGrid.Constants.dataColumnIsCustomizedAttribute, "true");
                     }
+                    cellElement.attr(TrNgGrid.Constants.cellDirectiveAttribute, "true");
                 }
             }
         };
@@ -1003,9 +1046,10 @@ var TrNgGrid;
         return RowDirective;
     })();
     var CellPlaceholderDirective = (function () {
-        function CellPlaceholderDirective($compile, gridConfiguration) {
+        function CellPlaceholderDirective($compile, gridConfiguration, loggingService) {
             this.$compile = $compile;
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.restrict = 'A';
             this.require = [TrNgGrid.Constants.cellPlaceholderDirective, "^" + TrNgGrid.Constants.tableDirective];
             this.controller = [TrNgGrid.GridColumnController];
@@ -1016,8 +1060,6 @@ var TrNgGrid;
             return {
                 pre: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                     $scope.gridColumnLayout.placeholder = $instanceElement;
-                },
-                post: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                     var columnSetupController = $controllers[0];
                     if ($scope.gridColumnLayout.isAutoGenerated) {
                         columnSetupController.prepareAutoGeneratedColumnScope($scope);
@@ -1025,12 +1067,12 @@ var TrNgGrid;
                         var autoGeneratedCellInstance = null;
                         var setupAutoGeneratedCell = function () {
                             if (autoGeneratedCellInstance) {
-                                _this.gridConfiguration.debugMode && TrNgGrid.log("Removing auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
+                                _this.gridConfiguration.debugMode && _this.loggingService.log("Removing auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
                                 autoGeneratedCellInstance.remove();
                                 autoGeneratedCellInstance = null;
                             }
                             if ($scope.gridColumnLayout && $scope.gridColumnOptions) {
-                                _this.gridConfiguration.debugMode && TrNgGrid.log("Creating auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
+                                _this.gridConfiguration.debugMode && _this.loggingService.log("Creating auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
                                 var autoGeneratedCellTemplate = TrNgGrid.getStandardCellTemplate(_this.gridConfiguration, $scope.gridLayoutSection.gridSectionType);
                                 autoGeneratedCellTemplate.append(TrNgGrid.getStandardCellContentsTemplate(_this.gridConfiguration, $scope.gridLayoutSection.gridSectionType));
                                 $instanceElement.after(autoGeneratedCellTemplate);
@@ -1047,15 +1089,18 @@ var TrNgGrid;
                             $scope.gridColumnLayout.placeholder = null;
                         });
                     }
+                },
+                post: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                 }
             };
         };
         return CellPlaceholderDirective;
     })();
     var CellDirective = (function () {
-        function CellDirective($compile, gridConfiguration) {
+        function CellDirective($compile, gridConfiguration, loggingService) {
             this.$compile = $compile;
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.restrict = 'A';
             this.require = [TrNgGrid.Constants.cellDirective, "^" + TrNgGrid.Constants.tableDirective];
             this.controller = [TrNgGrid.GridColumnController];
@@ -1078,24 +1123,24 @@ var TrNgGrid;
         }
         CellDirective.prototype.compile = function ($templateElement, $tAttrs) {
             var _this = this;
+            var gridColumnScope;
             return {
                 pre: function ($settingsScope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
+                    var columnSetupController = $controllers[0];
+                    gridColumnScope = $settingsScope.$parent.$new();
+                    columnSetupController.prepareColumnSettingsScope(gridColumnScope, $settingsScope);
                 },
                 post: function ($settingsScope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
-                    var columnSetupController = $controllers[0];
-                    var gridColumnScope = $settingsScope.$parent.$new();
-                    columnSetupController.prepareColumnSettingsScope(gridColumnScope, $settingsScope);
                     var transcludedCellElement = null;
                     var isDestroyed = false;
                     var setupTranscludedElement = function () {
                         if (transcludedCellElement) {
-                            _this.gridConfiguration.debugMode && TrNgGrid.log("Removing tanscluded cell for field " + gridColumnScope.gridColumnLayout.fieldName);
+                            _this.gridConfiguration.debugMode && _this.loggingService.log("Removing tanscluded cell for field ", gridColumnScope.gridColumnLayout.fieldName);
                             transcludedCellElement.remove();
                             transcludedCellElement = null;
                         }
                         if (!isDestroyed && gridColumnScope.gridColumnLayout && gridColumnScope.gridColumnLayout.placeholder && gridColumnScope.gridColumnOptions) {
-                            _this.gridConfiguration.debugMode && TrNgGrid.log("Transcluding and attaching cell for field " + gridColumnScope.gridColumnLayout.fieldName);
-                            console.log($instanceElement);
+                            _this.gridConfiguration.debugMode && _this.loggingService.log("Transcluding and attaching cell for field ", gridColumnScope.gridColumnLayout.fieldName);
                             $transcludeFn(gridColumnScope, function (newTranscludedCellElement) {
                                 transcludedCellElement = newTranscludedCellElement;
                                 gridColumnScope.gridColumnLayout.placeholder.after(transcludedCellElement);
@@ -1110,10 +1155,11 @@ var TrNgGrid;
                     gridColumnScope.$watchGroup(["gridColumnLayout", "gridColumnOptions", "gridColumnLayout.placeholder"], function (newValues) {
                         setupTranscludedElement();
                     });
-                    gridColumnScope.$on("$destroy", function () {
+                    $settingsScope.$on("$destroy", function () {
                         debugger;
                         isDestroyed = true;
                         setupTranscludedElement();
+                        gridColumnScope.$destroy();
                     });
                 }
             };
@@ -1122,7 +1168,8 @@ var TrNgGrid;
     })();
     TrNgGrid.gridModule.directive(TrNgGrid.Constants.tableDirective, [
         TrNgGrid.Constants.gridConfigurationService,
-        function (gridConfiguration) { return new TableDirective(gridConfiguration); }
+        TrNgGrid.Constants.gridLoggingService,
+        function (gridConfiguration, loggingService) { return new TableDirective(gridConfiguration, loggingService); }
     ]);
     TrNgGrid.gridModule.directive(TrNgGrid.Constants.sectionDirective, [
         TrNgGrid.Constants.gridConfigurationService,
@@ -1132,9 +1179,15 @@ var TrNgGrid;
     TrNgGrid.gridModule.directive(TrNgGrid.Constants.cellPlaceholderDirective, [
         "$compile",
         TrNgGrid.Constants.gridConfigurationService,
-        function ($compile, gridConfiguration) { return new CellPlaceholderDirective($compile, gridConfiguration); }
+        TrNgGrid.Constants.gridLoggingService,
+        function ($compile, gridConfiguration, loggingService) { return new CellPlaceholderDirective($compile, gridConfiguration, loggingService); }
     ]);
-    TrNgGrid.gridModule.directive(TrNgGrid.Constants.cellDirective, ["$compile", TrNgGrid.Constants.gridConfigurationService, function ($compile, gridConfiguration) { return new CellDirective($compile, gridConfiguration); }]);
+    TrNgGrid.gridModule.directive(TrNgGrid.Constants.cellDirective, [
+        "$compile",
+        TrNgGrid.Constants.gridConfigurationService,
+        TrNgGrid.Constants.gridLoggingService,
+        function ($compile, gridConfiguration, loggingService) { return new CellDirective($compile, gridConfiguration, loggingService); }
+    ]);
 })(TrNgGrid || (TrNgGrid = {}));
 
 var TrNgGrid;

@@ -42,5 +42,6 @@
     export var columnFilterDirectiveAttribute = tableDirectiveAttribute + "-column-filter";
 
     export var gridConfigurationService = tableDirective + "Configuration";
+    export var gridLoggingService = tableDirective + "Log";
     export var gridConfigurationProvider = gridConfigurationService + "Provider";
 } 

@@ -13,9 +13,10 @@
     <file>./src/js/trNgGridConstants.js</file> 
     <file>./src/js/trNgGridUtils.js</file>
     <file>./src/js/trNgGridCore.js</file>
+    <file>./src/js/trNgGridLogging.js</file>
     <file>./src/js/trNgGridConfiguration.js</file>
     <file>./src/js/trNgGridLayoutManagement.js</file>
-    <file>./src/js/trNgGridlayout.js</file>
+    <file>./src/js/trNgGridLayout.js</file>
     <file>./src/js/trNgGridFilters.js</file> 
   </files>
 </bundle> 

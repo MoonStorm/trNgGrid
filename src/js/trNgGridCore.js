@@ -1,6 +1,5 @@
 var TrNgGrid;
 (function (TrNgGrid) {
-    var unnamedFieldNameCount = 0;
     (function (SelectionMode) {
         SelectionMode[SelectionMode["None"] = 0] = "None";
         SelectionMode[SelectionMode["SingleRow"] = 1] = "SingleRow";
@@ -15,11 +14,12 @@ var TrNgGrid;
     })();
     TrNgGrid.IGridRow = IGridRow;
     var GridController = (function () {
-        function GridController($compile, $parse, $timeout, gridConfiguration) {
+        function GridController($compile, $parse, $timeout, gridConfiguration, loggingService) {
             this.$compile = $compile;
             this.$parse = $parse;
             this.$timeout = $timeout;
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.nonFieldNameTagIndex = 0;
             this.nonFieldNameFormat = "$$_trNgGridCustom_";
             this.gridColumns = {};
@@ -27,7 +27,7 @@ var TrNgGrid;
         GridController.prototype.setGridOptions = function (gridOptions) {
             var _this = this;
             this.gridOptions = gridOptions;
-            this.gridLayout = new TrNgGrid.GridLayout(this.gridConfiguration, this.gridOptions);
+            this.gridLayout = new TrNgGrid.GridLayout(this.gridConfiguration, this.loggingService, this.gridOptions);
             if (this.gridOptions.onDataRequired) {
                 var retrieveDataCallback = function () {
                     _this.dataRequestPromise = null;

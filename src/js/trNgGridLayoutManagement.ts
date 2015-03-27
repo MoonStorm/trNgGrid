@@ -48,6 +48,7 @@
 
         constructor(
             private gridConfiguration: IGridConfiguration,
+            private loggingService: LoggingService,
             private gridLayout: GridLayout,
             private gridSectionType: GridSectionType) {
         }
@@ -56,7 +57,7 @@
             var firstCell = this.cells[firstCellIndex];
             var secondCell = this.cells[secondCellIndex];
 
-            this.gridConfiguration.debugMode && log("About to swap cells ["+firstCell.fieldName+"] and ["+secondCell.fieldName+"] in section " + this.gridSectionType);
+            this.gridConfiguration.debugMode && this.loggingService.log("About to swap cells ["+firstCell.fieldName+"] and ["+secondCell.fieldName+"] in section " + this.gridSectionType, this);
 
             this.cells.splice(firstCellIndex, 1, secondCell);
             this.cells.splice(secondCellIndex, 1, firstCell);
@@ -81,7 +82,7 @@
             if (index === undefined) {
                 for (var cellIndex = 0; (cellIndex < this.cells.length) && (!cellFound); cellIndex++) {
                     if (this.cells[cellIndex].fieldName === cell.fieldName) {
-                        this.gridConfiguration.debugMode && log("A layout cell [" + cell.fieldName + "] is about to be updated in section " + this.gridSectionType);
+                        this.gridConfiguration.debugMode && this.loggingService.log("A layout cell [",cell.fieldName, cell, "] is about to be updated in section " , this.gridSectionType, this);
                         this.cells[cellIndex] = cell;
                         cellFound = true;
                     }
@@ -89,7 +90,7 @@
             }
 
             if (!cellFound) {
-                this.gridConfiguration.debugMode && log("A new layout cell [" + cell.fieldName + "] is about to be registered in section " + this.gridSectionType);
+                this.gridConfiguration.debugMode && this.loggingService.log("A new layout cell [", cell.fieldName, cell, "] is about to be registered in section ", this.gridSectionType, this);
                 if (index === undefined || index === this.cells.length) {
                     this.cells.push(cell);
                 }
@@ -105,7 +106,7 @@
             for (var cellIndex = 0; cellIndex < this.cells.length; cellIndex++) {
                 if (this.cells[cellIndex] === cell) {
                     debugger;
-                    this.gridConfiguration.debugMode && log("A layout cell [" + cell.fieldName + "] is about to get unregistered in section " + this.gridSectionType);
+                    this.gridConfiguration.debugMode && this.loggingService.log("A layout cell [", cell, "] is about to get unregistered in section ", this);
                     this.cells.splice(cellIndex, 1);
                     this.gridLayout.triggerReconciliation();
                     return;
@@ -121,13 +122,17 @@
     export class GridLayoutSection {
         rows: Array<GridLayoutRow> = [];
 
-        constructor(private gridConfiguration: IGridConfiguration, private gridLayout: GridLayout, public gridSectionType: GridSectionType) {            
+        constructor(
+            private gridConfiguration: IGridConfiguration,
+            private loggingService: LoggingService,
+            private gridLayout: GridLayout,
+            public gridSectionType: GridSectionType) {            
         }
 
         registerRow(): GridLayoutRow {
-            var row = new GridLayoutRow(this.gridConfiguration, this.gridLayout, this.gridSectionType);
+            var row = new GridLayoutRow(this.gridConfiguration, this.loggingService, this.gridLayout, this.gridSectionType);
             this.rows.push(row);
-            this.gridConfiguration.debugMode && log("A new layout row ["+this.rows.length+"] was registered in section " + this.gridSectionType);
+            this.gridConfiguration.debugMode && this.loggingService.log("A new layout row [", row, "] was registered in section ", this);
             this.gridLayout.triggerReconciliation();
             return row;
         }
@@ -136,7 +141,7 @@
             for (var rowIndex = 0; rowIndex < this.rows.length; rowIndex++) {
                 if (this.rows[rowIndex] === row) {
                     this.rows.splice(rowIndex, 1);
-                    this.gridConfiguration.debugMode && log("A layout row was unregistered in section " + this.gridSectionType);
+                    this.gridConfiguration.debugMode && this.loggingService.log("A layout row [", row, "] was unregistered from section ", this);
                     this.gridLayout.triggerReconciliation();
                     return;
                 }
@@ -145,7 +150,7 @@
 
         clear() {
             this.rows.splice(0);
-            this.gridConfiguration.debugMode && log("Layout section " + this.gridSectionType + " got cleared");
+            this.gridConfiguration.debugMode && this.loggingService.log("Layout section ", this, " got cleared");
             this.gridLayout.triggerReconciliation();
         }
     }
@@ -160,6 +165,7 @@
 
         constructor(
             private gridConfiguration: IGridConfiguration,
+            private loggingService: LoggingService,
             private gridOptions: IGridOptions) {
 
             this.setupListeners();
@@ -168,8 +174,8 @@
         getSection(section: GridSectionType):GridLayoutSection {
             var colSection = this.sections[section];
             if (!colSection) {
-                this.sections[<number>section] = colSection = new GridLayoutSection(this.gridConfiguration, this, section);
-                this.gridConfiguration.debugMode && log("A new layout section [" + section + "] was registered");
+                this.sections[<number>section] = colSection = new GridLayoutSection(this.gridConfiguration, this.loggingService, this, section);
+                this.gridConfiguration.debugMode && this.loggingService.log("A new layout section [" + section + "] was registered");
                 this.triggerReconciliation();
             }
 
@@ -251,7 +257,7 @@
 
         private reconcile() {
             try {
-                this.gridConfiguration.debugMode && log("Starting to reconcile all the rows");
+                this.gridConfiguration.debugMode && this.loggingService.log("Starting to reconcile all the rows");
 
                 // fetch all the field names from the first section with fields present
                 var extractedFieldNames = new Array<string>();
@@ -363,11 +369,6 @@
         }
 
         prepareColumnSettingsScope(columnScope: IGridColumnScope, settingsScope: IGridColumnScope) {
-            settingsScope.$on("$destroy",() => {
-                debugger;
-                columnScope.$destroy();
-            });
-
             var isMonitoringLayoutUpdates = false;
 
             monitorScope(

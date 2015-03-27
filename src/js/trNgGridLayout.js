@@ -1,8 +1,9 @@
 var TrNgGrid;
 (function (TrNgGrid) {
     var TableDirective = (function () {
-        function TableDirective(gridConfiguration) {
+        function TableDirective(gridConfiguration, loggingService) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.restrict = 'A';
             this.scope = {
                 items: '=',
@@ -22,7 +23,7 @@ var TrNgGrid;
                 onDataRequiredDelay: '=?',
                 fields: '=?'
             };
-            this.controller = ["$compile", "$parse", "$timeout", TrNgGrid.Constants.gridConfigurationService, TrNgGrid.GridController];
+            this.controller = ["$compile", "$parse", "$timeout", TrNgGrid.Constants.gridConfigurationService, TrNgGrid.Constants.gridLoggingService, TrNgGrid.GridController];
         }
         TableDirective.prototype.fixTableStructure = function (gridElement) {
             var _this = this;
@@ -42,15 +43,17 @@ var TrNgGrid;
                 tableBodyElement = TrNgGrid.findChildByTagName(angular.element("<table><tbody></tbody></table"), "tbody");
                 tableFooterElement.after(tableBodyElement);
             }
+            tableBodyElement.attr(TrNgGrid.Constants.sectionDirectiveAttribute, "");
             angular.forEach(gridElement.children, function (element) {
                 if (element !== tableHeaderElement[0] || element !== tableBodyElement[0] || element !== tableFooterElement[0]) {
                     angular.element(element).remove();
-                    _this.gridConfiguration.debugMode && TrNgGrid.log("Invalid extra element found inside the grid template structure: " + element.tagName);
+                    _this.gridConfiguration.debugMode && _this.loggingService.log("Invalid extra element found inside the grid template structure: ", element);
                 }
             });
         };
         TableDirective.prototype.compile = function (templateElement, tAttrs) {
             this.fixTableStructure(templateElement);
+            templateElement.addClass(this.gridConfiguration.styles.tableCssClass);
             return {
                 pre: function (isolatedScope, instanceElement, tAttrs, controller, transcludeFn) {
                     controller.setGridOptions(isolatedScope);
@@ -79,6 +82,19 @@ var TrNgGrid;
             var standardCellTemplate = TrNgGrid.getStandardCellTemplate(this.gridConfiguration, sectionType);
             for (var rowIndex = 0; rowIndex < rowElements.length; rowIndex++) {
                 rowElement = rowElements[rowIndex];
+                if (sectionType === TrNgGrid.GridSectionType.Body) {
+                    if (rowIndex === 0 && rowElements.length > 1) {
+                        rowElement.attr("data-ng-repeat-start", "gridDisplayItem in gridDisplayItems");
+                    }
+                    else if (rowIndex === rowElements.length - 1) {
+                        if (rowElements.length > 1) {
+                            rowElement.attr("data-ng-repeat-end", "");
+                        }
+                        else {
+                            rowElement.attr("data-ng-repeat", "gridDisplayItem in gridDisplayItems");
+                        }
+                    }
+                }
                 rowElement.attr(TrNgGrid.Constants.rowDirectiveAttribute, "");
                 var cellElements = TrNgGrid.findChildrenByTagName(rowElement, cellTagName);
                 if (cellElements.length === 0 || !cellElements[0].attr(TrNgGrid.Constants.cellPlaceholderDirectiveAttribute)) {
@@ -99,6 +115,7 @@ var TrNgGrid;
                     if (isCustomized) {
                         cellElement.attr(TrNgGrid.Constants.dataColumnIsCustomizedAttribute, "true");
                     }
+                    cellElement.attr(TrNgGrid.Constants.cellDirectiveAttribute, "true");
                 }
             }
         };
@@ -151,9 +168,10 @@ var TrNgGrid;
         return RowDirective;
     })();
     var CellPlaceholderDirective = (function () {
-        function CellPlaceholderDirective($compile, gridConfiguration) {
+        function CellPlaceholderDirective($compile, gridConfiguration, loggingService) {
             this.$compile = $compile;
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.restrict = 'A';
             this.require = [TrNgGrid.Constants.cellPlaceholderDirective, "^" + TrNgGrid.Constants.tableDirective];
             this.controller = [TrNgGrid.GridColumnController];
@@ -164,8 +182,6 @@ var TrNgGrid;
             return {
                 pre: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                     $scope.gridColumnLayout.placeholder = $instanceElement;
-                },
-                post: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                     var columnSetupController = $controllers[0];
                     if ($scope.gridColumnLayout.isAutoGenerated) {
                         columnSetupController.prepareAutoGeneratedColumnScope($scope);
@@ -173,12 +189,12 @@ var TrNgGrid;
                         var autoGeneratedCellInstance = null;
                         var setupAutoGeneratedCell = function () {
                             if (autoGeneratedCellInstance) {
-                                _this.gridConfiguration.debugMode && TrNgGrid.log("Removing auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
+                                _this.gridConfiguration.debugMode && _this.loggingService.log("Removing auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
                                 autoGeneratedCellInstance.remove();
                                 autoGeneratedCellInstance = null;
                             }
                             if ($scope.gridColumnLayout && $scope.gridColumnOptions) {
-                                _this.gridConfiguration.debugMode && TrNgGrid.log("Creating auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
+                                _this.gridConfiguration.debugMode && _this.loggingService.log("Creating auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
                                 var autoGeneratedCellTemplate = TrNgGrid.getStandardCellTemplate(_this.gridConfiguration, $scope.gridLayoutSection.gridSectionType);
                                 autoGeneratedCellTemplate.append(TrNgGrid.getStandardCellContentsTemplate(_this.gridConfiguration, $scope.gridLayoutSection.gridSectionType));
                                 $instanceElement.after(autoGeneratedCellTemplate);
@@ -195,15 +211,18 @@ var TrNgGrid;
                             $scope.gridColumnLayout.placeholder = null;
                         });
                     }
+                },
+                post: function ($scope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
                 }
             };
         };
         return CellPlaceholderDirective;
     })();
     var CellDirective = (function () {
-        function CellDirective($compile, gridConfiguration) {
+        function CellDirective($compile, gridConfiguration, loggingService) {
             this.$compile = $compile;
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.restrict = 'A';
             this.require = [TrNgGrid.Constants.cellDirective, "^" + TrNgGrid.Constants.tableDirective];
             this.controller = [TrNgGrid.GridColumnController];
@@ -226,24 +245,24 @@ var TrNgGrid;
         }
         CellDirective.prototype.compile = function ($templateElement, $tAttrs) {
             var _this = this;
+            var gridColumnScope;
             return {
                 pre: function ($settingsScope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
+                    var columnSetupController = $controllers[0];
+                    gridColumnScope = $settingsScope.$parent.$new();
+                    columnSetupController.prepareColumnSettingsScope(gridColumnScope, $settingsScope);
                 },
                 post: function ($settingsScope, $instanceElement, $tAttrs, $controllers, $transcludeFn) {
-                    var columnSetupController = $controllers[0];
-                    var gridColumnScope = $settingsScope.$parent.$new();
-                    columnSetupController.prepareColumnSettingsScope(gridColumnScope, $settingsScope);
                     var transcludedCellElement = null;
                     var isDestroyed = false;
                     var setupTranscludedElement = function () {
                         if (transcludedCellElement) {
-                            _this.gridConfiguration.debugMode && TrNgGrid.log("Removing tanscluded cell for field " + gridColumnScope.gridColumnLayout.fieldName);
+                            _this.gridConfiguration.debugMode && _this.loggingService.log("Removing tanscluded cell for field ", gridColumnScope.gridColumnLayout.fieldName);
                             transcludedCellElement.remove();
                             transcludedCellElement = null;
                         }
                         if (!isDestroyed && gridColumnScope.gridColumnLayout && gridColumnScope.gridColumnLayout.placeholder && gridColumnScope.gridColumnOptions) {
-                            _this.gridConfiguration.debugMode && TrNgGrid.log("Transcluding and attaching cell for field " + gridColumnScope.gridColumnLayout.fieldName);
-                            console.log($instanceElement);
+                            _this.gridConfiguration.debugMode && _this.loggingService.log("Transcluding and attaching cell for field ", gridColumnScope.gridColumnLayout.fieldName);
                             $transcludeFn(gridColumnScope, function (newTranscludedCellElement) {
                                 transcludedCellElement = newTranscludedCellElement;
                                 gridColumnScope.gridColumnLayout.placeholder.after(transcludedCellElement);
@@ -258,10 +277,11 @@ var TrNgGrid;
                     gridColumnScope.$watchGroup(["gridColumnLayout", "gridColumnOptions", "gridColumnLayout.placeholder"], function (newValues) {
                         setupTranscludedElement();
                     });
-                    gridColumnScope.$on("$destroy", function () {
+                    $settingsScope.$on("$destroy", function () {
                         debugger;
                         isDestroyed = true;
                         setupTranscludedElement();
+                        gridColumnScope.$destroy();
                     });
                 }
             };
@@ -270,7 +290,8 @@ var TrNgGrid;
     })();
     TrNgGrid.gridModule.directive(TrNgGrid.Constants.tableDirective, [
         TrNgGrid.Constants.gridConfigurationService,
-        function (gridConfiguration) { return new TableDirective(gridConfiguration); }
+        TrNgGrid.Constants.gridLoggingService,
+        function (gridConfiguration, loggingService) { return new TableDirective(gridConfiguration, loggingService); }
     ]);
     TrNgGrid.gridModule.directive(TrNgGrid.Constants.sectionDirective, [
         TrNgGrid.Constants.gridConfigurationService,
@@ -280,7 +301,13 @@ var TrNgGrid;
     TrNgGrid.gridModule.directive(TrNgGrid.Constants.cellPlaceholderDirective, [
         "$compile",
         TrNgGrid.Constants.gridConfigurationService,
-        function ($compile, gridConfiguration) { return new CellPlaceholderDirective($compile, gridConfiguration); }
+        TrNgGrid.Constants.gridLoggingService,
+        function ($compile, gridConfiguration, loggingService) { return new CellPlaceholderDirective($compile, gridConfiguration, loggingService); }
     ]);
-    TrNgGrid.gridModule.directive(TrNgGrid.Constants.cellDirective, ["$compile", TrNgGrid.Constants.gridConfigurationService, function ($compile, gridConfiguration) { return new CellDirective($compile, gridConfiguration); }]);
+    TrNgGrid.gridModule.directive(TrNgGrid.Constants.cellDirective, [
+        "$compile",
+        TrNgGrid.Constants.gridConfigurationService,
+        TrNgGrid.Constants.gridLoggingService,
+        function ($compile, gridConfiguration, loggingService) { return new CellDirective($compile, gridConfiguration, loggingService); }
+    ]);
 })(TrNgGrid || (TrNgGrid = {}));

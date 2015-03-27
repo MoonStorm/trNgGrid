@@ -1,5 +1,4 @@
 module TrNgGrid {
-    var unnamedFieldNameCount = 0;
 
     export enum SelectionMode {
         None,
@@ -59,14 +58,15 @@ module TrNgGrid {
             private $compile: ng.ICompileService,
             private $parse: ng.IParseService,
             private $timeout: ng.ITimeoutService,
-            private gridConfiguration: IGridConfiguration) {
+            private gridConfiguration: IGridConfiguration,
+            private loggingService:LoggingService) {
 
             this.gridColumns = {};
         }
 
         setGridOptions(gridOptions: IGridOptions) {
             this.gridOptions = gridOptions;
-            this.gridLayout = new GridLayout(this.gridConfiguration, this.gridOptions);
+            this.gridLayout = new GridLayout(this.gridConfiguration, this.loggingService, this.gridOptions);
 
             //set up watchers for some of the special attributes we support
             if (this.gridOptions.onDataRequired) {

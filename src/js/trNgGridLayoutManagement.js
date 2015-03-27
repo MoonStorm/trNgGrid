@@ -21,8 +21,9 @@ var TrNgGrid;
     })();
     TrNgGrid.DefaultGridColumnLayoutOptions = DefaultGridColumnLayoutOptions;
     var GridLayoutRow = (function () {
-        function GridLayoutRow(gridConfiguration, gridLayout, gridSectionType) {
+        function GridLayoutRow(gridConfiguration, loggingService, gridLayout, gridSectionType) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.gridLayout = gridLayout;
             this.gridSectionType = gridSectionType;
             this.cells = [];
@@ -30,7 +31,7 @@ var TrNgGrid;
         GridLayoutRow.prototype.swapCells = function (firstCellIndex, secondCellIndex) {
             var firstCell = this.cells[firstCellIndex];
             var secondCell = this.cells[secondCellIndex];
-            this.gridConfiguration.debugMode && TrNgGrid.log("About to swap cells [" + firstCell.fieldName + "] and [" + secondCell.fieldName + "] in section " + this.gridSectionType);
+            this.gridConfiguration.debugMode && this.loggingService.log("About to swap cells [" + firstCell.fieldName + "] and [" + secondCell.fieldName + "] in section " + this.gridSectionType, this);
             this.cells.splice(firstCellIndex, 1, secondCell);
             this.cells.splice(secondCellIndex, 1, firstCell);
         };
@@ -50,14 +51,14 @@ var TrNgGrid;
             if (index === undefined) {
                 for (var cellIndex = 0; (cellIndex < this.cells.length) && (!cellFound); cellIndex++) {
                     if (this.cells[cellIndex].fieldName === cell.fieldName) {
-                        this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] is about to be updated in section " + this.gridSectionType);
+                        this.gridConfiguration.debugMode && this.loggingService.log("A layout cell [", cell.fieldName, cell, "] is about to be updated in section ", this.gridSectionType, this);
                         this.cells[cellIndex] = cell;
                         cellFound = true;
                     }
                 }
             }
             if (!cellFound) {
-                this.gridConfiguration.debugMode && TrNgGrid.log("A new layout cell [" + cell.fieldName + "] is about to be registered in section " + this.gridSectionType);
+                this.gridConfiguration.debugMode && this.loggingService.log("A new layout cell [", cell.fieldName, cell, "] is about to be registered in section ", this.gridSectionType, this);
                 if (index === undefined || index === this.cells.length) {
                     this.cells.push(cell);
                 }
@@ -71,7 +72,7 @@ var TrNgGrid;
             for (var cellIndex = 0; cellIndex < this.cells.length; cellIndex++) {
                 if (this.cells[cellIndex] === cell) {
                     debugger;
-                    this.gridConfiguration.debugMode && TrNgGrid.log("A layout cell [" + cell.fieldName + "] is about to get unregistered in section " + this.gridSectionType);
+                    this.gridConfiguration.debugMode && this.loggingService.log("A layout cell [", cell, "] is about to get unregistered in section ", this);
                     this.cells.splice(cellIndex, 1);
                     this.gridLayout.triggerReconciliation();
                     return;
@@ -82,16 +83,17 @@ var TrNgGrid;
     })();
     TrNgGrid.GridLayoutRow = GridLayoutRow;
     var GridLayoutSection = (function () {
-        function GridLayoutSection(gridConfiguration, gridLayout, gridSectionType) {
+        function GridLayoutSection(gridConfiguration, loggingService, gridLayout, gridSectionType) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.gridLayout = gridLayout;
             this.gridSectionType = gridSectionType;
             this.rows = [];
         }
         GridLayoutSection.prototype.registerRow = function () {
-            var row = new GridLayoutRow(this.gridConfiguration, this.gridLayout, this.gridSectionType);
+            var row = new GridLayoutRow(this.gridConfiguration, this.loggingService, this.gridLayout, this.gridSectionType);
             this.rows.push(row);
-            this.gridConfiguration.debugMode && TrNgGrid.log("A new layout row [" + this.rows.length + "] was registered in section " + this.gridSectionType);
+            this.gridConfiguration.debugMode && this.loggingService.log("A new layout row [", row, "] was registered in section ", this);
             this.gridLayout.triggerReconciliation();
             return row;
         };
@@ -99,7 +101,7 @@ var TrNgGrid;
             for (var rowIndex = 0; rowIndex < this.rows.length; rowIndex++) {
                 if (this.rows[rowIndex] === row) {
                     this.rows.splice(rowIndex, 1);
-                    this.gridConfiguration.debugMode && TrNgGrid.log("A layout row was unregistered in section " + this.gridSectionType);
+                    this.gridConfiguration.debugMode && this.loggingService.log("A layout row [", row, "] was unregistered from section ", this);
                     this.gridLayout.triggerReconciliation();
                     return;
                 }
@@ -107,15 +109,16 @@ var TrNgGrid;
         };
         GridLayoutSection.prototype.clear = function () {
             this.rows.splice(0);
-            this.gridConfiguration.debugMode && TrNgGrid.log("Layout section " + this.gridSectionType + " got cleared");
+            this.gridConfiguration.debugMode && this.loggingService.log("Layout section ", this, " got cleared");
             this.gridLayout.triggerReconciliation();
         };
         return GridLayoutSection;
     })();
     TrNgGrid.GridLayoutSection = GridLayoutSection;
     var GridLayout = (function () {
-        function GridLayout(gridConfiguration, gridOptions) {
+        function GridLayout(gridConfiguration, loggingService, gridOptions) {
             this.gridConfiguration = gridConfiguration;
+            this.loggingService = loggingService;
             this.gridOptions = gridOptions;
             this.sections = new Array(2 /* Body */ + 1);
             this.reconciliationTriggerKey = "triggerGridReconciliation";
@@ -125,8 +128,8 @@ var TrNgGrid;
         GridLayout.prototype.getSection = function (section) {
             var colSection = this.sections[section];
             if (!colSection) {
-                this.sections[section] = colSection = new GridLayoutSection(this.gridConfiguration, this, section);
-                this.gridConfiguration.debugMode && TrNgGrid.log("A new layout section [" + section + "] was registered");
+                this.sections[section] = colSection = new GridLayoutSection(this.gridConfiguration, this.loggingService, this, section);
+                this.gridConfiguration.debugMode && this.loggingService.log("A new layout section [" + section + "] was registered");
                 this.triggerReconciliation();
             }
             return colSection;
@@ -190,7 +193,7 @@ var TrNgGrid;
         GridLayout.prototype.reconcile = function () {
             var _this = this;
             try {
-                this.gridConfiguration.debugMode && TrNgGrid.log("Starting to reconcile all the rows");
+                this.gridConfiguration.debugMode && this.loggingService.log("Starting to reconcile all the rows");
                 var extractedFieldNames = new Array();
                 var sectionIndex;
                 for (sectionIndex = 0 /* Enforced */; sectionIndex <= 1 /* Header */ && extractedFieldNames.length === 0; sectionIndex++) {
@@ -281,10 +284,6 @@ var TrNgGrid;
         }
         GridColumnController.prototype.prepareColumnSettingsScope = function (columnScope, settingsScope) {
             var _this = this;
-            settingsScope.$on("$destroy", function () {
-                debugger;
-                columnScope.$destroy();
-            });
             var isMonitoringLayoutUpdates = false;
             TrNgGrid.monitorScope(settingsScope, new TrNgGrid.GridConfigurationDefaultColumnOptions(), function (newOptions) {
                 _this.registerColumnOptions(columnScope, newOptions);

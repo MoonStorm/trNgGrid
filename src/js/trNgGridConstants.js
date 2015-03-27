@@ -30,6 +30,7 @@ var TrNgGrid;
         Constants.columnFilterDirective = Constants.tableDirective + "ColumnFilter";
         Constants.columnFilterDirectiveAttribute = Constants.tableDirectiveAttribute + "-column-filter";
         Constants.gridConfigurationService = Constants.tableDirective + "Configuration";
+        Constants.gridLoggingService = Constants.tableDirective + "Log";
         Constants.gridConfigurationProvider = Constants.gridConfigurationService + "Provider";
     })(Constants = TrNgGrid.Constants || (TrNgGrid.Constants = {}));
 })(TrNgGrid || (TrNgGrid = {}));

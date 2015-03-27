@@ -20,6 +20,8 @@ var TrNgGrid;
     ;
     function monitorAttributes($interpolate, $tAttrs, $scope, properties, onChangeDetected) {
         var propKeys;
+        var startSymbol = $interpolate.startSymbol();
+        var endSymbol = $interpolate.endSymbol();
         if (properties instanceof Array) {
             propKeys = properties;
         }
@@ -29,7 +31,12 @@ var TrNgGrid;
         var watchArray = new Array(propKeys.length);
         angular.forEach(propKeys, function (propKey, index) {
             var expression = $tAttrs[propKey];
-            watchArray[index] = expression;
+            if (expression.length >= startSymbol.length && expression.slice(0, startSymbol.length) === startSymbol) {
+                watchArray[index] = expression.slice(startSymbol.length, expression.length - startSymbol.length - endSymbol.length);
+            }
+            else {
+                watchArray[index] = "'" + expression + "'";
+            }
         });
         $scope.$watchGroup(watchArray, function (newValues) { return processMonitorChanges(newValues, propKeys, onChangeDetected); });
     }
@@ -99,11 +106,6 @@ var TrNgGrid;
         }
     }
     TrNgGrid.wrapTemplatedCell = wrapTemplatedCell;
-    ;
-    function log(message) {
-        console.log(TrNgGrid.Constants.tableDirective + "(" + new Date().getTime() + "): " + message);
-    }
-    TrNgGrid.log = log;
     ;
     function createRowElement() {
         return findChildByTagName(findChildByTagName(angular.element("<table><tbody><tr></tr></tbody></table>"), "tbody"), "tr");

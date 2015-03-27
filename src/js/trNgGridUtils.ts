@@ -27,10 +27,12 @@
      * Monitors the attributes for changes to the list of properties provided either as an array of strings or an object with fields set
      */
     export function monitorAttributes($interpolate:ng.IInterpolateService, $tAttrs: ng.IAttributes, $scope: ng.IScope, properties: any, onChangeDetected: (newData: any) => void) {
-        var propKeys: Array<any>;
+        var propKeys: Array<string>;
+        var startSymbol = $interpolate.startSymbol();
+        var endSymbol = $interpolate.endSymbol();
 
         if (properties instanceof Array) {
-            propKeys = <Array<String>>properties;
+            propKeys = <Array<string>>properties;
         }
         else {
             propKeys = extractFields(properties);
@@ -38,9 +40,14 @@
 
         var watchArray = new Array<any>(propKeys.length);
         angular.forEach(propKeys,(propKey: string, index: number) => {
-            var expression = $tAttrs[propKey];
-            // a nice touch would be to remove the interpolated symbols here, if present
-            watchArray[index] = expression;
+            var expression = <string>$tAttrs[propKey];
+            // a nice touch is to remove the interpolated symbols here, if present
+            if (expression.length >= startSymbol.length && expression.slice(0, startSymbol.length) === startSymbol) {
+                watchArray[index] = expression.slice(startSymbol.length, expression.length - startSymbol.length - endSymbol.length);
+            }
+            else {
+                watchArray[index] = "'" + expression + "'";
+            }
         });
 
         $scope.$watchGroup(watchArray, (newValues:Array<any>) => processMonitorChanges(newValues,propKeys, onChangeDetected));
@@ -115,10 +122,6 @@
             templateElement.empty();
             templateElement.append(templateWrapElement);
         }
-    };
-
-    export function log(message: string) {
-        console.log(Constants.tableDirective + "(" + new Date().getTime() + "): " + message);
     };
 
     // due to angular limitations, the following workarounds are required

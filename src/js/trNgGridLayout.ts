@@ -19,9 +19,9 @@
             onDataRequiredDelay: '=?',
             fields: '=?'
         };
-        controller = ["$compile", "$parse", "$timeout", Constants.gridConfigurationService, GridController];
+        controller = ["$compile", "$parse", "$timeout", Constants.gridConfigurationService, Constants.gridLoggingService, GridController];
 
-        constructor(private gridConfiguration: IGridConfiguration) {    
+        constructor(private gridConfiguration: IGridConfiguration, private loggingService:LoggingService) {    
         }
 
         private fixTableStructure(gridElement: ng.IAugmentedJQuery) {
@@ -48,32 +48,21 @@
                 tableBodyElement = findChildByTagName(angular.element("<table><tbody></tbody></table"), "tbody");
                 tableFooterElement.after(tableBodyElement);
             }
-            //tableBodyElement.attr(bodyDirectiveAttribute, "");
+            tableBodyElement.attr(Constants.sectionDirectiveAttribute, "");
 
             // any other elements are not allowed
             angular.forEach(gridElement.children, (element: HTMLElement) => {
                 if (element !== tableHeaderElement[0] || element !== tableBodyElement[0] || element !== tableFooterElement[0]) {
                     angular.element(element).remove();
-                    this.gridConfiguration.debugMode && log("Invalid extra element found inside the grid template structure: " + element.tagName);
+                    this.gridConfiguration.debugMode && this.loggingService.log("Invalid extra element found inside the grid template structure: ", element);
                 }
             });
-
-            // block or allow data bindings
-            //if (allowDataBindings) {
-            //    tableHeaderElement.removeAttr("data-ng-non-bindable");
-            //    tableFooterElement.removeAttr("data-ng-non-bindable");
-            //    tableBodyElement.removeAttr("data-ng-non-bindable");
-            //}
-            //else {
-            //    tableHeaderElement.attr("data-ng-non-bindable", "");
-            //    tableFooterElement.attr("data-ng-non-bindable", "");
-            //    tableBodyElement.attr("data-ng-non-bindable", "");
-            //}
         }
 
         compile(templateElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes) {
             // fix & add a couple of elements & directives
             this.fixTableStructure(templateElement);
+            templateElement.addClass(this.gridConfiguration.styles.tableCssClass);
 
             return {
                 pre: (isolatedScope: IGridOptions, instanceElement: ng.IAugmentedJQuery, tAttrs: ng.IAttributes, controller: GridController, transcludeFn: ng.ITranscludeFunction) => {
@@ -112,6 +101,21 @@
 
             for (var rowIndex = 0; rowIndex < rowElements.length; rowIndex++) {
                 rowElement = rowElements[rowIndex];
+
+                if (sectionType === GridSectionType.Body) {
+                    if (rowIndex === 0 && rowElements.length > 1) {
+                        rowElement.attr("data-ng-repeat-start", "gridDisplayItem in gridDisplayItems");
+                    }
+                    else if (rowIndex === rowElements.length - 1) {
+                        if (rowElements.length > 1) {
+                            rowElement.attr("data-ng-repeat-end", "");
+                        }
+                        else {
+                            rowElement.attr("data-ng-repeat", "gridDisplayItem in gridDisplayItems");
+                        }
+                    }
+                }
+
                 rowElement.attr(Constants.rowDirectiveAttribute, "");
 
                 var cellElements = findChildrenByTagName(rowElement, cellTagName);
@@ -146,6 +150,8 @@
                     if (isCustomized) {
                         cellElement.attr(Constants.dataColumnIsCustomizedAttribute, "true");
                     }
+
+                    cellElement.attr(Constants.cellDirectiveAttribute, "true");
                 }
             }
         }
@@ -188,7 +194,6 @@
         require = "^" + Constants.tableDirective;
 
         compile($templateElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes) {
-            // compile a standard cell and a placeholder
             return {
                 pre: ($scope: IGridRowScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controller: GridController, $transcludeFn: ng.ITranscludeFunction) => {
                     $scope.gridLayoutRow = $scope.gridLayoutSection.registerRow();
@@ -196,10 +201,6 @@
                         debugger;
                         $scope.gridLayoutSection.unregisterRow($scope.gridLayoutRow);
                     });
-
-                    //$scope.$watch("gridLayoutRow.cells", (newValue: any, oldValue: any) => {
-                    //    debugger;
-                    //});
                 },
                 post: ($scope: IGridRowScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controller: GridController, $transcludeFn: ng.ITranscludeFunction) => {
                 }
@@ -218,15 +219,14 @@
         controller = [GridColumnController];
         transclude = "element";
 
-        constructor(private $compile: ng.ICompileService, private gridConfiguration: IGridConfiguration) {
+        constructor(private $compile: ng.ICompileService, private gridConfiguration: IGridConfiguration, private loggingService:LoggingService) {
         }
 
         compile($templatedElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes) {
             return {
                 pre:($scope: IGridColumnScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controllers: Array<any>, $transcludeFn: ng.ITranscludeFunction) => {
                     $scope.gridColumnLayout.placeholder = $instanceElement;
-                },
-                post:($scope: IGridColumnScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controllers: Array<any>, $transcludeFn: ng.ITranscludeFunction) => {
+
                     var columnSetupController: GridColumnController = $controllers[0];
                     if ($scope.gridColumnLayout.isAutoGenerated) {
                         columnSetupController.prepareAutoGeneratedColumnScope($scope);
@@ -236,13 +236,13 @@
 
                         var setupAutoGeneratedCell = () => {
                             if (autoGeneratedCellInstance) {
-                                this.gridConfiguration.debugMode && log("Removing auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
+                                this.gridConfiguration.debugMode && this.loggingService.log("Removing auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
                                 autoGeneratedCellInstance.remove();
                                 autoGeneratedCellInstance = null;
                             }
 
                             if ($scope.gridColumnLayout && $scope.gridColumnOptions) {
-                                this.gridConfiguration.debugMode && log("Creating auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
+                                this.gridConfiguration.debugMode && this.loggingService.log("Creating auto-generated cell for field " + $scope.gridColumnLayout.fieldName);
                                 var autoGeneratedCellTemplate = getStandardCellTemplate(this.gridConfiguration, $scope.gridLayoutSection.gridSectionType);
                                 autoGeneratedCellTemplate.append(getStandardCellContentsTemplate(this.gridConfiguration, $scope.gridLayoutSection.gridSectionType));
                                 $instanceElement.after(autoGeneratedCellTemplate);
@@ -261,6 +261,8 @@
                             $scope.gridColumnLayout.placeholder = null;
                         });
                     }
+                },
+                post: ($scope: IGridColumnScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controllers: Array<any>, $transcludeFn: ng.ITranscludeFunction) => {
                 }
             };
         }        
@@ -284,36 +286,37 @@
             filter: "@",
             colspan: "@"
         };
-        // the next few lines are idiotic, but otherwise we hit this stupid bug: https://github.com/angular/angular.js/issues/11304
         transclude = 'element';
+        
+        // the next few lines are idiotic, but otherwise we hit this stupid bug: https://github.com/angular/angular.js/issues/11304
         replace = true;
-        template = '<td style="display:none"></td>';
+        template = '<td style="display:none"></td>'; // fix for earlier versions of angular
 
-        constructor(private $compile: ng.ICompileService, private gridConfiguration: IGridConfiguration) {            
+        constructor(private $compile: ng.ICompileService, private gridConfiguration: IGridConfiguration, private loggingService:LoggingService) {            
         }
 
         compile($templateElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes) {
+            var gridColumnScope: IGridColumnScope;
+
             return {
-                pre: ($settingsScope: ng.IScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controllers: Array<any>, $transcludeFn: ng.ITranscludeFunction) => {
+                pre: ($settingsScope: IGridColumnScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controllers: Array<any>, $transcludeFn: ng.ITranscludeFunction) => {
+                    var columnSetupController: GridColumnController = $controllers[0];
+                    gridColumnScope = <IGridColumnScope>$settingsScope.$parent.$new();
+                    columnSetupController.prepareColumnSettingsScope(gridColumnScope, $settingsScope);
                 },
                 post: ($settingsScope: IGridColumnScope, $instanceElement: ng.IAugmentedJQuery, $tAttrs: ng.IAttributes, $controllers: Array<any>, $transcludeFn: ng.ITranscludeFunction) => {
-                    var columnSetupController: GridColumnController = $controllers[0];
-                    var gridColumnScope = <IGridColumnScope>$settingsScope.$parent.$new();
-                    columnSetupController.prepareColumnSettingsScope(gridColumnScope, $settingsScope);
-
                     var transcludedCellElement: ng.IAugmentedJQuery = null;
                     var isDestroyed = false;
 
                     var setupTranscludedElement = () => {
                         if (transcludedCellElement) {
-                            this.gridConfiguration.debugMode && log("Removing tanscluded cell for field " + gridColumnScope.gridColumnLayout.fieldName);
+                            this.gridConfiguration.debugMode && this.loggingService.log("Removing tanscluded cell for field ", gridColumnScope.gridColumnLayout.fieldName);
                             transcludedCellElement.remove();
                             transcludedCellElement = null;
                         }
 
                         if (!isDestroyed && gridColumnScope.gridColumnLayout && gridColumnScope.gridColumnLayout.placeholder && gridColumnScope.gridColumnOptions) {
-                            this.gridConfiguration.debugMode && log("Transcluding and attaching cell for field " + gridColumnScope.gridColumnLayout.fieldName);
-                            console.log($instanceElement);
+                            this.gridConfiguration.debugMode && this.loggingService.log("Transcluding and attaching cell for field ", gridColumnScope.gridColumnLayout.fieldName);
 
                             // link the element with the placeholder
                             $transcludeFn(gridColumnScope,(newTranscludedCellElement: ng.IAugmentedJQuery) => {
@@ -334,10 +337,11 @@
                         setupTranscludedElement();
                     });
 
-                    gridColumnScope.$on("$destroy",() => {
+                    $settingsScope.$on("$destroy",() => {
                         debugger;
                         isDestroyed = true;
                         setupTranscludedElement();
+                        gridColumnScope.$destroy();
                     });
                 }
             };
@@ -345,16 +349,17 @@
     }
 
     gridModule.directive(Constants.tableDirective, [
-        Constants.gridConfigurationService,
-        (gridConfiguration:IGridConfiguration) => new TableDirective(gridConfiguration)]);
+        Constants.gridConfigurationService, Constants.gridLoggingService,
+        (gridConfiguration:IGridConfiguration, loggingService:LoggingService) => new TableDirective(gridConfiguration, loggingService)]);
     gridModule.directive(Constants.sectionDirective, [
         Constants.gridConfigurationService,
         (gridConfiguration:IGridConfiguration) => new SectionDirective(gridConfiguration)]);
     gridModule.directive(Constants.rowDirective, [() => new RowDirective()]);
     gridModule.directive(Constants.cellPlaceholderDirective, [
-        "$compile",
-        Constants.gridConfigurationService,
-        ($compile: ng.ICompileService, gridConfiguration: IGridConfiguration) => new CellPlaceholderDirective($compile, gridConfiguration)
+        "$compile", Constants.gridConfigurationService, Constants.gridLoggingService,
+        ($compile: ng.ICompileService, gridConfiguration: IGridConfiguration, loggingService:LoggingService) => new CellPlaceholderDirective($compile, gridConfiguration, loggingService)
     ]);
-    gridModule.directive(Constants.cellDirective, ["$compile", Constants.gridConfigurationService, ($compile: ng.ICompileService, gridConfiguration: IGridConfiguration) => new CellDirective($compile, gridConfiguration)]);
+    gridModule.directive(Constants.cellDirective, [
+        "$compile", Constants.gridConfigurationService, Constants.gridLoggingService,
+        ($compile: ng.ICompileService, gridConfiguration: IGridConfiguration, loggingService:LoggingService) => new CellDirective($compile, gridConfiguration, loggingService)]);
 }
