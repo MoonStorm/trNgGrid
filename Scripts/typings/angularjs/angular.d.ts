@@ -1081,7 +1081,7 @@ declare module angular {
     // This corresponds to $transclude (and also the transclude function passed to link).
     interface ITranscludeFunction {
         // If the scope is provided, then the cloneAttachFn must be as well.
-        (scope: IScope, cloneAttachFn: ICloneAttachFunction, futureParent:IAugmentedJQuery): IAugmentedJQuery;
+        (scope: IScope, cloneAttachFn: ICloneAttachFunction, futureParent?:IAugmentedJQuery): IAugmentedJQuery;
         // If one argument is provided, then it's assumed to be the cloneAttachFn.
         (cloneAttachFn?: ICloneAttachFunction): IAugmentedJQuery;
     }
