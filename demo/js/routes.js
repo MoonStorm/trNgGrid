@@ -3,7 +3,7 @@ var TrNgGridDemo;
     var allConfigurations = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.1.0 RC",
+            fullName: "trNgGrid v3.1.0",
             titleCssClass: "text-success"
         }
     };
