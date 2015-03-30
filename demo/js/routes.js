@@ -44,6 +44,9 @@ var TrNgGridDemo;
                                     name: 'trNgGridDemo',
                                     serie: true,
                                     files: [
+                                        '//necolas.github.io/normalize.css/latest/normalize.css',
+                                        '//google-code-prettify.googlecode.com/svn/loader/prettify.js',
+                                        '//google-code-prettify.googlecode.com/svn/loader/prettify.css',
                                         '../demo/css/index.css',
                                         '../demo/js/demo.js',
                                         '../demo/js/benchmark.js',
@@ -55,12 +58,10 @@ var TrNgGridDemo;
                                     name: 'ui.bootstrap',
                                     serie: true,
                                     files: [
-                                        '//necolas.github.io/normalize.css/latest/normalize.css',
                                         '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.0/ui-bootstrap.js',
-                                        '//google-code-prettify.googlecode.com/svn/loader/prettify.js',
-                                        '//google-code-prettify.googlecode.com/svn/loader/prettify.css',
                                         '//maxcdn.bootstrapcdn.com/bootswatch/' + themeVersion + '/' + theme + '/bootstrap.min.css'
                                     ],
+                                    cache: false
                                 }
                             ]);
                         }
