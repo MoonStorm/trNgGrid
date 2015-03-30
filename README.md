@@ -22,7 +22,7 @@ Simply because everything else you're gonna find out there is either:
 #### Convinced?
 You can install the grid by either:
 - running `npm install tr-ng-grid --save` or
-- running `bower install trNgGrid --save` or
+- running `bower install tr-ng-grid --save` or
 - downloading the grid from the master branch, which contains the latest release. The files you're interested in are `trNgGrid.min.css` and `trNgGrid.min.js`. 
 
 Make sure you first include Angular and a Boostrap theme of your choice. 
