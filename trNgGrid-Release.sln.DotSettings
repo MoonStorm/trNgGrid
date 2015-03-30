@@ -1,4 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/CodeEditing/TypingAssist/Html/FormatOnClosingTag/@EntryValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeEditing/TypingAssist/Html/FormatOnEnter/@EntryValue">False</s:Boolean>
 	
 	<s:String x:Key="/Default/CodeInspection/TypeScriptInspections/Level/@EntryValue">TypeScript13</s:String>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/JavaScriptCodeFormatting/KEEP_BLANK_LINES_IN_CODE/@EntryValue">1</s:Int64>

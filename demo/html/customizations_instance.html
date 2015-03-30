@@ -6,7 +6,7 @@
         <div class="panel-body">
             <p>
                 Per grid instance customization is possible at the header, body and the footer level.
-                Below are a few examples.
+                Basic examples can be found in the <em>Columns</em> section. Here we'll be getting a little more depper into some of the more advanced scenarios.
             </p>
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -25,19 +25,16 @@
                             <li><em>gridDisplayItem</em>, which points to the formatted item and should only be used for presentation purposes.</li>
                         </ul>
                     </p>
-                    <p>
-                        More examples can be found on this site in the <em>Column Definition</em> section.
-                    </p>
                     <pre id="trNgGrid_Customize_Header_Body"></pre>
 
                     <div project-markup-to="#trNgGrid_Customize_Header_Body">
+Selected Items: {{mySelectedItems.length}}
 <table tr-ng-grid="" items="myItems" selected-items="mySelectedItems" selection-mode="None">
     <thead>
         <tr>
             <th display-align="center" cell-width="2em">
                 <div class="tr-ng-title">&nbsp;</div>
-                <input type="checkbox" ng-model="areAllSelected"
-                        ng-change="!areAllSelected?mySelectedItems.splice(0, mySelectedItems.length):mySelectedItems.push.apply(mySelectedItems, myItems)" />
+                <input type="checkbox" ng-model="areAllSelected" ng-change="areAllSelected?selectAll():clearSelection()" />
             </th>
             <th field-name="id">
 
@@ -52,7 +49,9 @@
     <tbody>
         <tr>
             <td>
-                <input type="checkbox" ng-model="isSelected" ng-checked="mySelectedItems.indexOf(gridItem)>=0" ng-change="isSelected?mySelectedItems.push(gridItem):mySelectedItems.splice(mySelectedItems.indexOf(gridItem),1)" />
+                <div ng-controller="TrNgGridDemo.TestManipulateItemSelection">
+                    <input type="checkbox" ng-model="isSelected" ng-change="isSelected?selectItem():deselectItem()" />
+                </div>
             </td>
             <td>
                 <div>

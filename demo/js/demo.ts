@@ -38,6 +38,8 @@
         showMessage: (event: ng.IAngularEvent, msg: string) => void;
         simulateServerSideQueries: (pageItems: number, totalItems?: number) => void;
         removeSelectedElements: () => void;
+        clearSelection: () => void;
+        selectAll: ()=> void;
         //toogleFieldEnforcement: (fieldName: string) => void;
     }
 
@@ -109,14 +111,6 @@
             $scope.myEnableMultiRowSelections = true;
             $scope.myNextItemsTotalCount = 100;
 
-            //$scope.$watch("myGridFilteredItemsPage", (newValue, oldvalue) => {
-            //    debugger;
-            //});
-
-            //$scope.$watch("myGridFilteredItems", (newValue, oldvalue) => {
-            //    debugger;
-            //});
-
             $scope.alert = (message) => {
                 $window.alert(message);
             };
@@ -136,6 +130,16 @@
                     $scope.myFields.splice(fieldIndex, 1);
                 }
             };*/
+
+            $scope.clearSelection = () => {
+                $scope.mySelectedItems.splice(0);
+            };
+
+            $scope.selectAll = () => {
+                $scope.mySelectedItems.splice(0);
+                angular.forEach($scope.myItems, (item) => $scope.mySelectedItems.push(item));
+            };
+
             $scope.removeSelectedElements = () => {
                 angular.forEach($scope.mySelectedItems, (selectedItem) => {
                     $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
@@ -259,6 +263,34 @@
         }
     }
 
+    export interface ITestControllerItemManipulationScope extends ITestControllerScope {
+        gridItem:any;
+        isSelected: boolean;
+        selectItem: () => void ;
+        deselectItem: () => void;
+    }
+
+    export class TestManipulateItemSelection {
+        constructor(public $scope: ITestControllerItemManipulationScope) {
+            $scope.$watchCollection("mySelectedItems", () => {
+                $scope.isSelected = $scope.mySelectedItems.indexOf($scope.gridItem) >= 0;
+            });
+
+            $scope.selectItem = () => {
+                if ($scope.mySelectedItems.indexOf($scope.gridItem) < 0) {
+                    $scope.mySelectedItems.push($scope.gridItem);
+                }
+            };
+
+            $scope.deselectItem = () => {
+                var gridItemIndex = $scope.mySelectedItems.indexOf($scope.gridItem);
+                if (gridItemIndex >= 0) {
+                    $scope.mySelectedItems.splice(gridItemIndex, 1);
+                }
+            };
+        }
+    }
+
     function populateSample(dstElement: any, rawText: string) {
         var formattedText = rawText
             .replace(/&/g, '&amp;')
@@ -284,6 +316,7 @@
 
     angular.module("trNgGridDemo")
         .controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController])
+        .controller("TrNgGridDemo.TestManipulateItemSelection", ["$scope", TestManipulateItemSelection])
         .config(["$compileProvider", function ($compileProvider: ng.ICompileProvider) {
             $compileProvider.debugInfoEnabled(false);
         }])
@@ -306,7 +339,6 @@
                         var stateView = tAttrs["projectMarkupFromStateView"];
                         var currentStateView = $state.current.views[stateView];
                         $http.get(currentStateView.template).success((data: string) => {
-                            debugger;
                             populateSample(element, data);
                         });
                     }

@@ -66,12 +66,6 @@ var TrNgGridDemo;
             $scope.myEnableSelections = true;
             $scope.myEnableMultiRowSelections = true;
             $scope.myNextItemsTotalCount = 100;
-            //$scope.$watch("myGridFilteredItemsPage", (newValue, oldvalue) => {
-            //    debugger;
-            //});
-            //$scope.$watch("myGridFilteredItems", (newValue, oldvalue) => {
-            //    debugger;
-            //});
             $scope.alert = function (message) {
                 $window.alert(message);
             };
@@ -91,6 +85,13 @@ var TrNgGridDemo;
                     $scope.myFields.splice(fieldIndex, 1);
                 }
             };*/
+            $scope.clearSelection = function () {
+                $scope.mySelectedItems.splice(0);
+            };
+            $scope.selectAll = function () {
+                $scope.mySelectedItems.splice(0);
+                angular.forEach($scope.myItems, function (item) { return $scope.mySelectedItems.push(item); });
+            };
             $scope.removeSelectedElements = function () {
                 angular.forEach($scope.mySelectedItems, function (selectedItem) {
                     $scope.myItems.splice($scope.myItems.indexOf(selectedItem), 1);
@@ -202,6 +203,27 @@ var TrNgGridDemo;
         return TestController;
     })();
     TrNgGridDemo.TestController = TestController;
+    var TestManipulateItemSelection = (function () {
+        function TestManipulateItemSelection($scope) {
+            this.$scope = $scope;
+            $scope.$watchCollection("mySelectedItems", function () {
+                $scope.isSelected = $scope.mySelectedItems.indexOf($scope.gridItem) >= 0;
+            });
+            $scope.selectItem = function () {
+                if ($scope.mySelectedItems.indexOf($scope.gridItem) < 0) {
+                    $scope.mySelectedItems.push($scope.gridItem);
+                }
+            };
+            $scope.deselectItem = function () {
+                var gridItemIndex = $scope.mySelectedItems.indexOf($scope.gridItem);
+                if (gridItemIndex >= 0) {
+                    $scope.mySelectedItems.splice(gridItemIndex, 1);
+                }
+            };
+        }
+        return TestManipulateItemSelection;
+    })();
+    TrNgGridDemo.TestManipulateItemSelection = TestManipulateItemSelection;
     function populateSample(dstElement, rawText) {
         var formattedText = rawText.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         //.replace(/\n/g, '<br/>');
@@ -215,7 +237,7 @@ var TrNgGridDemo;
         //.replace(/  /g, "&nbsp;&nbsp;");
         angular.element(dstElement).html(formattedText).addClass('prettyprint prettyprinted').attr("ng-non-bindable", "");
     }
-    angular.module("trNgGridDemo").controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).config(["$compileProvider", function ($compileProvider) {
+    angular.module("trNgGridDemo").controller("TrNgGridDemo.TestController", ["$scope", "$window", "$timeout", TestController]).controller("TrNgGridDemo.TestManipulateItemSelection", ["$scope", TestManipulateItemSelection]).config(["$compileProvider", function ($compileProvider) {
         $compileProvider.debugInfoEnabled(false);
     }]).directive("projectMarkupTo", ["$document", function ($document) {
         return {
