@@ -1,25 +1,28 @@
 {
-  "name": "trNgGrid",
-  "version": "3.1.0",
-  "description": "trNgGrid is a feature rich declarative data grid based on the popular AngularJs framework and making use of plain table HTML elements.",
-  "homepage": "https://github.com/MoonStorm/trNgGrid",
-  "author": "MoonStorm <MoonStorm@gmail.com>",
-  "license": "MIT",
-  "keywords": [
-    "angular",
-    "html",
-    "table",
-    "grid"
-  ],
-  "main": "trNgGrid.min.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MoonStorm/trNgGrid"
-  },
-  "dependencies": {
-    "angular": ">=1.3.1"
-  },
-  "devDependencies": {
-    "grunt": ">=0.4.5"
-  }
+    "name": "trnggrid",
+    "version": "3.1.0",
+    "description": "trNgGrid is a feature rich declarative data grid based on the popular AngularJs framework and making use of plain table HTML elements.",
+    "homepage": "http://github.com/MoonStorm/trNgGrid",
+    "author": "MoonStorm <MoonStorm@gmail.com>",
+    "license": "MIT",
+    "keywords": [
+        "angular",
+        "html",
+        "table",
+        "grid"
+    ],
+    "bugs": {
+        "url": "http://github.com/MoonStorm/trNgGrid/issues"
+    },
+    "files": ["trNgGrid.min.js", "trNgGrid.js", "trNgGrid.css", "trNgGrid.min.css","LICENSE", "relnotes.html"],
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/MoonStorm/trNgGrid"
+    },
+    "dependencies": {
+        "angular": ">=1.3.1"
+    },
+    "devDependencies": {
+        "grunt": ">=0.4.5"
+    }
 }
