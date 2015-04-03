@@ -36,5 +36,5 @@ If you want to show your support and help keep the flame burning, please [![dona
 - Experimental: beta, gh-pages/beta
 
 #### Issues
- Feel free to [report any problems you are experiencing](), but before you do that, fork [this simple Plunker](http://plnkr.co/edit/JCLrJD?p=preview) and attempt to isolate the issue.
+ Feel free to [report any problems you are experiencing](https://github.com/MoonStorm/trNgGrid/issues), but before you do that, fork [this simple Plunker](http://plnkr.co/edit/JCLrJD?p=preview) and attempt to isolate the issue.
  
