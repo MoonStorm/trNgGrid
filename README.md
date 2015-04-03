@@ -29,12 +29,12 @@ Make sure you first include Angular and a Boostrap theme of your choice.
 Themes can be found on the Bootswatch website. 
 Of course you can craft your own, as the grid layout is quite easy to style.
 
-If you want to show your support and help keep the flame burning, please <a href='https://pledgie.com/campaigns/28572'><img alt='Click here to lend your support to: trNgGrid and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28572.png?skin_name=chrome' border='0' ></a>.
+If you want to show your support and help keep the flame burning, please [![donate](https://pledgie.com/campaigns/28572.png?skin_name=chrome)](https://pledgie.com/campaigns/28572)
 
 #### Legend
 - Release: master, gh-pages/release
 - Experimental: beta, gh-pages/beta
 
 #### Issues
- Feel free to post any problems you might experience in the `issues` section, but before you do that, fork [this simple Plunker](http://plnkr.co/edit/JCLrJD?p=preview) and attempt to isolate the issue.
+ Feel free to [report any problems you are experiencing](), but before you do that, fork [this simple Plunker](http://plnkr.co/edit/JCLrJD?p=preview) and attempt to isolate the issue.
  

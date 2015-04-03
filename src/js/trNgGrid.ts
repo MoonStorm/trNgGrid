@@ -1,6 +1,6 @@
 "use strict";
 module TrNgGrid {
-    export var version = "3.1.0";
+    export var version = "3.1.2";
     export var minAngularVersion = { major: 1, minor: 3, dot: 1 };
 
     export enum SelectionMode {
@@ -522,33 +522,6 @@ module TrNgGrid {
             if (gridOptions.currentPage === undefined) {
                 gridOptions.currentPage = 0;
             }
-            // initialise the options
-            //this.gridOptions = <IGridOptions>{
-            //    immediateDataRetrieval: true,
-            //    items: [],
-            //    fields: null,
-            //    locale: "en",
-            //    selectedItems: [],
-            //    filteredItems: null,
-            //    filteredItemsPage: null,
-            //    filterBy: null,
-            //    filterByFields: {},
-            //    orderBy: null,
-            //    orderByReverse: false,
-            //    pageItems: null,
-            //    currentPage: 0,
-            //    totalItems: null,
-            //    enableFiltering: true,
-            //    enableSorting: true,
-            //    selectionMode: SelectionMode[SelectionMode.MultiRow],
-            //    onDataRequiredDelay: 1000,
-            //    onDataRequired: $attrs["onDataRequired"] ? $isolatedScope["onDataRequired"] : null,
-            //    gridColumnDefs: []
-            //};
-
-
-            //link the outer scope with the internal one
-            //this.linkScope(gridScope, $isolatedScope, "gridOptions", $attrs);
 
             //set up watchers for some of the special attributes we support
             if (isInServerSideMode) {
@@ -1175,7 +1148,7 @@ module TrNgGrid {
                                 var columnIndex = parseInt(tAttrs[cellHeaderDirective]);
 
                                 // create a clone of the default column options
-                                var columnOptions: IGridColumnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], defaultColumnOptions, defaultColumnOptionsTemplate);
+                                var columnOptions: IGridColumnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], defaultColumnOptionsTemplate, defaultColumnOptions);
 
                                 // now match and observe the attributes
                                 controller.linkAttrs(tAttrs, columnOptions);

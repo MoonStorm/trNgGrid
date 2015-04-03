@@ -1,7 +1,7 @@
 "use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
-    TrNgGrid.version = "3.1.0 RC";
+    TrNgGrid.version = "3.1.2";
     TrNgGrid.minAngularVersion = { major: 1, minor: 3, dot: 1 };
     (function (SelectionMode) {
         SelectionMode[SelectionMode["None"] = 0] = "None";
@@ -309,31 +309,6 @@ var TrNgGrid;
             if (gridOptions.currentPage === undefined) {
                 gridOptions.currentPage = 0;
             }
-            // initialise the options
-            //this.gridOptions = <IGridOptions>{
-            //    immediateDataRetrieval: true,
-            //    items: [],
-            //    fields: null,
-            //    locale: "en",
-            //    selectedItems: [],
-            //    filteredItems: null,
-            //    filteredItemsPage: null,
-            //    filterBy: null,
-            //    filterByFields: {},
-            //    orderBy: null,
-            //    orderByReverse: false,
-            //    pageItems: null,
-            //    currentPage: 0,
-            //    totalItems: null,
-            //    enableFiltering: true,
-            //    enableSorting: true,
-            //    selectionMode: SelectionMode[SelectionMode.MultiRow],
-            //    onDataRequiredDelay: 1000,
-            //    onDataRequired: $attrs["onDataRequired"] ? $isolatedScope["onDataRequired"] : null,
-            //    gridColumnDefs: []
-            //};
-            //link the outer scope with the internal one
-            //this.linkScope(gridScope, $isolatedScope, "gridOptions", $attrs);
             //set up watchers for some of the special attributes we support
             if (isInServerSideMode) {
                 var retrieveDataCallback = function () {
@@ -874,7 +849,7 @@ var TrNgGrid;
                             // so we're gonna have to do this manually
                             var columnIndex = parseInt(tAttrs[cellHeaderDirective]);
                             // create a clone of the default column options
-                            var columnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], TrNgGrid.defaultColumnOptions, TrNgGrid.defaultColumnOptionsTemplate);
+                            var columnOptions = angular.extend(scope.gridOptions.gridColumnDefs[columnIndex], TrNgGrid.defaultColumnOptionsTemplate, TrNgGrid.defaultColumnOptions);
                             // now match and observe the attributes
                             controller.linkAttrs(tAttrs, columnOptions);
                             // set up the new scope
