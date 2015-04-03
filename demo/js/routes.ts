@@ -3,7 +3,7 @@
     var allConfigurations: { [configurationKey: string]: IDemoConfiguration } = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.1.0",
+            fullName: "trNgGrid v3.1",
             titleCssClass: "text-success"
         }
         //"beta": {
@@ -203,7 +203,7 @@
                             },
                             'source': {
                                 template: '../demo/js/customizations_global_beta.ts'
-                            },
+                            }
                         },
                         resolve: {
                                 loadMyCtrl: [
@@ -211,7 +211,7 @@
                                         name: 'trNgGridDemoGlobalCustomizations',
                                         files: [
                                             '../demo/js/customizations_global_beta.js'
-                                        ],
+                                        ]
                                         //cache: false
                                     })
                                 ]

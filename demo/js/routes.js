@@ -3,7 +3,7 @@ var TrNgGridDemo;
     var allConfigurations = {
         "release": {
             name: "release",
-            fullName: "trNgGrid v3.1.0",
+            fullName: "trNgGrid v3.1",
             titleCssClass: "text-success"
         }
     };
@@ -151,7 +151,7 @@ var TrNgGridDemo;
                     },
                     'source': {
                         template: '../demo/js/customizations_global_beta.ts'
-                    },
+                    }
                 },
                 resolve: {
                     loadMyCtrl: [
@@ -160,7 +160,7 @@ var TrNgGridDemo;
                             name: 'trNgGridDemoGlobalCustomizations',
                             files: [
                                 '../demo/js/customizations_global_beta.js'
-                            ],
+                            ]
                         }); }
                     ]
                 }
