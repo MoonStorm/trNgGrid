@@ -1,7 +1,7 @@
 ﻿"use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
-    TrNgGrid.version = "3.1.3";
+    TrNgGrid.version = "3.1.4";
     TrNgGrid.minAngularVersion = { major: 1, minor: 3, dot: 1 };
     (function (SelectionMode) {
         SelectionMode[SelectionMode["None"] = 0] = "None";

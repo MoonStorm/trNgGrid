@@ -1,6 +1,6 @@
 "use strict";
 module TrNgGrid {
-    export var version = "3.1.3";
+    export var version = "3.1.4";
     export var minAngularVersion = { major: 1, minor: 3, dot: 1 };
 
     export enum SelectionMode { 
