@@ -15,7 +15,7 @@
     <RootNamespace>trNgGrid_Release</RootNamespace>
     <AssemblyName>trNgGrid-Release</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -136,6 +136,9 @@
     <Content Include="release\package.json" />
     <Content Include="release\README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="web.config" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -156,7 +159,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3357</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:3357/</IISUrl>
+          <IISUrl>http://localhost/trNgGrid-Release</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
