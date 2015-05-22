@@ -1750,7 +1750,7 @@ module TrNgGrid {
                 + '  </div>'
                 + '</div>');
         }
-        if (!$templateCache.put(TrNgGrid.cellFooterTemplateId)) {
+        if (!$templateCache.get(TrNgGrid.cellFooterTemplateId)) {
             $templateCache.put(TrNgGrid.cellFooterTemplateId,
                 '<div class="' + TrNgGrid.footerCssClass + '" ng-switch="isCustomized">'
                 + '  <div ng-switch-when="true">'
