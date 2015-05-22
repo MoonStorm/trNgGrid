@@ -1,7 +1,7 @@
 ﻿"use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
-    TrNgGrid.version = "3.1.2";
+    TrNgGrid.version = "3.1.3";
     TrNgGrid.minAngularVersion = { major: 1, minor: 3, dot: 1 };
     (function (SelectionMode) {
         SelectionMode[SelectionMode["None"] = 0] = "None";
@@ -253,6 +253,9 @@ var TrNgGrid;
         return TemplatedSection;
     })();
     var GridController = (function () {
+        // Update: These two might not be needed after all, due to evalasync/applyasync patterns
+        //private temporarilyIgnorePageIndexChangeForDataRetrievals:boolean;
+        //private temporarilyIgnorePageIndexChangeForDataFiltering: boolean;
         function GridController($compile, $parse, $timeout, $templateCache) {
             this.$compile = $compile;
             this.$parse = $parse;
@@ -263,27 +266,11 @@ var TrNgGrid;
             }
         }
         GridController.prototype.setupGrid = function (gridScope, gridOptions, isInServerSideMode) {
-            var _this = this;
             this.gridOptions = gridOptions;
             this.isInServerSideMode = isInServerSideMode;
             gridScope.gridOptions = gridOptions;
             gridScope.TrNgGrid = TrNgGrid;
             // set some defaults
-            //gridScope.$watch("gridOptions.locale",(newLocale: string) => {
-            //    if (!newLocale) {
-            //        gridScope.gridOptions.locale = "en";
-            //    }
-            //});
-            //gridScope.$watch("gridOptions.selectionMode",(newSelectionMode: string) => {
-            //    if (!newSelectionMode) {
-            //        gridScope.gridOptions.selectionMode = SelectionMode[SelectionMode.MultiRow];
-            //    }
-            //});
-            //gridScope.$watch("gridOptions.onDataRequiredDelay",(newDataRequiredDelay: string) => {
-            //    if (newDataRequiredDelay === undefined) {
-            //        gridScope.gridOptions.onDataRequiredDelay = 1000;
-            //    }
-            //});
             gridOptions.gridColumnDefs = [];
             if (gridOptions.locale === undefined) {
                 gridOptions.locale = "en";
@@ -309,49 +296,194 @@ var TrNgGrid;
             if (gridOptions.currentPage === undefined) {
                 gridOptions.currentPage = 0;
             }
-            //set up watchers for some of the special attributes we support
-            if (isInServerSideMode) {
-                var retrieveDataCallback = function () {
-                    _this.dataRequestPromise = null;
-                    _this.gridOptions.immediateDataRetrieval = false;
-                    TrNgGrid.debugMode && _this.log("Requesting data - server side mode");
-                    _this.gridOptions.onDataRequired(_this.gridOptions);
-                };
-                var scheduleDataRetrieval = function () {
-                    if (_this.dataRequestPromise) {
-                        _this.$timeout.cancel(_this.dataRequestPromise);
-                        _this.dataRequestPromise = null;
-                    }
-                    if (_this.gridOptions.immediateDataRetrieval) {
-                        retrieveDataCallback();
+            //set up watchers
+            this.setupServerSideModeTriggers(gridScope);
+            this.setupDataFilteringTriggers(gridScope);
+            this.setupDataFormattingTriggers(gridScope);
+            this.setupDataSelectionTriggers(gridScope);
+            return gridScope;
+        };
+        GridController.prototype.setupDataFilteringTriggers = function (gridScope) {
+            var _this = this;
+            var scheduledForCurrentCycle = false;
+            this.scheduleDataFiltering = function () {
+                if (scheduledForCurrentCycle) {
+                    return;
+                }
+                gridScope.$evalAsync(function () {
+                    scheduledForCurrentCycle = false;
+                    _this.computeFilteredItems(gridScope);
+                });
+                scheduledForCurrentCycle = true;
+            };
+            if (!this.isInServerSideMode) {
+                var initCycle = true;
+                gridScope.$watchCollection("[" + "gridOptions.filterBy," + "gridOptions.filterByFields," + "gridOptions.orderBy," + "gridOptions.orderByReverse," + "gridOptions.pageItems" + "]", function (newValue, oldValue) {
+                    if (initCycle) {
+                        initCycle = false;
                     }
                     else {
-                        _this.dataRequestPromise = _this.$timeout(function () {
-                            retrieveDataCallback();
-                        }, _this.gridOptions.onDataRequiredDelay, true);
+                        // any of these values will reset the current page
+                        _this.gridOptions.currentPage = 0;
+                        _this.scheduleDataFiltering();
                     }
-                };
-                gridScope.$watchCollection("[" + "gridOptions.currentPage," + "gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.pageItems, " + "]", function (newValues, oldValues) {
-                    // first time both arrays of values will be the same
-                    var pageChanged = newValues[0] !== oldValues[0];
-                    if (!angular.equals(newValues, oldValues) && !pageChanged) {
-                        // everything will reset the page index, with the exception of a page index change
-                        if (_this.gridOptions.currentPage !== 0) {
-                            _this.gridOptions.currentPage = 0;
-                            // the page index watch will activate, exit for now to avoid duplicate data requests
-                            return;
-                        }
-                    }
-                    // initially called even when there is no change, but we need that to initiate the request for data
-                    scheduleDataRetrieval();
                 });
-                gridScope.$watch("gridOptions.immediateDataRetrieval", function (newValue) {
-                    if (newValue && _this.dataRequestPromise) {
-                        _this.$timeout.cancel(_this.dataRequestPromise);
-                        retrieveDataCallback();
+                gridScope.$watch("gridOptions.currentPage", function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        {
+                            _this.scheduleDataFiltering();
+                        }
                     }
                 });
             }
+        };
+        GridController.prototype.setupDataFormattingTriggers = function (gridScope) {
+            var _this = this;
+            var scheduledForCurrentCycle = false;
+            this.scheduleDataFormatting = function () {
+                if (scheduledForCurrentCycle) {
+                    return;
+                }
+                gridScope.$evalAsync(function () {
+                    scheduledForCurrentCycle = false;
+                    _this.computeFormattedItems(gridScope);
+                });
+                scheduledForCurrentCycle = true;
+            };
+            var watchExpression = "[gridOptions.items,gridOptions.gridColumnDefs.length";
+            angular.forEach(gridScope.gridOptions.gridColumnDefs, function (gridColumnDef) {
+                if (gridColumnDef.displayFormat && gridColumnDef.displayFormat[0] != '.') {
+                    // watch the parameters
+                    var displayfilters = gridColumnDef.displayFormat.split('|');
+                    angular.forEach(displayfilters, function (displayFilter) {
+                        var displayFilterParams = displayFilter.split(':');
+                        if (displayFilterParams.length > 1) {
+                            angular.forEach(displayFilterParams.slice(1), function (displayFilterParam) {
+                                displayFilterParam = displayFilterParam.trim();
+                                if (displayFilterParam && displayFilterParam !== "gridItem" && displayFilterParam !== "gridDisplayItem") {
+                                    watchExpression += "," + displayFilterParam;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            watchExpression += "]";
+            TrNgGrid.debugMode && this.log("re-formatting is set to watch for changes in " + watchExpression);
+            gridScope.$watch(watchExpression, function () { return _this.scheduleDataFormatting(); }, true);
+        };
+        GridController.prototype.setupServerSideModeTriggers = function (gridScope) {
+            var _this = this;
+            if (this.isInServerSideMode) {
+                var dataRequestPromise = null;
+                var scheduledForCurrentCycle = false;
+                var fastNextSchedule = false;
+                var pageIndexResetRequired = false;
+                var cancelDataRequestPromise = function () {
+                    if (dataRequestPromise) {
+                        _this.$timeout.cancel(dataRequestPromise);
+                        dataRequestPromise = null;
+                    }
+                };
+                var retrieveDataCallback = function () {
+                    TrNgGrid.debugMode && _this.log("Preparing to request data - server side mode");
+                    cancelDataRequestPromise();
+                    // queue the operations in the eval and apply async queues
+                    // apply queue flush -> digest cycle -> async queue flush -> dirty checks/watcher -> end digest cycle
+                    var requestData = function () {
+                        gridScope.$applyAsync(function () {
+                            scheduledForCurrentCycle = false;
+                            try {
+                                TrNgGrid.debugMode && _this.log("Requesting data - server side mode");
+                                _this.gridOptions.onDataRequired(_this.gridOptions);
+                            }
+                            catch (ex) {
+                                TrNgGrid.debugMode && _this.log("Data retrieval failed " + ex);
+                                throw ex;
+                            }
+                        });
+                    };
+                    if (pageIndexResetRequired) {
+                        gridScope.$evalAsync(function () {
+                            TrNgGrid.debugMode && _this.log("Resetting the page index - server side mode");
+                            gridScope.gridOptions.currentPage = 0;
+                            pageIndexResetRequired = false;
+                            requestData();
+                        });
+                    }
+                    else {
+                        requestData();
+                    }
+                };
+                this.scheduleServerSideModeDataRetrieval = function () {
+                    if (scheduledForCurrentCycle) {
+                        // it's gonna happen anyway, sooner than we expected
+                        return;
+                    }
+                    cancelDataRequestPromise();
+                    dataRequestPromise = _this.$timeout(function () {
+                        dataRequestPromise = null;
+                        scheduledForCurrentCycle = true;
+                        retrieveDataCallback();
+                    }, _this.gridOptions.onDataRequiredDelay, true);
+                    if (fastNextSchedule) {
+                        _this.speedUpServerSideModeDataRetrieval();
+                    }
+                };
+                this.speedUpServerSideModeDataRetrieval = function ($event) {
+                    if (!$event || $event.keyCode == 13) {
+                        if (dataRequestPromise) {
+                            // speed up the request
+                            fastNextSchedule = false;
+                            cancelDataRequestPromise();
+                            scheduledForCurrentCycle = true;
+                            retrieveDataCallback();
+                        }
+                        else {
+                            fastNextSchedule = true;
+                        }
+                    }
+                };
+                // the current page must be monitored separately, as it's being adjusted by logic fired by various watchers
+                gridScope.$watch("gridOptions.currentPage", function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        {
+                            TrNgGrid.debugMode && _this.log("Changes detected in the current page index in server-side mode. Scheduling data retrieval...");
+                            _this.scheduleServerSideModeDataRetrieval();
+                        }
+                    }
+                });
+                var initCycle = true;
+                gridScope.$watchCollection("[" + "gridOptions.filterBy, " + "gridOptions.filterByFields, " + "gridOptions.orderBy, " + "gridOptions.orderByReverse, " + "gridOptions.pageItems" + "]", function (newValues, oldValues) {
+                    if (initCycle) {
+                        initCycle = false;
+                    }
+                    else {
+                        // everything will reset the page index, with the exception of a page index change
+                        if (_this.gridOptions.currentPage !== 0) {
+                            // Update: turned off for the time being
+                            // don't allow for a second data retrieval to occur for the change of page
+                            //this.temporarilyIgnorePageIndexChangeForDataRetrievals = true;
+                            TrNgGrid.debugMode && _this.log("Changes detected in parameters in server-side mode. Requesting a page index reset...");
+                            pageIndexResetRequired = true;
+                        }
+                        TrNgGrid.debugMode && _this.log("Changes detected in parameters in server-side mode. Scheduling data retrieval...");
+                        _this.scheduleServerSideModeDataRetrieval();
+                    }
+                });
+                // as this is the first time, schedule an immediate retrieval of data
+                this.scheduleServerSideModeDataRetrieval();
+                this.speedUpServerSideModeDataRetrieval();
+            }
+            else {
+                // non server side mode => nothing to do
+                this.speedUpServerSideModeDataRetrieval = function ($event) {
+                };
+            }
+            gridScope.speedUpAsyncDataRetrieval = function ($event) { return _this.speedUpServerSideModeDataRetrieval($event); };
+        };
+        GridController.prototype.setupDataSelectionTriggers = function (gridScope) {
+            var _this = this;
             // the new settings
             gridScope.$watch("gridOptions.selectionMode", function (newValue, oldValue) {
                 if (newValue !== oldValue) {
@@ -367,12 +499,6 @@ var TrNgGrid;
                     }
                 }
             });
-            return gridScope;
-        };
-        GridController.prototype.speedUpAsyncDataRetrieval = function ($event) {
-            if (!$event || $event.keyCode == 13) {
-                this.gridOptions.immediateDataRetrieval = true;
-            }
         };
         GridController.prototype.setColumnOptions = function (columnIndex, columnOptions) {
             var originalOptions = this.gridOptions.gridColumnDefs[columnIndex];
@@ -393,7 +519,7 @@ var TrNgGrid;
                 // the sort direction has changed
                 this.gridOptions.orderByReverse = !this.gridOptions.orderByReverse;
             }
-            this.speedUpAsyncDataRetrieval();
+            this.speedUpServerSideModeDataRetrieval();
         };
         GridController.prototype.toggleItemSelection = function (filteredItems, item, $event) {
             if (this.gridOptions.selectionMode === SelectionMode[0 /* None */])
@@ -596,6 +722,7 @@ var TrNgGrid;
                 templatedBodyRowElement.attr("ng-click", "toggleItemSelection(gridItem, $event)");
                 templatedBodyRowElement.attr("ng-repeat", "gridDisplayItem in filteredItems");
                 templatedBodyRowElement.attr("ng-init", "gridItem=gridDisplayItem.$$_gridItem;" + templatedBodyRowElement.attr("ng-init"));
+                // insert our classes in there. watch out for an existing attribute
                 // this is not properly handled, but it will be refactored in the next major version
                 var ngClassValue = templatedBodyRowElement.attr("ng-class");
                 ngClassValue = (ngClassValue || "").replace(/^(\s*\{?)(.*?)(\}?\s*)$/, "{'" + TrNgGrid.rowSelectedCssClass + "':gridOptions.selectedItems.indexOf(gridItem) >= 0" + ", $2}");
@@ -606,57 +733,64 @@ var TrNgGrid;
             }
             catch (ex) {
                 TrNgGrid.debugMode && this.log("Fixing table structure failed with error " + ex);
+                throw ex;
             }
         };
         GridController.prototype.computeFormattedItems = function (scope) {
             var input = scope.gridOptions.items || [];
             TrNgGrid.debugMode && this.log("formatting items of length " + input.length);
-            var formattedItems = scope.formattedItems = (scope.formattedItems || []);
-            // it's enough to flip the value of the trigger
-            scope.requiresReFilteringTrigger = !scope.requiresReFilteringTrigger;
-            var gridColumnDefs = scope.gridOptions.gridColumnDefs;
-            for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
-                var gridItem = input[inputIndex];
-                var outputItem;
-                // crate a temporary scope for holding a gridItem as we enumerate through the items
-                var localEvalVars = { gridItem: gridItem };
-                while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== gridItem) {
-                    formattedItems.splice(inputIndex, 1);
-                }
-                if (inputIndex < formattedItems.length) {
-                    outputItem = formattedItems[inputIndex];
-                    if (outputItem.$$_gridItem !== gridItem) {
-                        outputItem = { $$_gridItem: gridItem };
-                        formattedItems[inputIndex] = outputItem;
+            try {
+                var formattedItems = scope.formattedItems = (scope.formattedItems || []);
+                var gridColumnDefs = scope.gridOptions.gridColumnDefs;
+                for (var inputIndex = 0; inputIndex < input.length; inputIndex++) {
+                    var gridItem = input[inputIndex];
+                    var outputItem;
+                    // crate a temporary scope for holding a gridItem as we enumerate through the items
+                    var localEvalVars = { gridItem: gridItem };
+                    while (formattedItems.length > input.length && (outputItem = formattedItems[inputIndex]).$$_gridItem !== gridItem) {
+                        formattedItems.splice(inputIndex, 1);
                     }
-                }
-                else {
-                    outputItem = { $$_gridItem: gridItem };
-                    formattedItems.push(outputItem);
-                }
-                for (var gridColumnDefIndex = 0; gridColumnDefIndex < gridColumnDefs.length; gridColumnDefIndex++) {
-                    var fieldName;
-                    try {
-                        var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
-                        if (gridColumnDef.displayFieldName && gridColumnDef.fieldExtractionExpression) {
-                            var displayFormat = gridColumnDef.displayFormat;
-                            if (displayFormat) {
-                                if (displayFormat[0] !== "." && displayFormat[0] !== "|" && displayFormat[0] !== "[") {
-                                    // angular filter
-                                    displayFormat = " | " + displayFormat;
-                                }
-                            }
-                            outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridItem" + gridColumnDef.fieldExtractionExpression + (displayFormat || ""), localEvalVars);
+                    if (inputIndex < formattedItems.length) {
+                        outputItem = formattedItems[inputIndex];
+                        if (outputItem.$$_gridItem !== gridItem) {
+                            outputItem = { $$_gridItem: gridItem };
+                            formattedItems[inputIndex] = outputItem;
                         }
                     }
-                    catch (ex) {
-                        TrNgGrid.debugMode && this.log("Field evaluation failed for <" + (fieldName || "unknown") + "> with error " + ex);
+                    else {
+                        outputItem = { $$_gridItem: gridItem };
+                        formattedItems.push(outputItem);
+                    }
+                    for (var gridColumnDefIndex = 0; gridColumnDefIndex < gridColumnDefs.length; gridColumnDefIndex++) {
+                        var fieldName;
+                        try {
+                            var gridColumnDef = gridColumnDefs[gridColumnDefIndex];
+                            if (gridColumnDef.displayFieldName && gridColumnDef.fieldExtractionExpression) {
+                                var displayFormat = gridColumnDef.displayFormat;
+                                if (displayFormat) {
+                                    if (displayFormat[0] !== "." && displayFormat[0] !== "|" && displayFormat[0] !== "[") {
+                                        // angular filter
+                                        displayFormat = " | " + displayFormat;
+                                    }
+                                }
+                                outputItem[gridColumnDef.displayFieldName] = scope.$eval("gridItem" + gridColumnDef.fieldExtractionExpression + (displayFormat || ""), localEvalVars);
+                            }
+                        }
+                        catch (ex) {
+                            TrNgGrid.debugMode && this.log("Field evaluation failed for <" + (fieldName || "unknown") + "> with error " + ex);
+                        }
                     }
                 }
+                // remove any extra elements from the formatted list
+                if (formattedItems.length > input.length) {
+                    formattedItems.splice(input.length, formattedItems.length - input.length);
+                }
+                // trigger the filtering
+                this.scheduleDataFiltering();
             }
-            // remove any extra elements from the formatted list
-            if (formattedItems.length > input.length) {
-                formattedItems.splice(input.length, formattedItems.length - input.length);
+            catch (ex) {
+                TrNgGrid.debugMode && this.log("Failed to format items " + ex);
+                throw ex;
             }
         };
         GridController.prototype.extractDataItems = function (formattedItems) {
@@ -674,63 +808,37 @@ var TrNgGrid;
             return dataItems;
         };
         GridController.prototype.computeFilteredItems = function (scope) {
-            if (this.isInServerSideMode) {
-                // when server side data queries are active, bypass filtering and paging
-                scope.filteredItems = scope.formattedItems;
-            }
-            else {
-                // apply filters first
-                scope.filterByDisplayFields = {};
-                if (scope.gridOptions.filterByFields) {
-                    for (var fieldName in scope.gridOptions.filterByFields) {
-                        scope.filterByDisplayFields[this.getSafeFieldName(fieldName)] = scope.gridOptions.filterByFields[fieldName];
-                    }
+            try {
+                if (this.isInServerSideMode) {
+                    // when server side data queries are active, bypass filtering and paging
+                    scope.filteredItems = scope.formattedItems;
                 }
-                TrNgGrid.debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-                scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | " + TrNgGrid.sortFilter + ":gridOptions");
-                // check if anyone is interested in the filtered items
-                if (scope.gridOptions.filteredItems) {
-                    scope.gridOptions.filteredItems = this.extractDataItems(scope.filteredItems);
-                }
-                // proceed with paging
-                scope.filteredItems = scope.$eval("filteredItems | " + TrNgGrid.dataPagingFilter + ":gridOptions");
-            }
-            // check if anyone is interested in the items on the current page
-            if (scope.gridOptions.filteredItemsPage) {
-                scope.gridOptions.filteredItemsPage = this.extractDataItems(scope.filteredItems);
-            }
-        };
-        GridController.prototype.setupDisplayItemsArray = function (scope) {
-            var _this = this;
-            var watchExpression = "[gridOptions.items,gridOptions.gridColumnDefs.length";
-            angular.forEach(scope.gridOptions.gridColumnDefs, function (gridColumnDef) {
-                if (gridColumnDef.displayFormat && gridColumnDef.displayFormat[0] != '.') {
-                    // watch the parameters
-                    var displayfilters = gridColumnDef.displayFormat.split('|');
-                    angular.forEach(displayfilters, function (displayFilter) {
-                        var displayFilterParams = displayFilter.split(':');
-                        if (displayFilterParams.length > 1) {
-                            angular.forEach(displayFilterParams.slice(1), function (displayFilterParam) {
-                                displayFilterParam = displayFilterParam.trim();
-                                if (displayFilterParam && displayFilterParam !== "gridItem" && displayFilterParam !== "gridDisplayItem") {
-                                    watchExpression += "," + displayFilterParam;
-                                }
-                            });
+                else {
+                    // apply filters first
+                    scope.filterByDisplayFields = {};
+                    if (scope.gridOptions.filterByFields) {
+                        for (var fieldName in scope.gridOptions.filterByFields) {
+                            scope.filterByDisplayFields[this.getSafeFieldName(fieldName)] = scope.gridOptions.filterByFields[fieldName];
                         }
-                    });
+                    }
+                    TrNgGrid.debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
+                    scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | " + TrNgGrid.sortFilter + ":gridOptions");
+                    // check if anyone is interested in the filtered items
+                    if (scope.gridOptions.filteredItems) {
+                        scope.gridOptions.filteredItems = this.extractDataItems(scope.filteredItems);
+                    }
+                    // proceed with paging
+                    scope.filteredItems = scope.$eval("filteredItems | " + TrNgGrid.dataPagingFilter + ":gridOptions");
                 }
-            });
-            watchExpression += "]";
-            TrNgGrid.debugMode && this.log("re-formatting is set to watch for changes in " + watchExpression);
-            scope.$watch(watchExpression, function () { return _this.computeFormattedItems(scope); }, true);
-            watchExpression = "[requiresReFilteringTrigger";
-            if (!this.isInServerSideMode) {
-                watchExpression += ", gridOptions.filterBy, gridOptions.filterByFields, gridOptions.orderBy, gridOptions.orderByReverse, gridOptions.currentPage, gridOptions.pageItems";
+                // check if anyone is interested in the items on the current page
+                if (scope.gridOptions.filteredItemsPage) {
+                    scope.gridOptions.filteredItemsPage = this.extractDataItems(scope.filteredItems);
+                }
             }
-            watchExpression += "]";
-            scope.$watch(watchExpression, function (newValue, oldValue) {
-                _this.computeFilteredItems(scope);
-            }, true);
+            catch (ex) {
+                TrNgGrid.debugMode && this.log("Failed to filter items " + ex);
+                throw ex;
+            }
         };
         GridController.prototype.linkAttrs = function (tAttrs, localStorage) {
             var propSetter = function (propName, propValue) {
@@ -803,8 +911,6 @@ var TrNgGrid;
                             //var gridScope = controller.setupScope(isolatedScope, instanceElement, tAttrs);
                             var gridScope = isolatedScope.$parent.$new();
                             controller.setupGrid(gridScope, isolatedScope, !!tAttrs.onDataRequired);
-                            gridScope.speedUpAsyncDataRetrieval = function ($event) { return controller.speedUpAsyncDataRetrieval($event); };
-                            controller.setupDisplayItemsArray(gridScope);
                             controller.configureTableStructure(gridScope, instanceElement);
                             isolatedScope.$on("$destroy", function () {
                                 gridScope.$destroy();
@@ -879,7 +985,7 @@ var TrNgGrid;
                                             else {
                                                 scope.gridOptions.filterByFields[columnOptions.fieldName] = newFilterValue;
                                             }
-                                            // in order for someone to successfully listen to changes made to this object, we need to replace it
+                                            // in order for someone to successfully listen for shallow changes, we need to replace it
                                             scope.gridOptions.filterByFields = angular.extend({}, scope.gridOptions.filterByFields);
                                         }
                                     });
@@ -998,7 +1104,6 @@ var TrNgGrid;
         }
     ]).directive(pagerDirective, [
         function () {
-            var _this = this;
             var setupScope = function (scope, controller) {
                 // do not set scope.gridOptions.totalItems, it might be set from the outside
                 scope.totalItemsCount = (typeof (scope.gridOptions.totalItems) != "undefined" && scope.gridOptions.totalItems != null) ? scope.gridOptions.totalItems : (scope.gridOptions.items ? scope.gridOptions.items.length : 0);
@@ -1006,8 +1111,7 @@ var TrNgGrid;
                 scope.extendedControlsActive = false;
                 scope.lastPageIndex = (!scope.totalItemsCount || !scope.isPaged) ? 0 : (Math.floor(scope.totalItemsCount / scope.gridOptions.pageItems) + ((scope.totalItemsCount % scope.gridOptions.pageItems) ? 0 : -1));
                 if (scope.gridOptions.currentPage > scope.lastPageIndex) {
-                    TrNgGrid.debugMode && _this.log("The current page index falls outside of the range of items. Either the attached parameter has a wrong value or the total items count is not properly set in server side mode.");
-                    // this will unfortunately trigger another query if in server side data query mode
+                    TrNgGrid.debugMode && controller.log("The current page index falls outside of the range of items. Either the attached parameter has a wrong value or the total items count is not properly set in server side mode.");
                     scope.gridOptions.currentPage = scope.lastPageIndex;
                 }
                 scope.startItemIndex = scope.isPaged ? (scope.gridOptions.pageItems * scope.gridOptions.currentPage) : 0;
