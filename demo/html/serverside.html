@@ -91,11 +91,12 @@
                 </p>
 
                 <div project-markup-to="#trNgGrid_Sample_Server_Side">
-                    <table tr-ng-grid
-                           items="myItems"
-                           page-items="myPageItemsCount"
-                           total-items="myItemsTotalCount"
-                           on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)"></table>
+<table tr-ng-grid
+        items="myItems"
+        page-items="myPageItemsCount"
+        total-items="myItemsTotalCount"
+        on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)">    
+</table>
                 </div>
                 <p>
                     In this sample, the items are using an RNG to simulate a server-side response. It's expected for the server to perform these tasks.<br />
@@ -224,16 +225,17 @@
                     <div project-markup-to="#trNgGrid_Sample_Server_Side_Restore_State">
 <div ng-init="myItemsTotalCount=100;myGlobalFilter=' kitsch ';myCurrentPage=2;myOrderBy='name';myOrderByReversed=true;myColumnFilter={name:' helen '}">
 
-    <table tr-ng-grid
-            items="myItems"
-            page-items="10"
-            total-items="myItemsTotalCount"
-            filter-by="myGlobalFilter"
-            filter-by-fields="myColumnFilter"
-            order-by="myOrderBy"
-            order-by-reverse="myOrderByReversed"
-            current-page="myCurrentPage"
-            on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)"></table>
+<table tr-ng-grid
+        items="myItems"
+        page-items="10"
+        total-items="myItemsTotalCount"
+        filter-by="myGlobalFilter"
+        filter-by-fields="myColumnFilter"
+        order-by="myOrderBy"
+        order-by-reverse="myOrderByReversed"
+        current-page="myCurrentPage"
+        on-data-required="onServerSideItemsRequested(currentPage, pageItems, filterBy, filterByFields, orderBy, orderByReverse)">    
+</table>
 
 </div>
                     </div>
