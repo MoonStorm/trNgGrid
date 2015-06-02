@@ -2,7 +2,6 @@
 var TrNgGrid;
 (function (TrNgGrid) {
     TrNgGrid.version = "3.1.4";
-    TrNgGrid.minAngularVersion = { major: 1, minor: 3, dot: 1 };
     (function (SelectionMode) {
         SelectionMode[SelectionMode["None"] = 0] = "None";
         SelectionMode[SelectionMode["SingleRow"] = 1] = "SingleRow";
@@ -893,10 +892,6 @@ var TrNgGrid;
                 },
                 controller: ["$compile", "$parse", "$timeout", "$templateCache", GridController],
                 compile: function (templateElement, tAttrs) {
-                    // check the angular version
-                    if (angular.version.major < TrNgGrid.minAngularVersion.major || angular.version.minor < TrNgGrid.minAngularVersion.minor || angular.version.dot < TrNgGrid.minAngularVersion.dot) {
-                        throw "This version of the Angular library is not supported by trNgGrid.";
-                    }
                     // at this stage, no elements can be bound
                     angular.forEach(templateElement.children(), function (childElement) {
                         childElement = angular.element(childElement);

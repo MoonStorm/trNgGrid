@@ -1,7 +1,6 @@
 "use strict";
 module TrNgGrid {
     export var version = "3.1.4";
-    export var minAngularVersion = { major: 1, minor: 3, dot: 1 };
 
     export enum SelectionMode { 
         None,
@@ -1213,11 +1212,6 @@ module TrNgGrid {
                     },
                     controller: ["$compile", "$parse", "$timeout", "$templateCache", GridController],
                     compile: (templateElement: JQuery, tAttrs: Object) => {
-                        // check the angular version
-                        if (angular.version.major < minAngularVersion.major || angular.version.minor < minAngularVersion.minor || angular.version.dot < minAngularVersion.dot) {
-                            throw "This version of the Angular library is not supported by trNgGrid.";
-                        }
-
                         // at this stage, no elements can be bound
                         angular.forEach(templateElement.children(),(childElement: JQuery) => {
                             childElement = angular.element(childElement);
