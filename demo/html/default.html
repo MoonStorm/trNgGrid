@@ -46,7 +46,10 @@
                             Not everything is sweet and wonderful though. There are a few limitations which you should be aware of before jumping in.
                             <ul>
                                 <li>Multiple `TR` rows in the table definition are not supported. In other words, you can't have more than one row per header, footer, or per data item.</li>
-                                <li>DOM manipulation directives (e.g ng-if, ng-switch, ng-repeat) are not supported on the table sections, rows and cell elements.</li>
+                                <li>
+                                    DOM manipulation directives (e.g ng-if, ng-switch, ng-repeat) are not supported on the table sections, rows and cell elements.
+                                    The grid compensates for this deficiency by giving you ways to dynamically add or remove columns.
+                                </li>
                                 <li>Custom start/end symbols, set up via the `$interpolate` service, are not supported.</li>
                                 <li>A global configuration provider would be nice to have.</li>
                             </ul>
