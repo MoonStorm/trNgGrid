@@ -1,7 +1,7 @@
 "use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
-    TrNgGrid.version = "3.1.4";
+    TrNgGrid.version = "3.1.4-ir";
     (function (SelectionMode) {
         SelectionMode[SelectionMode["None"] = 0] = "None";
         SelectionMode[SelectionMode["SingleRow"] = 1] = "SingleRow";
@@ -608,7 +608,7 @@ var TrNgGrid;
             this.templatedBody.discoverTemplates(gridElement);
         };
         GridController.prototype.getSafeFieldName = function (fieldName) {
-            return fieldName.replace(/[^a-zA-Z]/g, "_");
+            return fieldName.replace(/[^a-zA-Z0-9]/g, "_");
         };
         GridController.prototype.configureTableStructure = function (parentScope, gridElement, oldScope) {
             var _this = this;
@@ -924,7 +924,7 @@ var TrNgGrid;
                 }
                 else if (scope.columnOptions.fieldName) {
                     // exclude nested notations and invalid letters
-                    var rawTitle = scope.columnOptions.fieldName.replace(/^([^\a-zA-Z]*)([\a-zA-Z]*)(.*)/g, "$2"); // take just the first part
+                    var rawTitle = scope.columnOptions.fieldName.replace(/^([^\a-zA-Z]*)([\a-zA-Z0-9]*)(.*)/g, "$2"); // take just the first part
                     // split by camel-casing
                     var splitTitleName = rawTitle.split(/(?=[A-Z])/);
                     if (splitTitleName.length && splitTitleName[0].length) {
