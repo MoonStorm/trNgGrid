@@ -29,8 +29,6 @@ Make sure you first include Angular and a Boostrap theme of your choice.
 Themes can be found on the Bootswatch website. 
 Of course you can craft your own, as the grid layout is quite easy to style.
 
-If you want to show your support and help keep the flame burning, please [![donate](https://pledgie.com/campaigns/28572.png?skin_name=chrome)](https://pledgie.com/campaigns/28572)
-
 #### Legend
 - Release: master, gh-pages/release
 - Experimental: beta, gh-pages/beta
