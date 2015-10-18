@@ -15,7 +15,6 @@ Simply because everything else you're gonna find out there is either:
 - fully customizable via templates and two-way data bound attributes
 - easy to maintain, as its code was written in TypeScript. The repository also has the JS implementation, so no need to worry if you don't have time to learn something new (even though I strongly recommend this one as it brings a bit of order in the Javascript chaos)
 - has a very short list of dependencies: Angular and Bootstrap CSS
-- it's far from perfection, but it's actively being maintained and improved
 
 #### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/release)
 
