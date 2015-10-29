@@ -1,24 +1,8 @@
-### trNgGrid is a feature rich data grid based on the popular AngularJs framework and making use of plain HTML table elements.
-
-#### Why another one?
-Simply because everything else you're gonna find out there is either:
-- breaking the separation of concerns, forcing you to initialize it inside a controller, and not inside the view
-- using DIVs instead of the elements meant to display tabular data, hence performing poorly and, as a bonus, turning the rendered markup into spaghetti
-- over-engineered without giving you much in return, making it just difficult to maintain
-- quite pricey
-- bringing along bloated old dependencies for the ride
-     
-#### Why this one?
-- is simple to use
-- spits out plain HTML table elements, meant to be used for displaying tabular data, thus helping the browsers to optimize the rendering
-- allows you to fully describe it in a view, without messing up your controllers with elaborate configs
-- fully customizable via templates and two-way data bound attributes
-- easy to maintain, as its code was written in TypeScript. The repository also has the JS implementation, so no need to worry if you don't have time to learn something new (even though I strongly recommend this one as it brings a bit of order in the Javascript chaos)
-- has a very short list of dependencies: Angular and Bootstrap CSS
+### The development of the trNgGrid has stopped in favor of [Smart Table](http://lorenzofox3.github.io/smart-table-website/), which has better traction, backing, and is using an identical philosophy as the one behind trNgGrid. Smart Table is trNgGrid without its birth defects.
 
 #### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/release)
 
-#### Convinced?
+#### Installation
 You can install the grid by either:
 - running `npm install tr-ng-grid --save` or
 - running `bower install tr-ng-grid --save` or
