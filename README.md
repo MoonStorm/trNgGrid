@@ -1,4 +1,4 @@
-trNgGrid can be used for simple to mildly complex scenarios where you quickly need a grid with a decent amount of features, easy to learn and hook up with your data models, thanks to its powerful data binding properties. All the configuration parameters can be set directly inside the view, hence you won't muddy your Angular scopes or controllers.
+trNgGrid can be used for simple to mildly complex scenarios where you quickly need a data grid with a decent amount of features, which is easy to learn and hook up with your data models thanks to its powerful data binding properties. All the configuration parameters can be set directly inside the view, hence you won't muddy your Angular scopes or controllers.
 
 For more complex scenarios and more fine tuned control, I recommend trying out [Smart Table](http://lorenzofox3.github.io/smart-table-website/) or forking trNgGrid and tweaking it to suit your needs.
 
