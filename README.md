@@ -1,4 +1,6 @@
-### The development of the trNgGrid has stopped in favor of [Smart Table](http://lorenzofox3.github.io/smart-table-website/), which has better traction, backing, and is using an identical philosophy as the one behind trNgGrid.
+### trNgGrid can be used for simple to mildly complex scenarios where you need a grid with a decent amount of features, easy to learn and hook up with your data models, thanks to its powerful data binding properties. All the configuration parameters can be set directly inside the view, hence you won't muddy your Angular scopes or controllers.
+
+For more complex scenarios and more fine tuned control, I recommend trying out [Smart Table](http://lorenzofox3.github.io/smart-table-website/) or forking trNgGrid and tweaking it to suit your needs.
 
 #### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/release)
 
