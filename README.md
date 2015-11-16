@@ -1,4 +1,4 @@
-### The development of the trNgGrid has stopped in favor of [Smart Table](http://lorenzofox3.github.io/smart-table-website/), which has better traction, backing, and is using an identical philosophy as the one behind trNgGrid. Smart Table is trNgGrid without its birth defects.
+### The development of the trNgGrid has stopped in favor of [Smart Table](http://lorenzofox3.github.io/smart-table-website/), which has better traction, backing, and is using an identical philosophy as the one behind trNgGrid.
 
 #### [Documentation and demo site](http://moonstorm.github.io/trNgGrid/release)
 
