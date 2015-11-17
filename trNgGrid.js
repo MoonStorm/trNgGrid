@@ -17,6 +17,7 @@ var TrNgGrid;
         displayFormat: null,
         displayName: null,
         filter: null,
+        filterComparator: false,
         enableFiltering: null,
         enableSorting: null
     };
@@ -820,8 +821,30 @@ var TrNgGrid;
                             scope.filterByDisplayFields[this.getSafeFieldName(fieldName)] = scope.gridOptions.filterByFields[fieldName];
                         }
                     }
+
                     TrNgGrid.debugMode && this.log("filtering items of length " + (scope.formattedItems ? scope.formattedItems.length : 0));
-                    scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | filter:filterByDisplayFields | " + TrNgGrid.sortFilter + ":gridOptions");
+
+                    scope.comparatorForFieldMap = {};
+                    for (var i = 0, len = scope.gridOptions.gridColumnDefs.length; i < len; i++) {
+                        var column = scope.gridOptions.gridColumnDefs[i];
+                        var comparator = column.filterComparator;
+
+                        if(typeof comparator === "string") {
+                            if (comparator && comparator.trim().toLowerCase() === "true") {
+                                column.filterComparator = true;
+                            } else if (!comparator || comparator.trim().toLowerCase() === "false") {
+                                column.filterComparator = false;
+                            } else {
+                                //try to find an applicable comparator on scope
+                                if(scope[comparator] && typeof scope[comparator] === 'function'){
+                                    column.filterComparator = scope[comparator];
+                                }
+                            }
+                        }
+                        scope.comparatorForFieldMap[column.fieldName] = comparator;
+                    }
+
+                    scope.filteredItems = scope.$eval("formattedItems | filter:gridOptions.filterBy | rowMatcherFilter:filterByDisplayFields:comparatorForFieldMap | " + TrNgGrid.sortFilter + ":gridOptions");
                     // check if anyone is interested in the filtered items
                     if (scope.gridOptions.filteredItems) {
                         scope.gridOptions.filteredItems = this.extractDataItems(scope.filteredItems);
@@ -1289,6 +1312,34 @@ var TrNgGrid;
             }
             return translatedText;
         };
+    }]).filter("rowMatcherFilter", ["$filter", "$injector", function($filter, $injector) {
+        return function (items, pattern, comparatorForFieldMap) {
+
+            var strictFields = {};
+            var defaultFields = {};
+
+            for(var i in comparatorForFieldMap){
+                if(comparatorForFieldMap[i]===true && !!(pattern[i])){
+                    strictFields[i] = pattern[i];
+                } else if(!comparatorForFieldMap[i] && !!(pattern[i])){
+                    defaultFields[i] = pattern[i];
+                }
+            }
+
+            var itemsFilteredStrictly = $filter('filter')(items, strictFields, true);
+            var itemsFilteredWithComparators = $filter('filter')(itemsFilteredStrictly, defaultFields, false);
+
+            for(var k in comparatorForFieldMap){
+                var comparator = comparatorForFieldMap[k];
+                if(typeof comparator==="function" && !!(pattern[k])){
+                    var currentPattern = {};
+                    currentPattern[k] = pattern[k];
+                    itemsFilteredWithComparators = $filter('filter')(itemsFilteredWithComparators, currentPattern, comparator);
+                }
+            }
+
+            return itemsFilteredWithComparators;
+        }
     }]).run(function () {
         TrNgGrid.tableCssClass = "tr-ng-grid table table-bordered table-hover"; // at the time of coding, table-striped is not working properly with selection
         TrNgGrid.cellCssClass = "tr-ng-cell";
