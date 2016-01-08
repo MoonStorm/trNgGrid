@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 var TrNgGrid;
 (function (TrNgGrid) {
     TrNgGrid.version = "3.1.4";
@@ -289,6 +289,9 @@ var TrNgGrid;
             if (gridOptions.onDataRequiredDelay === undefined) {
                 gridOptions.onDataRequiredDelay = 1000; //ms
             }
+            if (gridOptions.autoLoad === undefined) {
+                gridOptions.autoLoad = false;
+            }
             if (gridOptions.selectedItems === undefined) {
                 gridOptions.selectedItems = [];
             }
@@ -394,7 +397,10 @@ var TrNgGrid;
                             scheduledForCurrentCycle = false;
                             try {
                                 TrNgGrid.debugMode && _this.log("Requesting data - server side mode");
-                                _this.gridOptions.onDataRequired(_this.gridOptions);
+                                if (!_this.gridOptions.autoLoad)
+                                    _this.gridOptions.autoLoad = true;
+                                else
+                                    _this.gridOptions.onDataRequired(_this.gridOptions);
                             }
                             catch (ex) {
                                 TrNgGrid.debugMode && _this.log("Data retrieval failed " + ex);
@@ -882,6 +888,7 @@ var TrNgGrid;
                     pageItems: '=?',
                     currentPage: '=?',
                     totalItems: '=?',
+                    autoLoad: '=?',
                     enableFiltering: '=?',
                     enableSorting: '=?',
                     selectionMode: '@',
@@ -1204,7 +1211,7 @@ var TrNgGrid;
             }
             // we'll need the column options
             var columnOptions = null;
-            for (var columnOptionsIndex = 0; (columnOptionsIndex < gridOptions.gridColumnDefs.length) && ((columnOptions = gridOptions.gridColumnDefs[columnOptionsIndex]).fieldName !== gridOptions.orderBy); columnOptions = null, columnOptionsIndex++)
+            for (var columnOptionsIndex = 0; (columnOptionsIndex < gridOptions.gridColumnDefs.length) && ((columnOptions = gridOptions.gridColumnDefs[columnOptionsIndex]).fieldName !== gridOptions.orderBy) ; columnOptions = null, columnOptionsIndex++)
                 ;
             if (!columnOptions) {
                 // unable to find any info about the selected field
@@ -1269,7 +1276,7 @@ var TrNgGrid;
                 return input;
             }
             var languageIdParts = languageId.split(/[-_]/);
-            for (var languageIdPartIndex = languageIdParts.length; (languageIdPartIndex > 0) && (!translatedText); languageIdPartIndex--) {
+            for (var languageIdPartIndex = languageIdParts.length; (languageIdPartIndex > 0) && (!translatedText) ; languageIdPartIndex--) {
                 var subLanguageId = languageIdParts.slice(0, languageIdPartIndex).join("-");
                 var langTranslations = TrNgGrid.translations[subLanguageId];
                 if (langTranslations) {
