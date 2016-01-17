@@ -24,4 +24,4 @@ Of course you can craft your own, as the grid layout is quite easy to style.
 To set up your dev environment, install npm, and then run ``npm install`` and ``bower install`` in the folder where you pulled the ``master`` branch. A VS2015 solution is included if you want to use it.
  
 The source files are located in the ``typescript`` and the ``css`` folders. Running the default ``Gulp`` task will compile, minify and deploy the files into the root directory and also into a very simple sample located in the ``wwwroot`` folder. 
-If you plan on sending us a PR, please don't make changes to the generated output files. 
+If you plan on sending a pull request, please don't make changes to the generated output files. 
