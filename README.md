@@ -20,3 +20,8 @@ Of course you can craft your own, as the grid layout is quite easy to style.
 #### Issues
  Feel free to [report any problems you are experiencing](https://github.com/MoonStorm/trNgGrid/issues), but before you do that, fork [this simple Plunker](http://plnkr.co/edit/JCLrJD?p=preview) and attempt to isolate the issue.
  
+#### Development tips and PRs
+To set up your dev environment, install npm, and then run ``npm install`` and ``bower install`` in the folder where you pulled the ``master`` branch. A VS2015 solution is included if you want to use it.
+ 
+The source files are located in the ``typescript`` and the ``css`` folders. Running the default ``Gulp`` task will compile, minify and deploy the files into the root directory and also into a very simple sample located in the ``wwwroot`` folder. 
+If you plan on sending us a PR, please don't make changes to the output files. 
