@@ -6,14 +6,13 @@
     ],
     "description": "trNgGrid is a feature rich declarative data grid based on the popular AngularJs framework and making use of plain table HTML elements.",
     "ignore": [
-        "src",
-        "index.html",
-        "*.bundle",
-        "global.json",
-        "gulfile.js",
-        "*.sln",
-        "tsconfig.json",
-        "TrNgGrid.xproj"
+        "*",
+        "!trNgGrid.js",
+		"!trNgGrid.min.js",
+		"!trNgGrid.css",
+		"!trNgGrid.min.css",
+		"!LICENSE", 
+		"!relnotes.html"
     ],
     "main": [
         "./trNgGrid.js",
