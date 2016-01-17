@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>1d1da4fb-c0ef-4a40-b53f-3f40d69c4bf7</ProjectGuid>
+    <RootNamespace>TrNgGrid</RootNamespace>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
+  </PropertyGroup>
+  <ItemGroup>
+    <DnxInvisibleContent Include=".bowerrc" />
+    <DnxInvisibleContent Include="trNgGrid.css" />
+    <DnxInvisibleContent Include="trNgGrid.js" />
+    <DnxInvisibleContent Include="trNgGrid.min.css" />
+    <DnxInvisibleContent Include="trNgGrid.min.js" />
+    <DnxInvisibleContent Include="TrNgGrid.sln.DotSettings" />
+  </ItemGroup>
+  <ItemGroup>
+    <DnxInvisibleFolder Include=".vs\" />
+    <DnxInvisibleFolder Include="bower_components\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>
