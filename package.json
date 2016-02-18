@@ -15,6 +15,7 @@
     "url": "http://github.com/MoonStorm/trNgGrid/issues"
   },
   "files": [ "trNgGrid.min.js", "trNgGrid.js", "trNgGrid.css", "trNgGrid.min.css", "LICENSE", "relnotes.html" ],
+  "main": "trNgGrid.js",
   "repository": {
     "type": "git",
     "url": "http://github.com/MoonStorm/trNgGrid"
