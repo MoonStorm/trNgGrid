@@ -69,8 +69,8 @@
                                             serie: true,
                                             files: [
                                                 '//necolas.github.io/normalize.css/latest/normalize.css',
-                                                '//google-code-prettify.googlecode.com/svn/loader/prettify.js',
-                                                '//google-code-prettify.googlecode.com/svn/loader/prettify.css',
+												'//cdn.rawgit.com/google/code-prettify/master/loader/prettify.js',
+												'//cdn.rawgit.com/google/code-prettify/master/src/prettify.css',
                                                 '../demo/css/index.css',
                                                 // '../demo/js/tracking.js',
                                                 '../demo/js/demo.js',
