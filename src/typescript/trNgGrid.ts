@@ -1,7 +1,8 @@
-///<reference path="../node_modules/angular-typescript/ts/definitely-typed/angularjs/angular.d.ts"/>
+///<reference path="../../typings/angularjs/angular.d.ts"/>
 
 "use strict";
-module TrNgGrid {
+import angular = require('angular');
+export namespace TrNgGrid {
     interface IProprietaryTranslationFilter {
         (expression: string, languageId:string): string;
     }
@@ -57,6 +58,11 @@ module TrNgGrid {
     export declare var cellFooterTemplateId: string;
     export declare var footerPagerTemplateId: string;
     export declare var footerGlobalFilterTemplateId: string;
+
+    if (!window) {
+        throw "trNgGrid cannot be used in the current environment";
+    }
+    window["TrNgGrid"] = TrNgGrid;
 
     // it's important to assign all the default column options, so we can match them with the column attributes in the markup
     defaultColumnOptionsTemplate = {

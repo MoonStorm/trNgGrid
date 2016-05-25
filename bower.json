@@ -12,7 +12,8 @@
         "!trNgGrid.css",
         "!trNgGrid.min.css",
         "!LICENSE",
-        "!relnotes.html"
+        "!relnotes.html",
+        "!browserify.js"
     ],
     "main": [
         "./trNgGrid.js",

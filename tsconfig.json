@@ -1,18 +1,15 @@
 {
   "compilerOptions": {
+    "module": "umd",
     "noImplicitAny": false,
-    "noEmitOnError": true,
     "removeComments": true,
     "sourceMap": false,
     "target": "es5"
   },
-  "files": [
-    /*"core.ts",
-    "sys.ts",
-    "types.ts"*/
-  ],
   "exclude": [
     "node_modules",
+    "bower_modules",
+    "typings",
     "wwwroot"
   ]
 }
