@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "trNgGrid", "trNgGrid.njsproj", "{323895EE-B25E-4602-9FA1-C045F6454F09}"
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "trNgGrid", "trNgGrid.njsproj", "{71BED4A2-595B-4EED-84ED-6F2C76DA6E1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{323895EE-B25E-4602-9FA1-C045F6454F09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{323895EE-B25E-4602-9FA1-C045F6454F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{323895EE-B25E-4602-9FA1-C045F6454F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{323895EE-B25E-4602-9FA1-C045F6454F09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71BED4A2-595B-4EED-84ED-6F2C76DA6E1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71BED4A2-595B-4EED-84ED-6F2C76DA6E1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71BED4A2-595B-4EED-84ED-6F2C76DA6E1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71BED4A2-595B-4EED-84ED-6F2C76DA6E1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

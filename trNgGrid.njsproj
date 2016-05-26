@@ -1,461 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <Name>trNgGrid</Name>
-    <RootNamespace>trNgGrid</RootNamespace>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>323895ee-b25e-4602-9fa1-c045f6454f09</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
+    <ProjectGuid>{71bed4a2-595b-4eed-84ed-6f2c76da6e1e}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
     <StartupFile>server.js</StartupFile>
-    <SearchPath>
-    </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
-    <ProjectView>ShowAllFiles</ProjectView>
-    <NodejsPort>1337</NodejsPort>
-    <StartWebBrowser>False</StartWebBrowser>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <EnableTypeScript>true</EnableTypeScript>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Compile Include="browserify.js" />
-    <Compile Include="gulpfile.js" />
-    <Compile Include="sample\sample.js" />
-    <Compile Include="server.js" />
+    <Content Include="index.html" />
+    <Content Include="relnotes.html" />
+    <Content Include="trNgGrid.css" />
+    <Content Include="trNgGrid.min.css" />
     <Content Include="bower.json" />
     <Content Include="package.json" />
-    <Content Include="README.md" />
-    <Content Include="relnotes.html" />
-    <Content Include="sample\index.html" />
-    <Content Include="sample\sample.less" />
-    <Content Include="src\css\trNgGrid.css" />
     <Content Include="tsconfig.json" />
     <Content Include="tsd.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="sample\" />
-    <Folder Include="src\" />
-    <Folder Include="src\css\" />
-    <Folder Include="src\typescript\" />
-    <Folder Include="typings\" />
-    <Folder Include="typings\angularjs\" />
-    <Folder Include="typings\bootstrap\" />
-    <Folder Include="typings\browserify\" />
-    <Folder Include="typings\es6-promise\" />
-    <Folder Include="typings\event-stream\" />
-    <Folder Include="typings\express-serve-static-core\" />
-    <Folder Include="typings\finalhandler\" />
-    <Folder Include="typings\gulp-concat\" />
-    <Folder Include="typings\gulp-debug\" />
-    <Folder Include="typings\gulp-less\" />
-    <Folder Include="typings\gulp-rename\" />
-    <Folder Include="typings\gulp-typescript\" />
-    <Folder Include="typings\gulp-uglify\" />
-    <Folder Include="typings\gulp\" />
-    <Folder Include="typings\jquery\" />
-    <Folder Include="typings\mime\" />
-    <Folder Include="typings\node\" />
-    <Folder Include="typings\orchestrator\" />
-    <Folder Include="typings\q\" />
-    <Folder Include="typings\serve-static\" />
-    <Folder Include="typings\source-map\" />
-    <Folder Include="typings\typescript\" />
-    <Folder Include="typings\uglify-js\" />
-    <Folder Include="typings\vinyl-buffer\" />
-    <Folder Include="typings\vinyl-source-stream\" />
-    <Folder Include="typings\yargs\" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\aliases.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-bundle.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-init.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-install.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-list.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-open.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-prune.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-search.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-uninstall.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin-view.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\bin.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\support\cli.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
-    <TypeScriptCompile Include="node_modules\typings\dist\typings.d.ts" />
+    <Content Include="README.md" />
+    <Compile Include="browserify.js" />
+    <Compile Include="gulpfile.js" />
+    <Compile Include="server.js" />
+    <Compile Include="trNgGrid.js" />
+    <Compile Include="trNgGrid.min.js" />
+    <Content Include="sample\index.html" />
+    <Content Include="sample\sample-bundle.css" />
+    <Compile Include="sample\sample-bundle.js" />
+    <Compile Include="sample\sample.js" />
+    <Content Include="sample\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="src\css\trNgGrid.css" />
     <TypeScriptCompile Include="src\typescript\trNgGrid.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\angularjs\angular.d.ts" />
-    <TypeScriptCompile Include="typings\bootstrap\bootstrap.d.ts" />
-    <TypeScriptCompile Include="typings\browserify\browserify.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\es6-promise\es6-promise.d.ts" />
-    <TypeScriptCompile Include="typings\event-stream\event-stream.d.ts" />
-    <TypeScriptCompile Include="typings\express-serve-static-core\express-serve-static-core.d.ts" />
-    <TypeScriptCompile Include="typings\finalhandler\finalhandler.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-concat\gulp-concat.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-debug\gulp-debug.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-less\gulp-less.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-rename\gulp-rename.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-typescript\gulp-typescript.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp-uglify\gulp-uglify.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\gulp\gulp.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="typings\mime\mime.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\node\node.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\orchestrator\orchestrator.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\q\Q.d.ts" />
-    <TypeScriptCompile Include="typings\serve-static\serve-static.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\source-map\source-map.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\tsd.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\typescript\typescript.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\uglify-js\uglify-js.d.ts" />
-    <TypeScriptCompile Include="typings\vinyl-buffer\vinyl-buffer.d.ts" />
-    <TypeScriptCompile Include="typings\vinyl-source-stream\vinyl-source-stream.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
-    <TypeScriptCompile Include="typings\yargs\yargs.d.ts" />
   </ItemGroup>
-  <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
+  <ItemGroup>
+    <Folder Include="sample" />
+    <Folder Include="sample\fonts" />
+    <Folder Include="src" />
+    <Folder Include="src\css" />
+    <Folder Include="src\typescript" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
   <ProjectExtensions>
