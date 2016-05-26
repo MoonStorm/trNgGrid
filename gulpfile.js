@@ -35,9 +35,9 @@ var paths = {
     cssOutput: "."
 };
 
-// tasks can be run from npm as well. example: npm run gulp -- ts-compile --version x.x.x
-// the sample can be run and debugged with npm start, which by default will execute npm server.js
-//    or alternatively via gulp build-sample or gulp debug-sample
+// tasks can be run from npm as well. example: 'npm run gulp -- ts-compile --version x.x.x'
+// the sample can be run and debugged with 'gulp build-sample' or 'gulp debug-sample', followed by 'npm start', which by default will execute 'npm server.js'
+// typings can be queried with 'tsd query angular' and installed with 'tsd install angular'
 
 gulp.task('ts-compile', function () {
     // set the version if provided via gulp: gulp ts-compile --version x.x.x

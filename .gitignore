@@ -5,10 +5,8 @@
 /wwwroot/trNgGrid.js
 /.vs
 /project.lock.json
-/typings
 /bin
 /obj
 /sample/sample-bundle.js
 /sample/fonts
 /sample/sample-bundle.css
-/tsd.json

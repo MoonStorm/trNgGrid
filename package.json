@@ -43,7 +43,6 @@
     "gulp-typescript": "2.10.x",
     "gulp-uglify": "1.5.x",
     "merge": "1.2.x",
-    "typings": "0.8.x",
     "yargs": "4.7.x",
 
     "browserify": "13.0.x",
